@@ -1,0 +1,10 @@
+[user]
+	name = Dan Sherson
+	email = me@dansherson.com
+[color]
+	ui = true
+[credential]
+	helper = osxkeychain
+[core]
+	excludesfile = ~/.gitignore_global
+	editor = vim

@@ -135,5 +135,6 @@ fi
 export PATH="/usr/local/heroku/bin:$PATH"
 export GUI_EDITOR='/usr/local/bin/atom'
 export EDITOR='/usr/local/bin/atom -wn'
+source /usr/local/opt/chruby/share/chruby/chruby.sh
 export ATOM_PATH="/Applications"
 export JAVA_HOME=/Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin/Contents/Home

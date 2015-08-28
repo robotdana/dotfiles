@@ -12,7 +12,6 @@ alias gs="git status"
 alias gc="gs && git add -A && git commit --verbose"
 alias gcp="gc && gp"
 alias gcpp="gc && gpp"
-
 alias current_branch=" git branch 2>/dev/null | grep '^*' | colrm 1 2 "
 
 function gc(){
@@ -48,10 +47,14 @@ function gl(){
   else
     local remote=$1
   fi
-  local branch=$(git branch 2>/dev/null | grep '^*' | colrm 1 2)
+  local branch=$(current_branch)
   git pull $remote $branch
 }
-
+function gm(){
+  local branch=$(current_branch)
+  local target=$1
+  git checkout $target && gl && git checkout $branch && git merge $target --no-edit
+}
 alias migrate="bundle exec rake db:migrate db:test:prepare"
 
 alias rc="bundle exec rails console"
@@ -90,7 +93,8 @@ alias ss="$GUI_EDITOR ./"
 #
 alias ls="ls -FG"
 
-source ~/.git-completion.bash
+
+source ~/tools/git/contrib/completion/git-completion.bash
 
 PATH=/usr/local/bin:/usr/local/sbin:/usr/local/lib/node:$PATH
 #
@@ -98,26 +102,28 @@ PATH=/usr/local/bin:/usr/local/sbin:/usr/local/lib/node:$PATH
 alias resource="source ~/.bash_profile && echo \"••• RELOADED PROFILE •••\""
 alias start_mysql="mysql.server start"
 alias start_postgres="pg_ctl -D /usr/local/var/postgres93 -l /usr/local/var/postgres93/server.log -m immediate restart"
-alias start_elasticsearch="elasticsearch -D es.config=/usr/local/opt/elasticsearch/config/elasticsearch.yml -p /tmp/elasticsearch.pid"
-alias start_nginx="sudo nginx"
+alias start_elasticsearch="elasticsearch -d -D es.config=/usr/local/opt/elasticsearch/config/elasticsearch.yml -p /tmp/elasticsearch.pid &>/dev/null"
+alias start_nginx="[ -e \"/usr/local/var/run/nginx.pid\" ] || sudo nginx"
 alias start_redis="redis-server /usr/local/etc/redis.conf"
-alias start_teg="start_nginx && start_elasticsearch && start_redis && start_mysql && foreman start"
-
+alias start_foreman="foreman start"
+alias start_teg_env="start_nginx && start_elasticsearch && start_redis && start_mysql"
+alias start_teg="start_teg_env && foreman start"
+alias start_log="tail -f log/development.log"
 alias shosts='sudo $EDITOR /etc/hosts && dscacheutil -flushcache && echo "••• RELOADED HOSTS •••"'
-alias sbash="$EDITOR ~/.bash_profile && resource"
+alias sbash="atom -w ~/.bash_profile && resource"
 alias publickey='pbcopy < ~/.ssh/id_rsa.pub && echo "••• COPIED TO CLIPBOARD •••"'
 
 function __git_dirty_branch {
   git diff --quiet HEAD &>/dev/null;
   if [[ $? == 1 ]]; then
-    local branch=$(git branch 2>/dev/null | grep '^*' | colrm 1 2)
+    local branch=$(current_branch)
     [[ $branch ]] && echo ":$branch"
   fi
 }
 function __git_clean_branch {
   git diff --quiet HEAD &>/dev/null;
   if [[ $? != 1 ]]; then
-    local branch=$(git branch 2>/dev/null | grep '^*' | colrm 1 2)
+    local branch=$(current_branch)
     [[ $branch ]] && echo ":$branch"
   fi
 }

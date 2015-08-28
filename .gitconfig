@@ -7,3 +7,12 @@
 	helper = osxkeychain
 [core]
 	excludesfile = ~/.gitignore_global
+	mergeoptions = --no-edit
+[filter "lfs"]
+	clean = git-lfs clean %f
+	smudge = git-lfs smudge %f
+	required = true
+[help]
+	autocorrect = -1
+[push]
+	default = simple

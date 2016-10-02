@@ -1,0 +1,13 @@
+MARKETPLACER_PATH="/Users/dan/M/marketplacer"
+VERTICALS="
+be:bikeexchange
+beau:bikeexchange
+beus:bikeexchange_us
+benz:bikeexchange_nz
+bede:bikeexchange_de
+tt:tinitrader
+hh:houseofhome
+od:outdoria
+" #...
+source ~/.dotfiles/marketplacer.sh
+

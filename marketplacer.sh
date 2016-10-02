@@ -5,11 +5,11 @@ alias jslint='./node_modules/.bin/eslint --quiet --ext .jsx,.js webpack/app webp
 alias missing_verticals='comm -13 <(printf "%s\n" $VERTICALS | cut -d: -f2 | sort | uniq) <(marketplacer verticals | sort)'
 
 function short_vertical() {
-  printf '%s\n' $VERTICALS | grep :$1$ | cut -d: -f1
+  printf '%s\n' $VERTICALS | grep ":$VERTICAL$" | cut -d: -f1 | head -n 1
 }
 
 function v(){
-  printf '%s\n' $VERTICALS | grep ^$1: | cut -d: -f2 | vv
+  printf '%s\n' $VERTICALS | grep "^$1:" | cut -d: -f2 | head -n 1 | vv
 }
 
 function rtp(){

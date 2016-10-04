@@ -48,7 +48,7 @@ function tabs(){
 # # # # # # # # #
 # GIT SHORTCUTS #
 
-# source ~/tools/git/contrib/completion/git-completion.bash
+source ~/.dotfiles/git-completion.bash
 
 alias gcp="gc && gp"
 alias gcpp="gc && gpp"

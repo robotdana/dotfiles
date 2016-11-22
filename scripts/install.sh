@@ -11,7 +11,7 @@ mkdir ~/.dotfiles/locals
 if [! -e ~/.dotfiles/locals/bash.sh ]; then
   cp ~/.dotfiles/locals_bash.sh.example ~/.dotfiles/locals/bash.sh
 fi
-curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash > ~/.dotfiles/git-completion.bash
+curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash > ~/.dotfiles/locals/git-completion.bash
 curl https://raw.githubusercontent.com/mklement0/ttab/stable/bin/ttab > ~/.dotfiles/locals/ttab
 
 chmod +x ~/.dotfiles/locals/ttab

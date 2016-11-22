@@ -41,7 +41,7 @@ function ttabs(){
 # # # # # # # # #
 # GIT SHORTCUTS #
 
-source ~/.dotfiles/git-completion.bash
+source ~/.dotfiles/locals/git-completion.bash
 
 alias gcp="gc && gp"
 alias gcpp="gc && gpp"

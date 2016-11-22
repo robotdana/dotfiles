@@ -29,19 +29,12 @@ function title {
   printf "\033]0;%s\007" "••• $1 $(__dir_context) •••"
 }
 
-# Usage: `tab rs 1`
-function tab() {
-  osascript -e 'tell application "Terminal" to activate'\
-    -e 'tell application "System Events" to tell process "Terminal" to keystroke "t" using command down'\
-    -e "tell application \"Terminal\" to do script \"cd $PWD && $*\" in selected tab of the front window"
-}
-# Usage: `tabs "rs 1" "rs 2"`
-function tabs(){
+function ttabs(){
   # cd here too, because it loads a second tab before the first one `cd`s
   local current_dir=$PWD
   for tab_command in "$@"
   do
-    tab "cd $current_dir && $tab_command"
+    ttab -G 'cd $current_dir && $tab_command'
   done
 }
 

@@ -30,8 +30,9 @@ function vv() {
 
 function vdb() {
   (( $# == 1 )) && v $1
+  title 'Updating Database'
   yes | m database update $VERTICAL
-  rake db:migrate index:reindex
+  (rails db:migrate index:reindex) && echo '••• Migrated and reindexed •••'
 }
 
 function update_db() {
@@ -41,6 +42,11 @@ function update_db() {
 function vdbrs() {
   vdb $*
   vrs $*
+}
+
+function vdbrc() {
+  vdb $*
+  vrc $*
 }
 
 function vrc() {

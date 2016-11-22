@@ -162,7 +162,7 @@ function rs(){
 
 function rt(){
   title "Rspec"
-  JS_TIMEOUT=100000 MFETCH_TIMEOUT=1000000 bundle exec rspec $*
+  bundle exec rspec $*
   title "! Rspec complete"
 }
 
@@ -208,7 +208,6 @@ function jeks(){
 # NPM :(  #
 
 alias npm_exec='PATH=$(npm bin):$PATH'
-alias npm_reset='rm -rf ./node_modules && npm install'
 function ne(){
   npm_exec $*
 }
@@ -225,6 +224,7 @@ function __git_dirty_branch {
     [[ $branch ]] && echo ":$branch"
   fi
 }
+
 function __git_clean_branch {
   git diff --quiet HEAD &>/dev/null;
   if [[ $? != 1 ]]; then
@@ -232,6 +232,7 @@ function __git_clean_branch {
     [[ $branch ]] && echo ":$branch"
   fi
 }
+
 source ~/.dotfiles/locals/bash.sh
 
 function __dir_context {
@@ -248,7 +249,7 @@ C_YELLOW="\e[0;33m"
 C_RESET="\e[0m"
 C_AQUA="\e[1;36m"
 C_BLUE="\e[1;34m"
-export PS1="\[$C_BLUE\]\w\[$C_AQUA\]\$(__dir_context)\[$C_RED\]\$(__git_dirty_branch)\[$C_GREEN\]\$(__git_clean_branch)\[$C_BLUE\]» \[$C_RESET\]"
+export PS1="\[$C_BLUE\]\w\[$C_AQUA\]\$(__dir_context)\[$C_RED\]\$(__git_dirty_branch)\[$C_GREEN\]\$(__git_clean_branch)\[$C_BLUE\]»$(title) \[$C_RESET\]"
 
 # # # # # #
 # Exports #

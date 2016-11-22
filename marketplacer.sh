@@ -52,7 +52,7 @@ function vrs() {
     v $1
     vrs
   elif (( $# == 0 )); then
-    rs $(m verticals | awk "/$VERTICAL/{ print NR-1; exit }") $VERTICAL
+    rfs $(m verticals | awk "/$VERTICAL/{ print NR-1; exit }") $VERTICAL
   else
     local current_dir=$PWD
     for vertical in "$@"

@@ -136,6 +136,13 @@ function rgm(){
   subl -nw $(rg migration $* | tail -1 | colrm 1 16) && be rails db:migrate
 }
 
+function rfs(){
+  if [ ! $(ports_respond 3808) ]; then
+    ttab -G rf
+  fi
+  rs $* 3808
+}
+
 function rs(){
   if [ -z "$1" ]; then
     local port=3000
@@ -149,7 +156,7 @@ function rs(){
   fi
   kill_port $port
   title "Rails Server:$port"
-  wait_and_open $host:$port
+  wait_for_port_then "open -g http://$host:$port" $port ${@:3}
   (bundle exec rails server -p $port --pid=tmp/pids/server$port.pid -b 0.0.0.0) && title 'Terminal';
 }
 
@@ -165,15 +172,25 @@ function be(){
 
 # # # # # # # #
 # SERVER FUN  #
+function ports_respond(){
+  local respond=true
+  for port in "$@"
+  do
+    if [ ! $(lsof -ti :$port) ]; then
+      local respond=false
+    fi
+  done
+  $respond
+}
 
 # This is probably a really bad idea
-function wait_for_response(){
-  while [[ $(curl -s -o/dev/null -w '%{size_download}' $1/404) -eq 0 ]]; do sleep 1; done
+function wait_for_ports(){
+  until ( ports_respond $* ); do sleep 1; done
 }
 
 # this too
-function wait_and_open(){
-  ( ( ( wait_for_response http://$1 ) && open -g http://$1 )>/dev/null & )2>/dev/null
+function wait_for_port_then(){
+  ( ( ( wait_for_ports ${@:2} ) && $($1) )>/dev/null & )2>/dev/null
 }
 
 # this three
@@ -183,8 +200,8 @@ function kill_port() {
 
 function jeks(){
   title "Jekyll Server:4000"
-  wait_and_open localhost:4000
-  (bundle exec jekyll serve) && title 'Terminal'
+  wait_for_port_then "open -g http://localhost:4000" 4000
+  (bundle exec jekyll serve --incremental) && title 'Terminal'
 }
 
 # # # # # #

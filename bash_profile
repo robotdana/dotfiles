@@ -47,7 +47,7 @@ alias gcp="gc && gp"
 alias gcpp="gc && gpp"
 alias current_branch="git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>/dev/null"
 
-function gc(){
+function gac(){
   if [ -z "$1" ]; then
     git commit -a --verbose
   else
@@ -55,7 +55,7 @@ function gc(){
   fi
 }
 
-function gac() {
+function gc() {
   git add -p && git commit --verbose $*
 }
 
@@ -79,6 +79,16 @@ function gp(){
   git push $remote $branch
 }
 
+function gfp(){
+  if [ -z "$1" ]; then
+    local remote="origin"
+  else
+    local remote=$1
+  fi
+  local branch=$(current_branch)
+  git push -f $remote $branch
+}
+
 function gl(){
   if [ -z "$1" ]; then
     local remote="origin"
@@ -94,7 +104,16 @@ function gm(){
   local target=$1
   git checkout $target && gl && git checkout $branch && git merge $target --no-edit
 }
+
 alias gmfin="SKIP=RuboCop git commit -a --no-edit"
+
+function gr(){
+  local branch=$(current_branch)
+  local target=$1
+  git checkout $target && gl && git checkout $branch && git rebase --interactive $target
+}
+
+alias grm="gr master"
 
 # # # # # # # # # #
 # Rails Shortcuts #
@@ -107,6 +126,7 @@ function rc(){
 function rg(){
   bundle exec rails generate $*;
 }
+
 function rf(){
   title "Foreman"
   bundle exec foreman start;

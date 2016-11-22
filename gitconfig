@@ -19,3 +19,12 @@
 	default = simple
 [alias]
 	unstage = reset --
+	conflicts = "!git ls-files -u | awk '{print $4}' | sort -u"
+	ls = log --pretty=format:"%C(yellow)%h%Creset\\ %s%Cblue\\ (%aN)" --decorate
+	lsb = !git ls master..HEAD
+	purge = "!git checkout master && git pull && git branch --merged | grep -Ev 'master' | xargs -n 1 git branch -d" # Delete all merged branches
+	rsm = rebase -i --autosquash master
+  rbc = rebase --continue
+  ri = rebase -i
+  uncommit = reset --soft HEAD^
+	alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /

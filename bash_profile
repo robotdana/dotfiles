@@ -44,18 +44,21 @@ source ~/.dotfiles/locals/git-completion.bash
 
 alias gcp="gc && gp"
 alias gcpp="gc && gpp"
+alias ga="git trackuntracked && git add -p && git untracknewblank"
+alias gac="gc"
 alias current_branch="git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>/dev/null"
-
-function gac(){
-  if [ -z "$1" ]; then
-    git commit -a --verbose
-  else
-    git commit -am $1
-  fi
+function gwip(){
+  git trackuntracked &&
+  SKIP=RuboCop,ScssLint,EsLint git commit -am 'wip'
+  gp
 }
 
 function gc() {
-  git add -p && git commit --verbose $*
+  if [ -z "$1" ]; then
+    ga && git commit --verbose
+  else
+    ga && git commit -m $1
+  fi
 }
 
 function gpp(){
@@ -97,6 +100,7 @@ function gl(){
   local branch=$(current_branch)
   git pull --no-edit $remote $branch
 }
+alias glm="git checkout master && gl"
 
 function gm(){
   local branch=$(current_branch)
@@ -104,15 +108,14 @@ function gm(){
   git checkout $target && gl && git checkout $branch && git merge $target --no-edit
 }
 
-alias gmfin="SKIP=RuboCop git commit -a --no-edit"
-
 function gr(){
   local branch=$(current_branch)
   local target=$1
-  git checkout $target && gl && git checkout $branch && git rebase --interactive $target
+  git checkout $target && gl && git checkout $branch && git rebase --interactive --autosquash $target
 }
 
 alias grm="gr master"
+alias grc="git add . && git rebase --continue"
 
 # # # # # # # # # #
 # Rails Shortcuts #

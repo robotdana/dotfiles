@@ -2,11 +2,11 @@
 alias ls="ls -FG"
 
 alias resource="source ~/.bash_profile && echo \"••• RELOADED PROFILE •••\""
-alias rehosts="dscacheutil -flushcache && echo \"••• RELOADED HOSTS •••\""
+alias rehosts="dscacheutil -flushcache && sudo killall mDNSResponder && echo \"••• RELOADED HOSTS •••\""
 
 alias sbash="subl -nw ~/.bash_profile && resource"
 alias snginx='subl -nw /usr/local/etc/nginx/nginx.conf && nginx -s reload && echo "••• RELOADED CONFIG •••"'
-alias shosts='sudo /etc/hosts && rehosts && echo "••• RELOADED HOSTS •••"'
+alias shosts='subl -nw /etc/hosts && rehosts && echo "••• RELOADED HOSTS •••"'
 
 alias publickey='pbcopy < ~/.ssh/id_rsa.pub && echo "••• COPIED TO CLIPBOARD •••"'
 

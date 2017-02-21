@@ -4,7 +4,7 @@ alias ls="ls -FG"
 alias resource="source ~/.bash_profile && echo \"••• RELOADED PROFILE •••\""
 alias rehosts="dscacheutil -flushcache && sudo killall mDNSResponder && echo \"••• RELOADED HOSTS •••\""
 
-alias sbash="subl -nw ~/.bash_profile && resource"
+alias sbash="subl -nw ~/.dotfiles && resource"
 alias snginx='subl -nw /usr/local/etc/nginx/nginx.conf && nginx -s reload && echo "••• RELOADED CONFIG •••"'
 alias shosts='subl -nw /etc/hosts && rehosts && echo "••• RELOADED HOSTS •••"'
 
@@ -30,7 +30,6 @@ function title {
 }
 
 function ttabs(){
-  # cd here too, because it loads a second tab before the first one `cd`s
   local current_dir=$PWD
   for tab_command in "$@"
   do
@@ -137,9 +136,7 @@ function rgm(){
 }
 
 function rfs(){
-  if [ ! $(ports_respond 3808) ]; then
-    ttab -G rf
-  fi
+  ports_respond 3808 || ttab -G rf
   rs $* 3808
 }
 
@@ -249,7 +246,7 @@ C_YELLOW="\e[0;33m"
 C_RESET="\e[0m"
 C_AQUA="\e[1;36m"
 C_BLUE="\e[1;34m"
-export PS1="\[$C_BLUE\]\w\[$C_AQUA\]\$(__dir_context)\[$C_RED\]\$(__git_dirty_branch)\[$C_GREEN\]\$(__git_clean_branch)\[$C_BLUE\]»$(title) \[$C_RESET\]"
+export PS1="\[$C_BLUE\]\w\[$C_AQUA\]\$(__dir_context)\[$C_RED\]\$(__git_dirty_branch)\[$C_GREEN\]\$(__git_clean_branch)\[$C_BLUE\]» \[$C_RESET\]"
 
 # # # # # #
 # Exports #

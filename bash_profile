@@ -11,6 +11,7 @@ alias shosts='subl -nw /etc/hosts && rehosts && echo "••• RELOADED HOSTS 
 alias publickey='pbcopy < ~/.ssh/id_rsa.pub && echo "••• COPIED TO CLIPBOARD •••"'
 
 alias redis_clear='echo "FLUSHALL" | redis-cli'
+alias restart_mysql='brew services restart mysql'
 
 alias block="~/.dotfiles/scripts/block.sh"
 alias unblock="~/.dotfiles/scripts/unblock.sh"

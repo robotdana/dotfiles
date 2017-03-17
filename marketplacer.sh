@@ -3,6 +3,7 @@ export VERTICAL='bikeexchange'
 alias jslint='./node_modules/.bin/eslint --quiet --ext .jsx,.js webpack/app webpack/entry webpack/lib webpack/test webpack/vendor'
 
 alias missing_verticals='comm -13 <(verticals | colrm 1 10 | sort | uniq) <(marketplacer verticals | sort)'
+alias sverticals="subl -nw ~/.dotfiles/locals/verticals"
 
 function short_vertical() {
   vertical_row $* | colrm 5 | tr -d " "

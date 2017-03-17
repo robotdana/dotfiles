@@ -1,6 +1,4 @@
 #!/bin/bash
-
-
 if [ "$1" == "" ]; then
   echo "Usage:"
   echo "unblock twitter.com facebook.com"
@@ -12,3 +10,4 @@ for url in "$@"; do
   cat /etc/hosts | sed -e "/$url/d" | sudo tee /etc/hosts &>/dev/null
 done
 dscacheutil -flushcache
+sudo killall mDNSResponder

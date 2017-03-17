@@ -4,7 +4,7 @@ alias ls="ls -FG"
 alias resource="source ~/.bash_profile && echo \"••• RELOADED PROFILE •••\""
 alias rehosts="dscacheutil -flushcache && sudo killall mDNSResponder && echo \"••• RELOADED HOSTS •••\""
 
-alias sbash="subl -nw ~/.dotfiles && resource"
+alias sbash="subl -nw ~/.dotfiles/marketplacer.sh ~/.gitconfig ~/.gemrc ~/.bash_profile && resource"
 alias snginx='subl -nw /usr/local/etc/nginx/nginx.conf && nginx -s reload && echo "••• RELOADED CONFIG •••"'
 alias shosts='subl -nw /etc/hosts && rehosts && echo "••• RELOADED HOSTS •••"'
 
@@ -20,6 +20,13 @@ alias default_latest_ruby="ls ~/.rubies | grep ruby- | sort -t- -k2,2 -n | tail 
 
 # # # # # # # # #
 # TERMINAL FUN  #
+
+function gbash(){
+  local current_dir=$PWD
+  cd ~/.dotfiles
+  gc
+  cd $current_dir
+}
 
 # stepping up and down through history with some text already written does a search instead
 bind '"\e[A":history-search-backward'

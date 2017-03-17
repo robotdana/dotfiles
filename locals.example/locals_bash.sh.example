@@ -1,8 +1,2 @@
 MARKETPLACER_PATH="/Users/dan/M/marketplacer"
 source ~/.dotfiles/marketplacer.sh
-
-locals
-  > bash.sh
-  > git-completion.bash
-  > ttab
-  > verticals

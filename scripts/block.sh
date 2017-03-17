@@ -1,5 +1,4 @@
 #!/bin/bash
-
 if [ "$1" == "" ]; then
   echo "Usage:"
   echo "block twitter.com facebook.com"
@@ -15,3 +14,4 @@ for url in "$@"; do
   fi
 done
 dscacheutil -flushcache
+sudo killall mDNSResponder

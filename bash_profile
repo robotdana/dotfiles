@@ -152,11 +152,13 @@ alias grc="git add . && git rebase --continue"
 
 function rc(){
   title "Console"
-  (bundle exec rails console) && title 'Terminal'
+  rz
+  zeus console && title 'Terminal'
 }
 
 function rg(){
-  bundle exec rails generate $*;
+  rz
+  zeus generate $*;
 }
 
 function rf(){
@@ -187,17 +189,26 @@ function rs(){
   kill_port $port
   title "Rails Server:$port"
   wait_for_port_then "open -g http://$host:$port" $port ${@:3}
-  (bundle exec rails server -p $port --pid=tmp/pids/server$port.pid -b 0.0.0.0) && title 'Terminal';
+  rz
+  (zeus server -p $port --pid=tmp/pids/server$port.pid -b 0.0.0.0) && title 'Terminal';
 }
 
 function rt(){
-  title "Rspec"
-  bundle exec rspec $*
-  title "! Rspec complete"
+  title "Rspec running"
+  rz
+  zeus rspec $* && title "Terminal"
 }
 
-function be(){
-  bundle exec $*
+function rz() {
+  if [ ! -e '.zeus.sock' ]; then
+    ttab -G start_zeus
+    until ( [[ -e '.zeus.sock' ]] ); do sleep 1; done
+  fi
+}
+
+function start_zeus {
+  title "Zeus"
+  zeus start && title "Terminal"
 }
 
 # # # # # # # #

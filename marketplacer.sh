@@ -85,7 +85,8 @@ function remote_console() {
   else
     local server=$1
   fi
-  $MARKETPLACER_PATH/script/console $server $VERTICAL
+  title "Console $1"
+  $MARKETPLACER_PATH/script/console $server $VERTICAL && title "Terminal"
 }
 
 function vrs() {

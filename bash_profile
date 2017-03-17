@@ -4,7 +4,7 @@ alias ls="ls -FG"
 alias resource="source ~/.bash_profile && echo \"••• RELOADED PROFILE •••\""
 alias rehosts="dscacheutil -flushcache && sudo killall mDNSResponder && echo \"••• RELOADED HOSTS •••\""
 
-alias sbash="subl -nw ~/.dotfiles/marketplacer.sh ~/.gitconfig ~/.gemrc ~/.bash_profile && resource"
+alias sdot="subl -nw ~/.dotfiles/marketplacer.sh ~/.gitconfig ~/.gemrc ~/.bash_profile && resource"
 alias snginx='subl -nw /usr/local/etc/nginx/nginx.conf && nginx -s reload && echo "••• RELOADED CONFIG •••"'
 alias shosts='subl -nw /etc/hosts && rehosts && echo "••• RELOADED HOSTS •••"'
 
@@ -21,7 +21,7 @@ alias default_latest_ruby="ls ~/.rubies | grep ruby- | sort -t- -k2,2 -n | tail 
 # # # # # # # # #
 # TERMINAL FUN  #
 
-function gbash(){
+function gdot(){
   local current_dir=$PWD
   cd ~/.dotfiles
   gc

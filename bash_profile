@@ -54,18 +54,31 @@ alias gcp="gc && gp"
 alias gcpp="gc && gpp"
 alias ga="git trackuntracked && git add -p && git untracknewblank"
 alias gac="gc"
+alias glb="git compactlog master..HEAD"
 alias current_branch="git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>/dev/null"
+
 function gwip(){
   git trackuntracked &&
   SKIP=RuboCop,ScssLint,EsLint git commit -am 'wip'
   gp
+}
+function gcf(){
+  git conflicts | xargs grep -nHo '<<<<<<<' | xargs subl -nw
+}
+
+function gaf() {
+  if [ -z "$1" ]; then
+    ga && git commit --amend --no-edit
+  else
+    ga && git commit --fixup $1 && GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash $1^
+  fi
 }
 
 function gc() {
   if [ -z "$1" ]; then
     ga && git commit --verbose
   else
-    ga && git commit -m $1
+    ga && git commit -m "$*"
   fi
 }
 
@@ -96,7 +109,11 @@ function gfp(){
     local remote=$1
   fi
   local branch=$(current_branch)
-  git push -f $remote $branch
+  if [ "$branch" = "master" ]; then
+    echo '••• Tried to force push master •••'
+  else
+    git push -f $remote $branch
+  fi
 }
 
 function gl(){
@@ -114,6 +131,11 @@ function gm(){
   local branch=$(current_branch)
   local target=$1
   git checkout $target && gl && git checkout $branch && git merge $target --no-edit
+}
+
+function gmc {
+  git add .
+  SKIP=RuboCop git commit --no-edit
 }
 
 function gr(){

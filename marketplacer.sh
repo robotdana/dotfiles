@@ -18,7 +18,7 @@ function vertical_row() {
   else
     local vertical=$VERTICAL
   fi
-  verticals | grep -e "^$vertical\|$vertical$" | head -n 1
+  verticals | grep -e "^$vertical \| $vertical$" | head -n 1
 }
 
 function vertical_server() {
@@ -30,7 +30,14 @@ function verticals() {
 }
 
 function v(){
-  vv $(long_vertical $1)
+  cd $MARKETPLACER_PATH
+  local vertical=$(long_vertical $1)
+  if [ -z "$vertical" ]; then
+    echo "No such vertical"
+  else
+    vv $vertical
+  fi
+  title Terminal
 }
 
 function rtp(){
@@ -38,6 +45,7 @@ function rtp(){
 }
 
 function vv() {
+  echo "••• updated \$VERTICAL to $1 •••"
   export VERTICAL=$1
 }
 
@@ -85,7 +93,8 @@ function vrs() {
     v $1
     vrs
   elif (( $# == 0 )); then
-    rfs $(verticals | colrm 1 10 | awk "/$VERTICAL/{ print NR-1; exit }") $VERTICAL
+    ports_respond 3808 || ttab -G rf
+    rs $(verticals | colrm 1 10 | grep -n -m 1 $VERTICAL | colrm 2) $VERTICAL 3808 1080 6379
   else
     local current_dir=$PWD
     for vertical in "$@"

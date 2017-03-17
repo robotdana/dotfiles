@@ -50,23 +50,25 @@ function ttabs(){
 
 source ~/.dotfiles/locals/git-completion.bash
 
-alias gcp="gc && gp"
-alias gcpp="gc && gpp"
 alias ga="git trackuntracked && git add -p && git untracknewblank"
-alias gac="gc"
 alias glb="git compactlog master..HEAD"
 alias current_branch="git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>/dev/null"
 
 function gwip(){
-  git trackuntracked &&
-  SKIP=RuboCop,ScssLint,EsLint git commit -am 'wip'
-  gp
+  local branch=$(current_branch)
+  if [ "$branch" = "master" ]; then
+    echo '••• Tried to push wip to master •••'
+  else
+    git trackuntracked && SKIP=RuboCop,ScssLint,EsLint git commit -am 'wip'
+    gp
+  fi
 }
-function gcf(){
+function gmf(){
   git conflicts | xargs grep -nHo '<<<<<<<' | xargs subl -nw
 }
+alias grf="gmf"
 
-function gaf() {
+function gcf() {
   if [ -z "$1" ]; then
     ga && git commit --amend --no-edit
   else
@@ -82,7 +84,7 @@ function gc() {
   fi
 }
 
-function gpp(){
+function glp(){
   if [ -z "$1" ]; then
     local remote="origin"
   else
@@ -102,7 +104,7 @@ function gp(){
   git push $remote $branch
 }
 
-function gfp(){
+function gpf(){
   if [ -z "$1" ]; then
     local remote="origin"
   else

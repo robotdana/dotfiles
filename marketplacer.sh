@@ -48,10 +48,6 @@ function v(){
   fi
 }
 
-function rtp(){
-  PRECOMPILE_WEBPACK=true rt $*
-}
-
 function vdl() {
   restart_mysql_if_crashed
   v $1

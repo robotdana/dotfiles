@@ -94,9 +94,9 @@ function gwip(){
 
 function gcf() {
   if [ -z "$1" ]; then
-    ga && git commit --amend --no-edit
+    rebasable HEAD^ && ga && git commit --amend --no-edit
   else
-    ga && git commit --fixup $1 && GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash --autostash $1^
+    rebasable $1^ && ga && git commit --fixup $1 && GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash --autostash $1^
   fi
 }
 
@@ -164,12 +164,27 @@ alias gmm="gm master"
 function gmc {
   git openconflicts && git add $(git conflicts) && SKIP=RuboCop git commit --no-edit
 }
+
+function rebasable() {
+  if [ -z "$1" ]; then
+    local base="master"
+  else
+    local base=$1
+  fi
+
+  # compares commits_since_base to commits_to_office_and_staging. if there are no commits in common allow rebasing
+  if [[ -z "$(comm -12 <( git log --format=%h $base..HEAD | sort ) <( git log --format=%h release/staging release/test --not master | sort ))" ]]; then
+    true
+  else
+    echo "••• some commits were merged to staging or office, only merge from now on •••"
+    false
+  fi
 }
 
 function gr() {
   local branch=$(current_branch)
   local target=$1
-  git checkout $target && gl && git checkout $branch && git rebase --interactive --autosquash --autostash $target
+  rebasable $target && git checkout $target && gl && git checkout $branch && git rebase --interactive --autosquash --autostash $target
 }
 
 alias grm="GIT_SEQUENCE_EDITOR=: gr master"

@@ -44,28 +44,27 @@ function rtp(){
   PRECOMPILE_WEBPACK=true rt $*
 }
 
-function vv() {
-  echo "••• updated \$VERTICAL to $1 •••"
-  export VERTICAL=$1
-}
-
-function vdb() {
-  (( $# == 1 )) && v $1
+function vdl() {
+  restart_mysql_if_crashed
+  v $1
   yes | m database update $VERTICAL
-}
-function vdbi() {
-  vdb $*
-  rails db:migrate
-}
-
-function vdbrs() {
-  vdb $*
-  vrs $*
+  restart_mysql_if_crashed
+  vrds
+  restart_mysql_if_crashed
 }
 
-function vdbrc() {
-  vdb $*
-  vrc $*
+function vrd() {
+  restart_mysql_if_crashed
+  v $*
+  rd
+  restart_mysql_if_crashed
+}
+
+function vrds(){
+  restart_mysql_if_crashed
+  v $*
+  rds
+  restart_mysql_if_crashed
 }
 
 function vrc() {
@@ -73,7 +72,9 @@ function vrc() {
   if (( $# == 2 )); then
     remote_console $2
   else
+    restart_mysql_if_crashed
     rc
+    restart_mysql_if_crashed
   fi
 }
 

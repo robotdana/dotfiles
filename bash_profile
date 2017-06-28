@@ -18,6 +18,15 @@ alias unblock="~/.dotfiles/scripts/unblock.sh"
 
 alias default_latest_ruby="ls ~/.rubies | grep ruby- | sort -t- -k2,2 -n | tail -1 | cut -d '/' -f 1 > ~/.ruby-version"
 
+# `restart_mysql` I kept typing these arguments in the wrong sequence.
+alias restart_mysql='(brew services restart mysql) && wait_for_mysql'
+alias wait_for_mysql='until ( mysql_works ); do sleep 1; done'
+alias mysql_works='echo "\q" | mysql 2>/dev/null'
+
+function restart_mysql_if_crashed() {
+  mysql_works || restart_mysql
+}
+
 # # # # # # # # #
 # TERMINAL FUN  #
 
@@ -152,6 +161,8 @@ alias grc="git add . && git rebase --continue"
 # # # # # # # # # #
 # Rails Shortcuts #
 
+alias rd="bundle exec rake db:migrate && restart_mysql_if_crashed"
+
 function rc(){
   rails console && title 'Terminal'
 }
@@ -160,18 +171,27 @@ function rg(){
   rails generate $*;
 }
 
-function rf(){
-  title "Foreman"
-  bundle exec foreman start;
+function rgm(){
+  subl -nw $(rg migration $* | grep db/migrate | colrm 1 16) && rd
 }
 
-function rgm(){
-  subl -nw $(rg migration $* | tail -1 | colrm 1 16) && be rails db:migrate
+function rf(){
+  restart_mysql_if_crashed
+  title "Foreman"
+  bundle exec foreman start;
 }
 
 function rfs(){
   ports_respond 3808 || ttab -G rf
   rs $* 3808
+}
+
+function rds(){
+  SKIP_SCHEMA_DUMP=1 rd && git checkout db/schema.rb
+}
+
+function rdt(){
+  RAILS_ENV=test rd && git checkout db/schema.rb
 }
 
 function rails_port(){

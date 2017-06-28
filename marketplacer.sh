@@ -89,18 +89,31 @@ function remote_console() {
   $MARKETPLACER_PATH/script/console $server $VERTICAL && title "Terminal"
 }
 
-function vrs() {
-  if (( $# == 1 )); then
-    v $1
-    vrs
-  elif (( $# == 0 )); then
-    ports_respond 3808 || ttab -G rf
-    rs $(verticals | colrm 1 10 | grep -n -m 1 $VERTICAL | colrm 2) $VERTICAL 3808 1080 6379
+function vertical_line_number() {
+  local number=$(long_verticals | grep -n -m 1 $VERTICAL | tr -d ":$VERTICAL")
+  if [[ -z "$number" ]]; then
+    echo "0"
   else
-    local current_dir=$PWD
-    for vertical in "$@"
-    do
-      ttab -G "cd $current_dir && vrs $vertical"
-    done
+    echo "$(($number - 1))"
   fi
+}
+
+function vrs() {
+  local path=$2
+  local vertical_or_path=$1
+
+  if [ -z $path ]; then
+    if [[ $vertical_or_path =~ ^/.* ]]; then
+      local path=$vertical_or_path
+      local vertical_or_path=""
+    else
+      local path="/"
+    fi
+  fi
+  v $vertical_or_path
+
+  restart_mysql_if_crashed
+  ports_respond 3808 || ttab -G rf
+  rs $(vertical_line_number) $VERTICAL $path 3808 1080 6379
+  restart_mysql_if_crashed
 }

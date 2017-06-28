@@ -177,22 +177,34 @@ function rfs(){
   rs $* 3808
 }
 
-function rs(){
+function rails_port(){
   if [ -z "$1" ]; then
-    local port=3000
+    echo "3000"
   else
-    local port=$((3000 + $1))
+    echo "$((3000 + $1))"
   fi
-  if [ -z "$2" ]; then
-    local host="localhost"
+}
+
+function localhost_name_from(){
+  if [ -z "$1" ]; then
+    echo "localhost"
   else
-    local host="$2.lvh.me"
+    echo "$1.lvh.me"
   fi
+}
+
+# `rs port1 host path port2 port3 port4...` start a rails server on port1, then after all ports are responding, open host.lvh.mepath:port1 in a browser
+# `rs port` start a rails server on port1, then after the server is started, open localhost:port in a browser
+# `rs` start a rails server on 3000, then after the server is started, open localhost:3000 in a browser
+function rs(){
+  local port=$(rails_port $1)
+  local host=$(localhost_name_from $2)
+
   kill_port $port
   title "Rails Server:$port"
-  wait_for_port_then "open -g http://$host:$port" $port ${@:3}
-  rz
-  (zeus server -p $port --pid=tmp/pids/server$port.pid -b 0.0.0.0) && title 'Terminal';
+  wait_for_port_then "open -g http://$host:$port$3" $port ${@:4}
+
+  rails server -p $port --pid=tmp/pids/server$port.pid -b 0.0.0.0 && title 'Terminal'
 }
 
 function rt(){

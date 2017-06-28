@@ -60,28 +60,43 @@ function ttabs(){
 source ~/.dotfiles/locals/git-completion.bash
 
 alias ga="git trackuntracked && git add -p && git untracknewblank"
-alias glb="git compactlog master..HEAD"
 alias current_branch="git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>/dev/null"
+
+function gb() {
+  glm && git checkout -b $*
+}
+
+function gbl() {
+  if [ -z "$1" ]; then
+    local parent="master"
+  else
+    local parent=$1
+  fi
+  git log --oneline $parent..HEAD
+}
 
 function gwip(){
   local branch=$(current_branch)
   if [ "$branch" = "master" ]; then
     echo '••• Tried to push wip to master •••'
   else
-    git trackuntracked && SKIP=RuboCop,ScssLint,EsLint git commit -am 'wip'
-    gp
+    git add .
+    local last_commit=$(git log -n 1 --pretty=format:%s)
+    if [[ $last_commit = 'wip [skip ci]' ]]; then
+      SKIP=RuboCop,ScssLint,EsLint gcf
+      gpf
+    else
+      SKIP=RuboCop,ScssLint,EsLint git commit -am 'wip [skip ci]'
+      gp
+    fi
   fi
 }
-function gmf(){
-  git conflicts | xargs grep -nHo '<<<<<<<' | xargs subl -nw
-}
-alias grf="gmf"
 
 function gcf() {
   if [ -z "$1" ]; then
     ga && git commit --amend --no-edit
   else
-    ga && git commit --fixup $1 && GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash $1^
+    ga && git commit --fixup $1 && GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash --autostash $1^
   fi
 }
 
@@ -123,7 +138,7 @@ function gpf(){
   if [ "$branch" = "master" ]; then
     echo '••• Tried to force push master •••'
   else
-    git push -f $remote $branch
+    git push --force $remote $branch
   fi
 }
 
@@ -144,19 +159,24 @@ function gm(){
   git checkout $target && gl && git checkout $branch && git merge $target --no-edit
 }
 
+alias gmm="gm master"
+
 function gmc {
-  git add .
-  SKIP=RuboCop git commit --no-edit
+  git openconflicts && git add $(git conflicts) && SKIP=RuboCop git commit --no-edit
+}
 }
 
-function gr(){
+function gr() {
   local branch=$(current_branch)
   local target=$1
-  git checkout $target && gl && git checkout $branch && git rebase --interactive --autosquash $target
+  git checkout $target && gl && git checkout $branch && git rebase --interactive --autosquash --autostash $target
 }
 
-alias grm="gr master"
-alias grc="git add . && git rebase --continue"
+alias grm="GIT_SEQUENCE_EDITOR=: gr master"
+
+function grc() {
+  git openconflicts && git add $(git conflicts) && git rebase --continue
+}
 
 # # # # # # # # # #
 # Rails Shortcuts #

@@ -153,14 +153,11 @@ alias grc="git add . && git rebase --continue"
 # Rails Shortcuts #
 
 function rc(){
-  title "Console"
-  rz
-  zeus console && title 'Terminal'
+  rails console && title 'Terminal'
 }
 
 function rg(){
-  rz
-  zeus generate $*;
+  rails generate $*;
 }
 
 function rf(){
@@ -209,20 +206,7 @@ function rs(){
 
 function rt(){
   title "Rspec running"
-  rz
-  zeus rspec $* && title "Terminal"
-}
-
-function rz() {
-  if [ ! -e '.zeus.sock' ]; then
-    ttab -G start_zeus
-    until ( [[ -e '.zeus.sock' ]] ); do sleep 1; done
-  fi
-}
-
-function start_zeus {
-  title "Zeus"
-  zeus start && title "Terminal"
+  rspec -f d $* && title "Terminal"
 }
 
 # # # # # # # #

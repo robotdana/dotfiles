@@ -2,14 +2,19 @@ export VERTICAL='bikeexchange'
 
 alias jslint='./node_modules/.bin/eslint --quiet --ext .jsx,.js webpack/app webpack/entry webpack/lib webpack/test webpack/vendor'
 
-alias missing_verticals='comm -13 <(verticals | colrm 1 10 | sort | uniq) <(marketplacer verticals | sort)'
 alias sverticals="subl -nw ~/.dotfiles/locals/verticals"
+alias vertical_rows="cat ~/.dotfiles/locals/verticals"
+alias short_verticals="vertical_rows | colrm 5 | tr -d ' '"
+alias long_verticals="vertical_rows | colrm 1 23"
+
+alias missing_verticals='comm -13 <(long_verticals | sort ) <(marketplacer verticals | sort)'
 
 function short_vertical() {
   vertical_row $* | colrm 5 | tr -d " "
 }
+
 function long_vertical() {
-  vertical_row $* | colrm 1 10
+  vertical_row $* | colrm 1 23
 }
 
 function vertical_row() {
@@ -18,26 +23,29 @@ function vertical_row() {
   else
     local vertical=$VERTICAL
   fi
-  verticals | grep -e "^$vertical \| $vertical$" | head -n 1
+  vertical_rows | grep -e "^$vertical \| $vertical$" | head -n 1
 }
 
-function vertical_server() {
-  vertical_row $* | colrm 1 5 | colrm 5
+function vertical_prod_server() {
+  vertical_row $* | colrm 1 5 | colrm 13
 }
-
-function verticals() {
-  cat ~/.dotfiles/locals/verticals
+function vertical_staging_server() {
+  ${$(vertical_row $*)[2]} # | colrm 1 18 | colrm 13
 }
 
 function v(){
-  cd $MARKETPLACER_PATH
-  local vertical=$(long_vertical $1)
-  if [ -z "$vertical" ]; then
-    echo "No such vertical"
-  else
-    vv $vertical
+  local maybe_vertical=$1
+  if [[ ! -z $maybe_vertical ]]; then
+    cd $MARKETPLACER_PATH
+    local vertical=$(long_vertical $maybe_vertical)
+    if [ -z "$vertical" ]; then
+      echo "No such vertical"
+    else
+      echo "••• updated \$VERTICAL to $vertical •••"
+      export VERTICAL=$vertical
+      title Terminal
+    fi
   fi
-  title Terminal
 }
 
 function rtp(){
@@ -80,9 +88,11 @@ function vrc() {
 
 function remote_console() {
   if [ "$1" = "prod" ]; then
-    local server=$(vertical_server)
+    local server=$(vertical_prod_server)
   elif [ "$1" = "staging" ]; then
-    local server=$(vertical_server)-staging
+    local server=$(vertical_staging_server)
+  elif [ "$1" = "office" ]; then
+    local server="office.int"
   else
     local server=$1
   fi

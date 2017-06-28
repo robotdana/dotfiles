@@ -264,16 +264,6 @@ function jeks(){
 }
 
 # # # # # #
-# NPM :(  #
-
-alias npm_exec='PATH=$(npm bin):$PATH'
-function ne(){
-  npm_exec $*
-}
-export NVM_DIR=~/.nvm
-source $(brew --prefix nvm)/nvm.sh
-
-# # # # # #
 # Prompt  #
 
 function __git_dirty_branch {

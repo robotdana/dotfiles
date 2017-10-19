@@ -1,20 +1,19 @@
 export VERTICAL='bikeexchange'
-
-alias jslint='./node_modules/.bin/eslint --quiet --ext .jsx,.js webpack/app webpack/entry webpack/lib webpack/test webpack/vendor'
-
 alias sverticals="subl -nw ~/.dotfiles/locals/verticals"
 alias vertical_rows="cat ~/.dotfiles/locals/verticals"
-alias short_verticals="vertical_rows | colrm 5 | tr -d ' '"
-alias long_verticals="vertical_rows | colrm 1 23"
 
 alias missing_verticals='comm -13 <(long_verticals | sort ) <(marketplacer verticals | sort)'
 
 function short_vertical() {
-  vertical_row $* | colrm 5 | tr -d " "
+  vertical_row $* | awk -F':' '{print $2}' | tr -d ' '
 }
 
 function long_vertical() {
-  vertical_row $* | colrm 1 23
+  vertical_row $* | awk -F':' '{print $5}' | tr -d ' '
+}
+
+function vertical_row_number() {
+  vertical_row $* | awk -F':' '{print $1}' | tr -d ' '
 }
 
 function vertical_row() {
@@ -23,14 +22,14 @@ function vertical_row() {
   else
     local vertical=$VERTICAL
   fi
-  vertical_rows | grep -e "^$vertical \| $vertical$" | head -n 1
+  vertical_rows | grep -n -m 1 -e "^$vertical \| $vertical$" | head -n 1
 }
 
 function vertical_prod_server() {
-  vertical_row $* | colrm 1 5 | colrm 13
+  vertical_row $* | awk -F':' '{print $3}' | tr -d ' '
 }
 function vertical_staging_server() {
-  ${$(vertical_row $*)[2]} # | colrm 1 18 | colrm 13
+  vertical_row $* | awk -F':' '{print $4}' | tr -d ' '
 }
 
 function v(){
@@ -41,34 +40,33 @@ function v(){
     if [ -z "$vertical" ]; then
       echo "No such vertical"
     else
-      echo "••• updated \$VERTICAL to $vertical •••"
-      export VERTICAL=$vertical
-      title Terminal
+      echodo export VERTICAL=$vertical && title Terminal
     fi
   fi
 }
 
 function vdl() {
-  restart_mysql_if_crashed
   v $1
-  yes | m database update $VERTICAL
-  restart_mysql_if_crashed
-  vrds
-  restart_mysql_if_crashed
+  echodo "yes | DISABLE_MARKETPLACER_CLI_PRODUCTION_CHECK=1 m database update $VERTICAL"
+  rds
+}
+function vdlr() {
+  vdl $*
+  reindex_all
+}
+function reindex_all() {
+  echodo "rails r 'ES::Indexer.reindex_all'"
 }
 
+
 function vrd() {
-  restart_mysql_if_crashed
   v $*
   rd
-  restart_mysql_if_crashed
 }
 
 function vrds(){
-  restart_mysql_if_crashed
   v $*
   rds
-  restart_mysql_if_crashed
 }
 
 function vrc() {
@@ -76,9 +74,7 @@ function vrc() {
   if (( $# == 2 )); then
     remote_console $2
   else
-    restart_mysql_if_crashed
     rc
-    restart_mysql_if_crashed
   fi
 }
 
@@ -93,34 +89,24 @@ function remote_console() {
     local server=$1
   fi
   title "Console $1"
-  $MARKETPLACER_PATH/script/console $server $VERTICAL && title "Terminal"
-}
-
-function vertical_line_number() {
-  local number=$(long_verticals | grep -n -m 1 $VERTICAL | tr -d ":$VERTICAL")
-  if [[ -z "$number" ]]; then
-    echo "0"
-  else
-    echo "$(($number - 1))"
-  fi
+  echodo script/console $server $VERTICAL
 }
 
 function vrs() {
-  local path=$2
-  local vertical_or_path=$1
+  local path="$2"
+  local vertical_or_path="$1"
 
-  if [ -z $path ]; then
-    if [[ $vertical_or_path =~ ^/.* ]]; then
-      local path=$vertical_or_path
+  if [[ -z "$path" ]]; then
+    if [[ "$vertical_or_path" =~ ^/.* ]]; then
+      local path="$vertical_or_path"
       local vertical_or_path=""
     else
       local path="/"
     fi
   fi
   v $vertical_or_path
-
-  restart_mysql_if_crashed
-  ports_respond 3808 || ttab -G rf
-  rs $(vertical_line_number) $VERTICAL $path 3808 1080 6379
-  restart_mysql_if_crashed
+  ports_respond 3808 || echodo "ttab -G 'title Webpack && yarn start'"
+  ports_respond 1080 || echodo "ttab -G 'title Mailcatcher && mailcatcher'"
+  ports_respond 6379 || echodo "ttab -G 'title Sidekiq && bundle exec sidekiq'"
+  rs $((($(vertical_row_number) - 1))) $VERTICAL $path 3808 1080 6379
 }

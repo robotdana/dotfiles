@@ -4,7 +4,7 @@ ln -sf ~/.dotfiles/gitconfig ~/.gitconfig
 ln -sf ~/.dotfiles/gitignore ~/.gitignore
 ln -sf ~/.dotfiles/gemrc ~/.gemrc
 ln -sf ~/.dotfiles/irbrc ~/.irbrc
-
+ln -sf ~/.dotfiles/Preferences.sublime-settings ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/
 mkdir ~/.dotfiles/locals
 
 if [! -e ~/.dotfiles/locals/bash.sh ]; then

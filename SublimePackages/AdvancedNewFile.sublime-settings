@@ -1,0 +1,6 @@
+{
+  "default_root": "current",
+  "shell_input": true,
+  "warn_overwrite_on_move": true,
+  "empty_filename_action": true,
+}

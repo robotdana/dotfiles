@@ -1,6 +1,6 @@
 [user]
-	name = Dan Sherson
-	email = me@dansherson.com
+	name = Dana Sherson
+	email = robot@dana.sh
 [color]
 	ui = true
 [credential]
@@ -18,13 +18,10 @@
 [push]
 	default = simple
 [alias]
-	unstage = reset --
+	unstage = ! git reset --
 	conflicts = "!git ls-files -u | awk '{print $4}' | sort -u"
 	openconflicts = "!git conflicts | xargs grep -nHo '<<<<<<<' | xargs subl -nw"
-	compactlog = log --oneline
-	lsb = git log --oneline master..HEAD
-	purge = "!git checkout master && git pull origin master && git branch --merged | grep -Ev 'master' | colrm 2 | xargs git branch -d"
-	trackuntracked = "!git status --untracked=all --porcelain | grep -e '^??' | colrm 1 3 | xargs git add -N"
-	untracknewblank = "!git diff --cached --numstat | grep -E '^0\t0\t' | colrm 1 16 | xargs git reset | true"
-  uncommit = reset --soft HEAD^
+	purge = "!git checkout master && git pull origin master && git branch --merged | colrm 1 2 | grep -Ev '^(master|release/.*|demo/.*)$' | xargs git branch -d && git branch -r --merged | colrm 1 2 | grep -Ev '^origin/(master|release/.*|demo/.*)$' | xargs git branch -rd"
+	uncommit = ! git reset --soft HEAD^
 	alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
+	forcepull = !git fetch && git reset --hard origin/$(git rev-parse --abbrev-ref HEAD)

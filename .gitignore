@@ -1,1 +1,9 @@
+# Stuff that I don't feel the right to have public
 /locals
+# From packagecontrol.io/docs/syncing
+/SublimePackages/Package\ Control.last-run
+/SublimePackages/Package\ Control.ca-list
+/SublimePackages/Package\ Control.ca-bundle
+/SublimePackages/Package\ Control.system-ca-bundle
+/SublimePackages/Package\ Control.cache
+/SublimePackages/Package\ Control.ca-certs

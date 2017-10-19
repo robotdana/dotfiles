@@ -1,0 +1,42 @@
+{
+	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"AdvancedNewFile",
+		"Base16 Eighties Dark Color Scheme",
+		"ChangeQuotes",
+		"Clickable URLs",
+		"Copy Relative Path",
+		"EditorConfig",
+		"Elixir",
+		"Flow",
+		"Github Tools",
+		"Google Spell Check",
+		"Indent XML",
+		"JsonTree",
+		"JSX",
+		"MarkdownEditing",
+		"Package Control",
+		"Quick File Move",
+		"Sass",
+		"SideBarEnhancements",
+		"SublimeLinter",
+		"SublimeLinter-contrib-elixirc",
+		"SublimeLinter-contrib-eslint",
+		"SublimeLinter-contrib-scss-lint",
+		"SublimeLinter-flow",
+		"SublimeLinter-html-tidy",
+		"SublimeLinter-rubocop",
+		"SublimeLinter-ruby",
+		"SublimeLinter-shellcheck",
+		"Theme - SoDaReloaded",
+		"Theme - Spacegray",
+		"Themr",
+		"Toggle Symbol to String",
+		"WordCount",
+		"YAML Nav"
+	]
+}

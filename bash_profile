@@ -77,11 +77,17 @@ source ~/.dotfiles/locals/git-completion.bash
 
 # TODO: redo this with a 'what would i actually write'. probably not using xargs
 function gittrackuntracked(){
-  echodo "git status --untracked=all --porcelain | grep -e '^??' | colrm 1 3 | xargs git add -N"
+  local untracked=$(git status --untracked=all --porcelain | grep -e \"^??\" | colrm 1 3)
+  if [[ ! -z "$untracked" ]]; then
+    echodo git add -N $untracked
+  fi
 }
 # TODO: redo this with a 'what would i actually write'. probably not using xargs
 function gituntracknewblank() {
-  echodo "diff --cached --numstat | grep -E '^0\t0\t' | colrm 1 16 | xargs git reset | true"
+  local newblank=$(git diff --cached --numstat | grep -E \"^0\\t0\\t\" | colrm 1 16)
+  if [[ ! -z "$newblank" ]]; then
+    echodo git reset $newblank
+  fi
 }
 
 
@@ -142,7 +148,7 @@ function gc() {
   if [ -z "$1" ]; then
     ga && echodo git commit --verbose
   else
-    ga && echodo git commit -m "$*"
+    ga && echodo "git commit -m \"$*\""
   fi
 }
 

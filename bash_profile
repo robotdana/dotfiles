@@ -36,6 +36,12 @@ function gauthors(){
   echodo "git shortlog -sen && git shortlog -secn"
 }
 
+function quote_lines(){
+  while read line
+  do
+      echo "\"$line\""
+  done
+}
 
 # assign the newest ruby installed on the system to users ruby.
 alias default_latest_ruby="ls ~/.rubies | grep ruby- | sort -t- -k2,2 -n | tail -1 | cut -d '/' -f 1 > ~/.ruby-version"
@@ -82,14 +88,14 @@ source ~/.dotfiles/locals/git-completion.bash
 
 # TODO: redo this with a 'what would i actually write'. probably not using xargs
 function gittrackuntracked(){
-  local untracked=$(git status --untracked=all --porcelain | grep -e \"^??\" | colrm 1 3)
+  local untracked=$(git status --untracked=all --porcelain | grep -e "^??" | colrm 1 3 | quote_lines)
   if [[ ! -z "$untracked" ]]; then
     echodo git add -N $untracked
   fi
 }
 # TODO: redo this with a 'what would i actually write'. probably not using xargs
 function gituntracknewblank() {
-  local newblank=$(git diff --cached --numstat | grep -E \"^0\\t0\\t\" | colrm 1 16)
+  local newblank=$(git diff --cached --numstat | grep -E "^0\t0\t" | colrm 1 16 | quote_lines)
   if [[ ! -z "$newblank" ]]; then
     echodo git reset $newblank
   fi

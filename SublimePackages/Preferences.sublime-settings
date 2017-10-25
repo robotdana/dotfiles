@@ -3,7 +3,24 @@
 	[
 		"taxon",
 		"autocomplete",
-		"keyup"
+		"keyup",
+		"movies",
+		"movie",
+		"blog",
+		"blogging",
+		"Facebook",
+		"ok",
+		"Google",
+		"etc",
+		"blog's",
+		"Photoshop",
+		"meme",
+		"blogs",
+		"transgender",
+		"classist",
+		"ableist",
+		"cissexist",
+		"sidenote"
 	],
 	"always_prompt_for_file_reload": false,
 	"bold_folder_labels": true,
@@ -36,6 +53,10 @@
 		"Markdown",
 		"SideBarEnhancements",
 		"Vintage"
+	],
+	"ignored_words":
+	[
+		"Github"
 	],
 	"remember_open_files": false,
 	"rulers":

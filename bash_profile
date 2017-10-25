@@ -18,8 +18,13 @@ function sdot() {
 }
 
 function ldot() {
-  local current_dir=$PWD
-  echodo cd ~/.dotfiles && gl && echodo cd $current_dir
+  local original_path=$PWD
+  echodo cd ~/.dotfiles && gl && echodo cd $original_path && resource
+}
+
+function gdot() {
+  local original_path=$PWD
+  echodo cd ~/.dotfiles && gc $* && gp && echodo cd $original_path
 }
 
 # `snginx` edit the nginx config file & reload the config when closed.
@@ -36,6 +41,17 @@ function gauthors(){
   echodo "git shortlog -sen && git shortlog -secn"
 }
 
+function quote_lines(){
+  while read line; do
+    echo "\"$line\""
+  done
+}
+
+function prefix_relative_path(){
+  while read line; do
+    echo "./$line"
+  done
+}
 
 # assign the newest ruby installed on the system to users ruby.
 alias default_latest_ruby="ls ~/.rubies | grep ruby- | sort -t- -k2,2 -n | tail -1 | cut -d '/' -f 1 > ~/.ruby-version"
@@ -80,13 +96,50 @@ function echodo(){
 
 source ~/.dotfiles/locals/git-completion.bash
 
-# TODO: redo this with a 'what would i actually write'. probably not using xargs
 function gittrackuntracked(){
-  echodo "git status --untracked=all --porcelain | grep -e '^??' | colrm 1 3 | xargs git add -N"
+  local untracked=$(git status --untracked=all --porcelain | grep -e "^??" | colrm 1 3 | prefix_relative_path | quote_lines)
+  if [[ ! -z "$untracked" ]]; then
+    echodo git add -N $untracked
+  fi
 }
-# TODO: redo this with a 'what would i actually write'. probably not using xargs
+
 function gituntracknewblank() {
-  echodo "diff --cached --numstat | grep -E '^0\t0\t' | colrm 1 16 | xargs git reset | true"
+  local newblank=$(git diff --cached --numstat --no-renames | grep -E "^0\t0\t" | cut -f 3 | prefix_relative_path | quote_lines)
+  if [[ ! -z "$newblank" ]]; then
+    echodo git reset $newblank
+  fi
+}
+
+function git_conflicts() {
+  git ls-files -u | awk '{print $4}' | sort -u | prefix_relative_path | quote_lines
+}
+
+function git_conflicts_with_line_numbers(){
+  git_conflicts | xargs grep -nHo '<<<<<<<' | sed 's/:<<<<<<<//' | quote_lines
+}
+
+function git_open_conflicts() {
+  local active_conflicts=$(git_conflicts_with_line_numbers)
+  if [[ ! -z "$active_conflicts" ]]; then
+    echodo subl -nw $active_conflicts && git_open_conflicts
+  fi
+}
+
+function git_add_conflicts() {
+  # TODO: sometimes the conflict is one is deleted, and I want deletion.
+  echodo git add $(git_conflicts)
+}
+
+function gitpurge() {
+  glm
+  local local_merged=$(git branch --merged | colrm 1 2 | grep -Ev '^(master|release/.*|demo/.*)$' | quote_lines)
+  local remote_tracking_merged=$(git branch -r --merged | colrm 1 2 | grep -Ev '^origin/(master|release/.*|demo/.*)$' | quote_lines)
+  if [[ ! -z "$local_merged" ]]; then
+    echodo git branch -d $local_merged
+  fi
+  if [[ ! -z "$remote_tracking_merged" ]]; then
+    echodo git branch -rd $local_merged
+  fi
 }
 
 
@@ -208,6 +261,16 @@ function gl(){
   echodo git pull --no-edit $remote $branch
 }
 
+# git pull force
+function glf() {
+  if [ -z "$1" ]; then
+    local remote="origin"
+  else
+    local remote=$1
+  fi
+  echodo git fetch && echodo git reset --hard $remote/$(current_branch)
+}
+
 # `glm` switch to master & pull from origin
 alias glm="git checkout master && gl"
 
@@ -224,7 +287,7 @@ alias gmm="gm master"
 # to be called during a merge
 # `gmc` load the merge conflicts into an editor, then once files are closed from the editor commit the merge.
 function gmc {
-  git openconflicts && echodo git add $(git conflicts) && echodo "OVERCOMMIT_DISABLE=1 git commit --no-edit"
+  git_open_conflicts && git_add_conflicts && echodo "OVERCOMMIT_DISABLE=1 git commit --no-edit"
 }
 
 # `rebasable` checks that no commits added since this was branched from master have been merged into release/* demo/*
@@ -263,7 +326,7 @@ alias grm="GIT_SEQUENCE_EDITOR=: gr master"
 # to be called during a rebase
 # `grc` load the rebase conflicts into an editor, then once files are saved from the editor continue the rebase.
 function grc() {
-  git openconflicts && echodo git add $(git conflicts) && echodo git rebase --continue
+  git_open_conflicts && git_add_conflicts && echodo git rebase --continue
 }
 
 # # # # # # # # # #

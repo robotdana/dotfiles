@@ -18,10 +18,6 @@
 [push]
 	default = simple
 [alias]
-	unstage = ! git reset --
-	conflicts = "!git ls-files -u | awk '{print $4}' | sort -u"
-	openconflicts = "!git conflicts | xargs grep -nHo '<<<<<<<' | xargs subl -nw"
-	purge = "!git checkout master && git pull origin master && git branch --merged | colrm 1 2 | grep -Ev '^(master|release/.*|demo/.*)$' | xargs git branch -d && git branch -r --merged | colrm 1 2 | grep -Ev '^origin/(master|release/.*|demo/.*)$' | xargs git branch -rd"
-	uncommit = ! git reset --soft HEAD^
-	alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
-	forcepull = !git fetch && git reset --hard origin/$(git rev-parse --abbrev-ref HEAD)
+	unstage = ! bash -lc 'echodo "git reset --"'
+	purge = ! bash -lc "gitpurge"
+	uncommit = ! bash -lc 'echodo "git reset --soft HEAD^"'

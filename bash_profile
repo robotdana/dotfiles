@@ -19,7 +19,7 @@ function sdot() {
 
 function gdot() {
   local original_path=$PWD
-  echodo cd ~/.dotfiles && gc && gp && echodo cd $original_path
+  echodo cd ~/.dotfiles && gc $* && gp && echodo cd $original_path
 }
 
 # `snginx` edit the nginx config file & reload the config when closed.

@@ -105,7 +105,12 @@ function gbl() {
   else
     local parent=$1
   fi
-  echodo git log --oneline $parent..HEAD
+  local branch=$(current_branch)
+  if [ "$branch" = "$parent" ]; then
+    echodo git log --oneline
+  else
+    echodo git log --oneline $parent..HEAD
+  fi
 }
 
 # `gwip` will commit everything carelessly with the message `wip`

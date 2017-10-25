@@ -99,7 +99,7 @@ function gittrackuntracked(){
 }
 
 function gituntracknewblank() {
-  local newblank=$(git diff --cached --numstat | grep -E "^0\t0\t" | colrm 1 16 | prefix_relative_path | quote_lines)
+  local newblank=$(git diff --cached --numstat --no-renames | grep -E "^0\t0\t" | cut -f 3 | prefix_relative_path | quote_lines)
   if [[ ! -z "$newblank" ]]; then
     echodo git reset $newblank
   fi

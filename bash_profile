@@ -17,6 +17,11 @@ function sdot() {
   echodo subl -nw ~/.gitconfig ~/.dotfiles/marketplacer.sh ~/.bash_profile && resource
 }
 
+function ldot() {
+  local current_dir=$PWD
+  echodo cd ~/.dotfiles && gl && echodo cd $current_dir
+}
+
 # `snginx` edit the nginx config file & reload the config when closed.
 function snginx(){
   echodo "subl -nw /usr/local/etc/nginx/nginx.conf && nginx -s reload"

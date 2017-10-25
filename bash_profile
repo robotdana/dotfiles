@@ -147,7 +147,7 @@ function gc() {
   if [ -z "$1" ]; then
     ga && echodo git commit --verbose
   else
-    ga && echodo git commit -m "$*"
+    ga && echodo "git commit -m \"$*\""
   fi
 }
 

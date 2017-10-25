@@ -101,6 +101,18 @@ function gituntracknewblank() {
   fi
 }
 
+function gitpurge() {
+  glm
+  local local_merged=$(git branch --merged | colrm 1 2 | grep -Ev '^(master|release/.*|demo/.*)$' | quote_lines)
+  local remote_tracking_merged=$(git branch -r --merged | colrm 1 2 | grep -Ev '^origin/(master|release/.*|demo/.*)$' | quote_lines)
+  if [[ ! -z "$local_merged" ]]; then
+    echodo git branch -d $local_merged
+  fi
+  if [[ ! -z "$remote_tracking_merged" ]]; then
+    echodo git branch -rd $local_merged
+  fi
+}
+
 
 # `ga` interactive add, including new files
 function ga() {
@@ -213,6 +225,16 @@ function gl(){
   fi
   local branch=$(current_branch)
   echodo git pull --no-edit $remote $branch
+}
+
+# git pull force
+function glf() {
+  if [ -z "$1" ]; then
+    local remote="origin"
+  else
+    local remote=$1
+  fi
+  echodo git fetch && echodo git reset --hard $remote/$(current_branch)
 }
 
 # `glm` switch to master & pull from origin

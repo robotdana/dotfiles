@@ -18,8 +18,6 @@
 [push]
 	default = simple
 [alias]
-	conflicts = "!git ls-files -u | awk '{print $4}' | sort -u"
-	openconflicts = "!git conflicts | xargs grep -nHo '<<<<<<<' | xargs subl -nw"
 	unstage = ! bash -lc 'echodo "git reset --"'
 	purge = ! bash -lc "gitpurge"
 	uncommit = ! bash -lc 'echodo "git reset --soft HEAD^"'

@@ -37,9 +37,14 @@ function gauthors(){
 }
 
 function quote_lines(){
-  while read line
-  do
-      echo "\"$line\""
+  while read line; do
+    echo "\"$line\""
+  done
+}
+
+function prefix_relative_path(){
+  while read line; do
+    echo "./$line"
   done
 }
 
@@ -88,17 +93,37 @@ source ~/.dotfiles/locals/git-completion.bash
 
 # TODO: redo this with a 'what would i actually write'. probably not using xargs
 function gittrackuntracked(){
-  local untracked=$(git status --untracked=all --porcelain | grep -e "^??" | colrm 1 3 | quote_lines)
+  local untracked=$(git status --untracked=all --porcelain | grep -e "^??" | colrm 1 3 | prefix_relative_path | quote_lines)
   if [[ ! -z "$untracked" ]]; then
     echodo git add -N $untracked
   fi
 }
 # TODO: redo this with a 'what would i actually write'. probably not using xargs
 function gituntracknewblank() {
-  local newblank=$(git diff --cached --numstat | grep -E "^0\t0\t" | colrm 1 16 | quote_lines)
+  local newblank=$(git diff --cached --numstat | grep -E "^0\t0\t" | colrm 1 16 | prefix_relative_path | quote_lines)
   if [[ ! -z "$newblank" ]]; then
     echodo git reset $newblank
   fi
+}
+
+function git_conflicts() {
+  git ls-files -u | awk '{print $4}' | sort -u | prefix_relative_path | quote_lines
+}
+
+function git_conflicts_with_line_numbers(){
+  git_conflicts | xargs grep -nHo '<<<<<<<' | sed 's/:<<<<<<<//' | quote_lines
+}
+
+function git_open_conflicts() {
+  local active_conflicts=$(git_conflicts_with_line_numbers)
+  if [[ ! -z "$active_conflicts" ]]; then
+    echodo subl -nw $active_conflicts && git_open_conflicts
+  fi
+}
+
+function git_add_conflicts() {
+  # TODO: sometimes the conflict is one is deleted, and I want deletion.
+  echodo git add $(git_conflicts)
 }
 
 function gitpurge() {
@@ -253,7 +278,7 @@ alias gmm="gm master"
 # to be called during a merge
 # `gmc` load the merge conflicts into an editor, then once files are closed from the editor commit the merge.
 function gmc {
-  git openconflicts && echodo git add $(git conflicts) && echodo "OVERCOMMIT_DISABLE=1 git commit --no-edit"
+  git_open_conflicts && git_add_conflicts && echodo "OVERCOMMIT_DISABLE=1 git commit --no-edit"
 }
 
 # `rebasable` checks that no commits added since this was branched from master have been merged into release/* demo/*
@@ -292,7 +317,7 @@ alias grm="GIT_SEQUENCE_EDITOR=: gr master"
 # to be called during a rebase
 # `grc` load the rebase conflicts into an editor, then once files are saved from the editor continue the rebase.
 function grc() {
-  git openconflicts && echodo git add $(git conflicts) && echodo git rebase --continue
+  git_open_conflicts && git_add_conflicts && echodo git rebase --continue
 }
 
 # # # # # # # # # #

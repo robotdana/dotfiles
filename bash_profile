@@ -91,14 +91,13 @@ function echodo(){
 
 source ~/.dotfiles/locals/git-completion.bash
 
-# TODO: redo this with a 'what would i actually write'. probably not using xargs
 function gittrackuntracked(){
   local untracked=$(git status --untracked=all --porcelain | grep -e "^??" | colrm 1 3 | prefix_relative_path | quote_lines)
   if [[ ! -z "$untracked" ]]; then
     echodo git add -N $untracked
   fi
 }
-# TODO: redo this with a 'what would i actually write'. probably not using xargs
+
 function gituntracknewblank() {
   local newblank=$(git diff --cached --numstat | grep -E "^0\t0\t" | colrm 1 16 | prefix_relative_path | quote_lines)
   if [[ ! -z "$newblank" ]]; then

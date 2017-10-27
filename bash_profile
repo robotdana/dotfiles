@@ -262,7 +262,9 @@ function glf() {
 }
 
 # `glm` switch to master & pull from origin
-alias glm="git checkout master && gl"
+function glm() {
+  echodo git checkout master && gl
+}
 
 # `gm branch` will merge the target branch `branch` into the current branch
 function gm(){

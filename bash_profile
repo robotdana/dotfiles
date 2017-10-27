@@ -17,6 +17,11 @@ function sdot() {
   echodo subl -nw ~/.dotfiles/marketplacer.sh ~/.bash_profile && resource
 }
 
+function ldot() {
+  local original_path=$PWD
+  echodo cd ~/.dotfiles && gl && echodo cd $original_path && resource
+}
+
 function gdot() {
   local original_path=$PWD
   echodo cd ~/.dotfiles && gc $* && gp && echodo cd $original_path
@@ -158,7 +163,12 @@ function gbl() {
   else
     local parent=$1
   fi
-  echodo git log --oneline $parent..HEAD
+  local branch=$(current_branch)
+  if [ "$branch" = "$parent" ]; then
+    echodo git log --oneline
+  else
+    echodo git log --oneline $parent..HEAD
+  fi
 }
 
 # `gwip` will commit everything carelessly with the message `wip`

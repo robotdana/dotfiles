@@ -14,7 +14,7 @@ function rehosts(){
 
 # `sdot` edit select few dotfiles that have high churn, reload profile when they are closed.
 function sdot() {
-  echodo subl -nw ~/.gitconfig ~/.dotfiles/marketplacer.sh ~/.bash_profile && resource
+  echodo subl -nw ~/.dotfiles/marketplacer.sh ~/.bash_profile && resource
 }
 
 function gdot() {

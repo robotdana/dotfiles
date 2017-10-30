@@ -12,19 +12,21 @@ function rehosts(){
   echodo "dscacheutil -flushcache && sudo killall mDNSResponder"
 }
 
+function cdot() {
+  echodo cd ~/.dotfiles
+}
+
 # `sdot` edit select few dotfiles that have high churn, reload profile when they are closed.
 function sdot() {
   echodo subl -nw ~/.dotfiles/marketplacer.sh ~/.bash_profile && resource
 }
 
 function ldot() {
-  local original_path=$PWD
-  echodo cd ~/.dotfiles && gl && echodo cd $original_path && resource
+  ( cdot && gl ) && resource
 }
 
 function gdot() {
-  local original_path=$PWD
-  echodo cd ~/.dotfiles && gc $* && gp && echodo cd $original_path
+  ( cdot && gc $* && gp )
 }
 
 # `snginx` edit the nginx config file & reload the config when closed.
@@ -87,7 +89,7 @@ function ttabs(){
 }
 
 function echodo(){
-  (echo -e "\033[1;90m$*\033[1;39m")>/dev/tty
+  ( echo -e "\033[1;90m$*\033[1;39m" )>/dev/tty
   eval $*
 }
 
@@ -447,12 +449,12 @@ function ports_respond(){
 
 # `wait_for_ports port1 port2 port3...` sleeps until all the ports are running a process
 function wait_for_ports(){
-  until ( ports_respond $* ); do sleep 1; done
+  until ( ports_respond $* ); do nanosleep 100; done
 }
 
 # `wait_for_ports_then "command" port1 port2 port3...` runs command once all the ports are running a process.
 function wait_for_port_then(){
-  ( ( ( wait_for_ports ${@:2} ) && eval $1 )>/dev/null & )2>/dev/null
+  ( wait_for_ports ${@:2} && eval $1 )>/dev/null & 2>&1
 }
 
 # `kill_port port` kills the process running the given port.

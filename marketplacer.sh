@@ -35,7 +35,6 @@ function vertical_row() {
 function v(){
   local maybe_vertical=$1
   if [[ ! -z $maybe_vertical ]]; then
-    cd $MARKETPLACER_PATH
     local vertical=$(long_vertical $maybe_vertical)
     if [ -z "$vertical" ]; then
       echoerr "No such vertical"

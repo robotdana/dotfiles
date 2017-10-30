@@ -96,14 +96,14 @@ function echodo(){
 
 source ~/.dotfiles/locals/git-completion.bash
 
-function gittrackuntracked(){
+function git_track_untracked(){
   local untracked=$(git status --untracked=all --porcelain | grep -e "^??" | colrm 1 3 | prefix_relative_path | quote_lines)
   if [[ ! -z "$untracked" ]]; then
     echodo git add -N $untracked
   fi
 }
 
-function gituntracknewblank() {
+function git_untrack_new_blank() {
   local newblank=$(git diff --cached --numstat --no-renames | grep -E "^0\t0\t" | cut -f 3 | prefix_relative_path | quote_lines)
   if [[ ! -z "$newblank" ]]; then
     echodo git reset $newblank
@@ -130,7 +130,7 @@ function git_add_conflicts() {
   echodo git add $(git_conflicts)
 }
 
-function gitpurge() {
+function git_purge() {
   glm
   local local_merged=$(git branch --merged | colrm 1 2 | grep -Ev '^(master|release/.*|demo/.*)$' | quote_lines)
   local remote_tracking_merged=$(git branch -r --merged | colrm 1 2 | grep -Ev '^origin/(master|release/.*|demo/.*)$' | quote_lines)
@@ -145,7 +145,7 @@ function gitpurge() {
 
 # `ga` interactive add, including new files
 function ga() {
-  gittrackuntracked && echodo git add -p && gituntracknewblank
+  git_track_untracked && echodo git add -p && git_untrack_new_blank
 }
 
 # `current_branch` the current branch name
@@ -193,9 +193,9 @@ function gwip(){
 # `gcf commit-ish` fixups that commit & rebase
 function gcf() {
   if [ -z "$1" ]; then
-    rebasable HEAD^ && ga && echodo git commit --amend --no-edit
+    git_rebasable HEAD^ && ga && echodo git commit --amend --no-edit
   else
-    rebasable $1^ && ga && echodo git commit --fixup $1 && echodo GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash --autostash $1^
+    git_rebasable $1^ && ga && echodo git commit --fixup $1 && echodo GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash --autostash $1^
   fi
 }
 
@@ -292,9 +292,9 @@ function gmc {
   git_open_conflicts && git_add_conflicts && echodo "OVERCOMMIT_DISABLE=1 git commit --no-edit"
 }
 
-# `rebasable` checks that no commits added since this was branched from master have been merged into release/* demo/*
-# `rebasable commit-ish` checks that no commits added since `commit-ish` have been merged into something release-ish
-function rebasable() {
+# `git_rebasable` checks that no commits added since this was branched from master have been merged into release/* demo/*
+# `git_rebasable commit-ish` checks that no commits added since `commit-ish` have been merged into something release-ish
+function git_rebasable() {
   if [ -z "$1" ]; then
     local base="master"
   else
@@ -319,7 +319,7 @@ function gu(){
 function gr() {
   local branch=$(current_branch)
   local target=$1
-  rebasable $target && gu $target && gl && gu $branch && GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash $target
+  git_rebasable $target && gb $target && gl && gu $branch && GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash $target
 }
 
 # `grm` gets the latest version of master & rebases on top of that

@@ -19,5 +19,5 @@
 	default = simple
 [alias]
 	unstage = ! bash -lc 'echodo "git reset --"'
-	purge = ! bash -lc "gitpurge"
+	purge = ! bash -lc "git_purge"
 	uncommit = ! bash -lc 'echodo "git reset --soft HEAD^"'

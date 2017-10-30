@@ -191,16 +191,12 @@ function gwip(){
   if [ "$branch" = "master" ]; then
     echo '••• Tried to push wip to master •••'
   else
-    git add .
-    local last_commit=$(git log -n 1 --pretty=format:%s)
-    if [[ $last_commit = 'wip [skip ci]' ]]; then
-      echodo "OVERCOMMIT_DISABLE=1 git commit --amend --no-edit"
-      gpf
-    else
-      echodo "OVERCOMMIT_DISABLE=1 git commit -am 'wip [skip ci]'"
-      gp
-    fi
+    echodo "git add ."
+    echodo "OVERCOMMIT_DISABLE=1 git commit -m 'wip [skip ci]'"
   fi
+}
+function gwipp() {
+  gwip && gp
 }
 
 # `gcf` amends the last commit

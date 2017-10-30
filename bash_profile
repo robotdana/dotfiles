@@ -93,6 +93,11 @@ function echodo(){
   eval $*
 }
 
+function echoerr(){
+  ( echo -e "\033[1;31m$*\033[1;39m" )>&2
+  return 1
+}
+
 # # # # # # # # #
 # GIT SHORTCUTS #
 
@@ -191,7 +196,7 @@ __git_complete gbl __git_complete_refs
 function gwip(){
   local branch=$(current_branch)
   if [ "$branch" = "master" ]; then
-    echo '••• Tried to push wip to master •••'
+    echoerr Tried to push wip to master
   else
     echodo "git add ."
     echodo "OVERCOMMIT_DISABLE=1 git commit -m 'wip [skip ci]'"
@@ -251,7 +256,7 @@ function gpf(){
   fi
   local branch=$(current_branch)
   if [ "$branch" = "master" ]; then
-    echo '••• Tried to force push master •••'
+    echoerr Tried to force push master
   else
     echodo git push --force $remote $branch
   fi
@@ -314,11 +319,8 @@ function git_rebasable() {
 
   # TODO, forcepull all demo, release/, and master branches. then compane
   # compares commits_since_base to commits_to_release. if there are no commits in common allow rebasing
-  if [[ -z "$(comm -12 <( git log --format=%H $base..HEAD | sort ) <( git log --format=%H $(git branch --list --all --no-color {demo/*,release/*,master} | colrm 1 2) --not master | sort ))" ]]; then
-    true
-  else
-    echo "••• some commits were merged to a demo or release branch, only merge from now on •••"
-    false
+  if [[ ! -z "$(comm -12 <( git log --format=%H $base..HEAD | sort ) <( git log --format=%H $(git branch --list --all --no-color {demo/*,release/*,master} | colrm 1 2) --not master | sort ))" ]]; then
+    echoerr some commits were merged to a demo or release branch, only merge from now on
   fi
 }
 

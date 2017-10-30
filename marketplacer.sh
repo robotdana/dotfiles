@@ -42,8 +42,8 @@ function v(){
     cd $MARKETPLACER_PATH
     local vertical=$(long_vertical $maybe_vertical)
     if [ -z "$vertical" ]; then
-      echo "No such vertical"
-    else
+      echoerr "No such vertical"
+    elif [[ "$vertical" != "$VERTICAL" ]]; then
       echodo export VERTICAL=$vertical && title Terminal
     fi
   fi
@@ -96,11 +96,9 @@ function remote_console() {
   fi
 
   if [[ -z "$server" ]]; then
-    echo "No $1 server set up for $VERTICAL"
-    exit 1
+    echoerr "No $1 server set up for $VERTICAL"
   else
-    title "Console $1"
-    echodo script/console $server $VERTICAL
+    title "Console $1" && echodo script/console $server $VERTICAL
   fi
 }
 
@@ -111,14 +109,15 @@ function vrs() {
   if [[ -z "$path" ]]; then
     if [[ "$vertical_or_path" =~ ^/.* ]]; then
       local path="$vertical_or_path"
-      local vertical_or_path=""
+      local vertical=""
     else
+      local vertical=$vertical_or_path
       local path="/"
     fi
   fi
-  v $vertical_or_path
+
   ports_respond 3808 || echodo "ttab -G 'title Webpack && yarn start'"
   ports_respond 1080 || echodo "ttab -G 'title Mailcatcher && mailcatcher'"
   ports_respond 6379 || echodo "ttab -G 'title Sidekiq && bundle exec sidekiq'"
-  rs $((($(vertical_row_number) - 1))) $VERTICAL $path 3808 1080 6379
+  v $vertical && rs $((($(vertical_row_number) - 1))) $VERTICAL $path 3808 1080 6379
 }

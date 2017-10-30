@@ -1,5 +1,6 @@
 # Stuff that I don't feel the right to have public
 /locals
+
 # From packagecontrol.io/docs/syncing
 /SublimePackages/Package\ Control.last-run
 /SublimePackages/Package\ Control.ca-list
@@ -7,3 +8,8 @@
 /SublimePackages/Package\ Control.system-ca-bundle
 /SublimePackages/Package\ Control.cache
 /SublimePackages/Package\ Control.ca-certs
+
+# https://github.com/wbond/package_control/issues/1153
+/SublimePackages/Package\ Control.merged-ca-bundle
+/SublimePackages/Package\ Control.user-ca-bundle
+/SublimePackages/oscrypto-ca-bundle.crt

@@ -452,7 +452,7 @@ function wait_for_ports(){
 
 # `wait_for_ports_then "command" port1 port2 port3...` runs command once all the ports are running a process.
 function wait_for_port_then(){
-  ( ( ( wait_for_ports ${@:2} ) && $($1) )>/dev/null & )2>/dev/null
+  ( ( ( wait_for_ports ${@:2} ) && eval $1 )>/dev/null & )2>/dev/null
 }
 
 # `kill_port port` kills the process running the given port.

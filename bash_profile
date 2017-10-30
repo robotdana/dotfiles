@@ -87,7 +87,7 @@ function ttabs(){
 }
 
 function echodo(){
-  echo -e "\033[1;90m$*\033[1;39m"
+  (echo -e "\033[1;90m$*\033[1;39m")>/dev/tty
   eval $*
 }
 

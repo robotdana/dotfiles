@@ -9,11 +9,21 @@ function short_vertical() {
 }
 
 function long_vertical() {
-  vertical_row $* | awk -F':' '{print $5}' | tr -d ' '
+  vertical_row $* | awk -F':' '{print $3}' | tr -d ' '
 }
 
 function vertical_row_number() {
   vertical_row $* | awk -F':' '{print $1}' | tr -d ' '
+}
+
+function vertical_prod_server() {
+  vertical_row $1 | awk -F':' '{print $4}' | tr -d ' '
+}
+function vertical_staging_server() {
+  vertical_row $1 | awk -F':' '{print $5}' | tr -d ' '
+}
+function vertical_demo_server() {
+  vertical_row $1 | awk -F':' '{print $6}' | tr -d ' '
 }
 
 function vertical_row() {
@@ -22,15 +32,9 @@ function vertical_row() {
   else
     local vertical=$VERTICAL
   fi
-  vertical_rows | grep -n -m 1 -e "^$vertical \| $vertical$" | head -n 1
+  vertical_rows | grep -n -m 1 -e "$vertical\|: $vertical\s" | head -n 1
 }
 
-function vertical_prod_server() {
-  vertical_row $* | awk -F':' '{print $3}' | tr -d ' '
-}
-function vertical_staging_server() {
-  vertical_row $* | awk -F':' '{print $4}' | tr -d ' '
-}
 
 function v(){
   local maybe_vertical=$1
@@ -81,6 +85,8 @@ function vrc() {
 function remote_console() {
   if [ "$1" = "prod" ]; then
     local server=$(vertical_prod_server)
+  elif [ "$1" = "demo" ]; then
+    local server=$(vertical_demo_server)
   elif [ "$1" = "staging" ]; then
     local server=$(vertical_staging_server)
   elif [ "$1" = "office" ]; then
@@ -88,8 +94,14 @@ function remote_console() {
   else
     local server=$1
   fi
-  title "Console $1"
-  echodo script/console $server $VERTICAL
+
+  if [[ -z "$server" ]]; then
+    echo "No $1 server set up for $VERTICAL"
+    exit 1
+  else
+    title "Console $1"
+    echodo script/console $server $VERTICAL
+  fi
 }
 
 function vrs() {

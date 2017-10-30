@@ -1,2 +1,2 @@
-be   : au01 : au01-staging : bikeexchange
-bede : eu01 : eu01-staging : bikeexchange_de
+be   : bikeexchange    : au01 : au01-staging : demo-feature
+bede : bikeexchange_de : eu01 : eu01-staging : demo-feature

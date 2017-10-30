@@ -407,7 +407,7 @@ function rs(){
   local port=$(rails_port $1)
   local host=$(localhost_name_from $2)
 
-  kill_port $port
+  echodo kill_port $port
   title "Rails Server:$port"
   wait_for_port_then "echodo open -g http://$host:$port$3" $port ${@:4}
   echodo rails server -p $port --pid=tmp/pids/server$port.pid -b 0.0.0.0 && title 'Terminal'

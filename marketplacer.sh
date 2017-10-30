@@ -17,13 +17,13 @@ function vertical_row_number() {
 }
 
 function vertical_prod_server() {
-  vertical_row $1 | awk -F':' '{print $4}' | tr -d ' '
+  vertical_row $* | awk -F':' '{print $4}' | tr -d ' '
 }
 function vertical_staging_server() {
-  vertical_row $1 | awk -F':' '{print $5}' | tr -d ' '
+  vertical_row $* | awk -F':' '{print $5}' | tr -d ' '
 }
 function vertical_demo_server() {
-  vertical_row $1 | awk -F':' '{print $6}' | tr -d ' '
+  vertical_row $* | awk -F':' '{print $6}' | tr -d ' '
 }
 
 function vertical_row() {

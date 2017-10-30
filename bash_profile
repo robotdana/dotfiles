@@ -151,8 +151,21 @@ function ga() {
 # `current_branch` the current branch name
 alias current_branch="git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>/dev/null"
 
+function gbn() {
+  glm && echodo git checkout -b $*
+}
+
 function gb() {
-  glm && echodo git checkout -b dana/$*
+  echodo git checkout $*
+}
+__git_complete gb __git_complete_refs
+
+function gbb() {
+  gb -
+}
+
+function gbm() {
+  gb master
 }
 
 # `gbl` list commits added to this branch since forked from master
@@ -170,6 +183,7 @@ function gbl() {
     echodo git log --oneline $parent..HEAD
   fi
 }
+__git_complete gbl __git_complete_refs
 
 # `gwip` will commit everything carelessly with the message `wip`
 function gwip(){
@@ -212,14 +226,9 @@ function gc() {
 # `glp` will pull and push the current branch to origin
 # `glp remote` will pull and push the current branch to the given remote
 function glp(){
-  if [ -z "$1" ]; then
-    local remote="origin"
-  else
-    local remote=$1
-  fi
-  local branch=$(current_branch)
-  gl $remote && echodo git push $remote $branch
+  gl $* && gp $*
 }
+__git_complete glp __git_complete_remote_or_refspec
 
 # `gp` will push the current branch to origin
 # `gp remote` will push the current branch to the given remote
@@ -232,6 +241,7 @@ function gp(){
   local branch=$(current_branch)
   echodo git push $remote $branch
 }
+__git_complete gp __git_complete_remote_or_refspec
 
 # `gpf` will force push the current branch to origin
 # `gpf remote` will force push the current branch to the given remote
@@ -248,6 +258,7 @@ function gpf(){
     echodo git push --force $remote $branch
   fi
 }
+__git_complete gpf __git_complete_remote_or_refspec
 
 # `gl` will pull the current branch from origin
 # `gl remote` will pull the current branch from the given remote
@@ -260,6 +271,7 @@ function gl(){
   local branch=$(current_branch)
   echodo git pull --no-edit $remote $branch
 }
+__git_complete gl __git_complete_remote_or_refspec
 
 # git pull force
 function glf() {
@@ -270,18 +282,19 @@ function glf() {
   fi
   echodo git fetch && echodo git reset --hard $remote/$(current_branch)
 }
+__git_complete glf __git_complete_remote_or_refspec
 
 # `glm` switch to master & pull from origin
 function glm() {
-  echodo git checkout master && gl
+  gb master && gl
 }
 
 # `gm branch` will merge the target branch `branch` into the current branch
 function gm(){
-  local branch=$(current_branch)
   local target=$1
-  gu $target && gl && gu $branch && echodo git merge $target --no-edit
+  gb $target && gl && gbb && echodo git merge $target --no-edit
 }
+__git_complete gm __git_complete_refs
 
 # `gmm` will merge master into the current branch
 alias gmm="gm master"
@@ -311,16 +324,12 @@ function git_rebasable() {
   fi
 }
 
-function gu(){
-  echodo git checkout $1
-}
-
 # `gr target_branch` gets the latest version of the target branch & rebases on top of that
 function gr() {
-  local branch=$(current_branch)
   local target=$1
-  git_rebasable $target && gb $target && gl && gu $branch && GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash $target
+  git_rebasable $target && gb $target && gl && gbb && GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash $target
 }
+__git_complete gr __git_complete_refs
 
 # `grm` gets the latest version of master & rebases on top of that
 alias grm="GIT_SEQUENCE_EDITOR=: gr master"
@@ -371,12 +380,12 @@ function rfs(){
 
 # `rds` migrate the database, but skip the schema dump
 function rds(){
-  SKIP_SCHEMA_DUMP=1 rd && echodo git checkout db/schema.rb
+  SKIP_SCHEMA_DUMP=1 rd && gb db/schema.rb
 }
 
 # `rdt` migrate the test database, but skip the schema dump
 function rdt(){
-  RAILS_ENV=test rd && echodo git checkout db/schema.rb
+  RAILS_ENV=test rd && gb db/schema.rb
 }
 
 function rails_port(){

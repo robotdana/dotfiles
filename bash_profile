@@ -178,16 +178,12 @@ function gbm() {
 # `gbl` list commits added to this branch since forked from master
 # `gbl branch` list commits added to this branch since forked from the given branch
 function gbl() {
-  if [ -z "$1" ]; then
-    local parent="master"
-  else
-    local parent=$1
-  fi
+  local other_branch=${1:-master}
   local branch=$(current_branch)
-  if [ "$branch" = "$parent" ]; then
+  if [ "$branch" = "$other_branch" ]; then
     echodo git log --oneline
   else
-    echodo git log --oneline $parent..HEAD
+    echodo git log --oneline $other_branch..HEAD
   fi
 }
 __git_complete gbl __git_complete_refs
@@ -209,10 +205,11 @@ function gwipp() {
 # `gcf` amends the last commit
 # `gcf commit-ish` fixups that commit & rebase
 function gcf() {
-  if [ -z "$1" ]; then
+  local commit=$1
+  if [ -z "$commit" ]; then
     git_rebasable HEAD^ && ga && echodo git commit --amend --no-edit
   else
-    git_rebasable $1^ && ga && echodo git commit --fixup $1 && echodo GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash --autostash $1^
+    git_rebasable $commit^ && ga && echodo git commit --fixup $commit && echodo GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash --autostash $commit^
   fi
 }
 
@@ -236,11 +233,7 @@ __git_complete glp __git_complete_remote_or_refspec
 # `gp` will push the current branch to origin
 # `gp remote` will push the current branch to the given remote
 function gp(){
-  if [ -z "$1" ]; then
-    local remote="origin"
-  else
-    local remote=$1
-  fi
+  local remote=${1:-origin}
   local branch=$(current_branch)
   echodo git push $remote $branch
 }
@@ -249,11 +242,7 @@ __git_complete gp __git_complete_remote_or_refspec
 # `gpf` will force push the current branch to origin
 # `gpf remote` will force push the current branch to the given remote
 function gpf(){
-  if [ -z "$1" ]; then
-    local remote="origin"
-  else
-    local remote=$1
-  fi
+  local remote=${1:-origin}
   local branch=$(current_branch)
   if [ "$branch" = "master" ]; then
     echoerr Tried to force push master
@@ -266,11 +255,7 @@ __git_complete gpf __git_complete_remote_or_refspec
 # `gl` will pull the current branch from origin
 # `gl remote` will pull the current branch from the given remote
 function gl(){
-  if [ -z "$1" ]; then
-    local remote="origin"
-  else
-    local remote=$1
-  fi
+  local remote=${1:-origin}
   local branch=$(current_branch)
   echodo git pull --no-edit $remote $branch
 }
@@ -278,11 +263,7 @@ __git_complete gl __git_complete_remote_or_refspec
 
 # git pull force
 function glf() {
-  if [ -z "$1" ]; then
-    local remote="origin"
-  else
-    local remote=$1
-  fi
+  local remote=${1:-origin}
   echodo git fetch && echodo git reset --hard $remote/$(current_branch)
 }
 __git_complete glf __git_complete_remote_or_refspec
@@ -311,13 +292,8 @@ function gmc {
 # `git_rebasable` checks that no commits added since this was branched from master have been merged into release/* demo/*
 # `git_rebasable commit-ish` checks that no commits added since `commit-ish` have been merged into something release-ish
 function git_rebasable() {
-  if [ -z "$1" ]; then
-    local base="master"
-  else
-    local base=$1
-  fi
-
-  # TODO, forcepull all demo, release/, and master branches. then compane
+  local base=${1:-master}
+  # TODO, forcepull all demo, release/, and master branches. then compare
   # compares commits_since_base to commits_to_release. if there are no commits in common allow rebasing
   if [[ ! -z "$(comm -12 <( git log --format=%H $base..HEAD | sort ) <( git log --format=%H $(git branch --list --all --no-color {demo/*,release/*,master} | colrm 1 2) --not master | sort ))" ]]; then
     echoerr some commits were merged to a demo or release branch, only merge from now on
@@ -389,18 +365,15 @@ function rdt(){
 }
 
 function rails_port(){
-  if [ -z "$1" ]; then
-    echo "3000"
-  else
-    echo "$((3000 + $1))"
-  fi
+  local number=${1:-0}
+  echo $((3000 + $number))
 }
 
 function localhost_name_from(){
   if [ -z "$1" ]; then
-    echo "localhost"
+    echo localhost
   else
-    echo "$1.lvh.me"
+    echo $1.lvh.me
   fi
 }
 
@@ -410,10 +383,12 @@ function localhost_name_from(){
 function rs(){
   local port=$(rails_port $1)
   local host=$(localhost_name_from $2)
+  local path=$3
+  local ports_to_wait_for=${@:4}
 
   echodo kill_port $port
   title "Rails Server:$port"
-  wait_for_port_then "echodo open -g http://$host:$port$3" $port ${@:4}
+  wait_for_port_then "echodo open -g http://$host:$port$path" $port $ports_to_wait_for
   echodo rails server -p $port --pid=tmp/pids/server$port.pid -b 0.0.0.0 && title 'Terminal'
 }
 
@@ -456,12 +431,15 @@ function wait_for_ports(){
 
 # `wait_for_ports_then "command" port1 port2 port3...` runs command once all the ports are running a process.
 function wait_for_port_then(){
-  ( wait_for_ports ${@:2} && eval $1 )>/dev/null & 2>&1
+  local cmd=$1
+  local ports=${@:2}
+  ( wait_for_ports $ports && eval $cmd ) >/dev/null 2>&1
 }
 
 # `kill_port port` kills the process running the given port.
 function kill_port() {
-  lsof -ti :$1 | xargs kill -9
+  local port=$1
+  lsof -ti :$port | xargs kill -9
 }
 
 # `jeks` start a jekyll server on 4000, then after the server is started, open localhost:4000 in a browser

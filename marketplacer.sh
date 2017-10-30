@@ -27,11 +27,7 @@ function vertical_demo_server() {
 }
 
 function vertical_row() {
-  if (($# == 1)); then
-    local vertical=$1
-  else
-    local vertical=$VERTICAL
-  fi
+  local vertical=${1:-$VERTICAL}
   vertical_rows | grep -n -m 1 -e "$vertical\|: $vertical\s" | head -n 1
 }
 
@@ -50,13 +46,10 @@ function v(){
 }
 
 function vdl() {
-  v $1
-  echodo "yes | DISABLE_MARKETPLACER_CLI_PRODUCTION_CHECK=1 m database update $VERTICAL"
-  rds
+  v $* && echodo "yes | DISABLE_MARKETPLACER_CLI_PRODUCTION_CHECK=1 m database update $VERTICAL" && rds
 }
 function vdlr() {
-  vdl $*
-  reindex_all
+  vdl $* && reindex_all
 }
 function reindex_all() {
   echodo "rails r 'ES::Indexer.reindex_all'"
@@ -64,21 +57,18 @@ function reindex_all() {
 
 
 function vrd() {
-  v $*
-  rd
+  v $* && rd
 }
 
 function vrds(){
-  v $*
-  rds
+  v $* && rds
 }
 
 function vrc() {
-  (( $# > 0 )) && v $1
   if (( $# == 2 )); then
-    remote_console $2
+    v $1 && remote_console $2
   else
-    rc
+    v $1 && rc
   fi
 }
 

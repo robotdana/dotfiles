@@ -73,22 +73,21 @@ function vrc() {
 }
 
 function remote_console() {
-  if [ "$1" = "prod" ]; then
-    local server=$(vertical_prod_server)
-  elif [ "$1" = "demo" ]; then
-    local server=$(vertical_demo_server)
-  elif [ "$1" = "staging" ]; then
-    local server=$(vertical_staging_server)
-  elif [ "$1" = "office" ]; then
-    local server="office.int"
-  else
-    local server=$1
-  fi
+  local server=$1
 
-  if [[ -z "$server" ]]; then
-    echoerr "No $1 server set up for $VERTICAL"
+  # TODO: use case statement here.
+  case $server in
+    "prod") local host=$(vertical_prod_server);;
+    "demo") local host=$(vertical_demo_server);;
+    "staging") local host=$(vertical_staging_server);;
+    "office") local host="office.int";;
+    *) local host=$server;;
+  esac
+
+  if [[ -z "$host" ]]; then
+    echoerr "No $server server set up for $VERTICAL"
   else
-    title "Console $1" && echodo script/console $server $VERTICAL
+    title "Console $server" && echodo script/console $host $VERTICAL
   fi
 }
 
@@ -101,13 +100,15 @@ function vrs() {
       local path="$vertical_or_path"
       local vertical=""
     else
-      local vertical=$vertical_or_path
       local path="/"
+      local vertical=$vertical_or_path
     fi
   fi
 
   ports_respond 3808 || echodo "ttab -G 'title Webpack && yarn start'"
   ports_respond 1080 || echodo "ttab -G 'title Mailcatcher && mailcatcher'"
   ports_respond 6379 || echodo "ttab -G 'title Sidekiq && bundle exec sidekiq'"
-  v $vertical && rs $((($(vertical_row_number) - 1))) $VERTICAL $path 3808 1080 6379
+
+  local row=$((($(vertical_row_number $vertical) - 1)))
+  v $vertical && rs $row $VERTICAL $path 3808 1080 6379
 }

@@ -13,7 +13,11 @@ function rehosts(){
 }
 
 function cdot() {
-  echodo cd ~/.dotfiles
+  if [[ $(current_repo) = "dotfiles" ]]; then
+    echodo cd $OLDPWD
+  else
+    echodo cd ~/.dotfiles
+  fi
 }
 
 # `sdot` edit select few dotfiles that have high churn, reload profile when they are closed.
@@ -156,7 +160,13 @@ function ga() {
 }
 
 # `current_branch` the current branch name
-alias current_branch="git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>/dev/null"
+function current_branch() {
+  git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>/dev/null
+}
+
+function current_repo() {
+  basename $(git config --get remote.origin.url 2>/dev/null) .git
+}
 
 function gbn() {
   glm && echodo git checkout -b $*
@@ -469,10 +479,9 @@ function __git_clean_branch {
 }
 
 function __dir_context {
-  case $(pwd) in
-    $MARKETPLACER_PATH) echo "($(short_vertical))";;
-    *) echo "";;
-  esac
+  if [[ $(current_repo) = "marketplacer" ]]; then
+    echo "($(short_vertical))"
+  fi
 }
 
 C_GREEN="\e[1;32m"

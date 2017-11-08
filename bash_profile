@@ -441,7 +441,7 @@ function wait_for_ports(){
 function wait_for_port_then(){
   local cmd=$1
   local ports=${@:2}
-  ( wait_for_ports $ports && eval $cmd ) >/dev/null & 2>&1
+  ( wait_for_ports $ports && eval $cmd & ) >/dev/null
 }
 
 # `kill_port port` kills the process running the given port.

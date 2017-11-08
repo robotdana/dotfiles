@@ -21,7 +21,7 @@ if [ ! -e ~/.dotfiles/locals/bash.sh ]; then
   cp ~/.dotfiles/locals.example/bash.sh ~/.dotfiles/locals/bash.sh
 fi
 if [ ! -e ~/.dotfiles/locals/verticals ]; then
-  cp ~/.dotfiles/locals.example/verticals ~/.dotfiles/locals/bash.sh
+  cp ~/.dotfiles/locals.example/verticals ~/.dotfiles/locals/verticals
 fi
 
 curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash > ~/.dotfiles/locals/git-completion.bash

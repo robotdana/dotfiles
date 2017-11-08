@@ -140,13 +140,14 @@ function git_add_conflicts() {
 
 function git_purge() {
   glm
+  echodo git fetch -p
   local local_merged=$(git branch --merged | colrm 1 2 | grep -Ev '^(master|release/.*|demo/.*)$' | quote_lines)
   local remote_tracking_merged=$(git branch -r --merged | colrm 1 2 | grep -Ev '^origin/(master|release/.*|demo/.*)$' | quote_lines)
   if [[ ! -z "$local_merged" ]]; then
     echodo git branch -d $local_merged
   fi
   if [[ ! -z "$remote_tracking_merged" ]]; then
-    echodo git branch -rd $local_merged
+    echodo git branch -rd $remote_tracking_merged
   fi
 }
 

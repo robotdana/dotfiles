@@ -104,10 +104,11 @@ function vrs() {
     fi
   fi
 
-  ports_respond 3808 || echodo "ttab -G 'title Webpack && yarn start'"
-  ports_respond 1080 || echodo "ttab -G 'title Mailcatcher && mailcatcher'"
-  ports_respond 6379 || echodo "ttab -G 'title Sidekiq && bundle exec sidekiq'"
-
+  ports_respond 3306 || echodo docker start m-mysql
+  ports_respond 3808 || echodo "ttab -G \"title Webpack && yarn start || exit\""
+  ports_respond 6379 || brew services start redis
+  pgrep sidekiq >/dev/null || echodo "ttab -G \"title Sidekiq && bundle exec sidekiq || exit\""
+  ports_respond 1080 || echodo mailcatcher
   local row=$((($(vertical_row_number $vertical) - 1)))
-  v $vertical && rs $row $VERTICAL $path 3808 1080 6379
+  v $vertical && rs $row $VERTICAL $path 3808 3306 1080 6379
 }

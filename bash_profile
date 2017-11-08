@@ -67,9 +67,6 @@ alias unblock="~/.dotfiles/scripts/unblock.sh"
 function new_mysql() {
   echodo docker run --name m-mysql -p '3306:3306' -e MYSQL_ROOT_PASSWORD=root mysql:5.7 --character-set-server=utf8mb4
 }
-function start_mysql() {
-  echodo docker start m-mysql
-}
 
 # # # # # # # # #
 # TERMINAL FUN  #

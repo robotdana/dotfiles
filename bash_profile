@@ -53,6 +53,16 @@ function quote_lines(){
   done
 }
 
+function y(){
+  echodo kill_port 3808
+  echodo "ttab -G 'yarn start; exit'"
+}
+
+function yf(){
+  echodo kill_port 3808
+  echodo "ttab -G 'yarn && yarn start; exit'"
+}
+
 function prefix_relative_path(){
   while read line; do
     echo "./$line"

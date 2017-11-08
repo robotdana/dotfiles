@@ -25,9 +25,6 @@ if [ ! -e ~/.dotfiles/locals/verticals ]; then
 fi
 
 curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash > ~/.dotfiles/locals/git-completion.bash
-curl https://raw.githubusercontent.com/mklement0/ttab/stable/bin/ttab > ~/.dotfiles/locals/ttab
-
-chmod +x ~/.dotfiles/locals/ttab
-ln -sf ~/.dotfiles/locals/ttab /usr/local/bin/ttab
+./install_ttab.sh
 source ~/.bash_profile && echo '••• finished •••'
 

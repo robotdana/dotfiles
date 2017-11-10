@@ -74,7 +74,6 @@ function vrc() {
 function remote_console() {
   local server=$1
 
-  # TODO: use case statement here.
   case $server in
     "prod") local host=$(vertical_prod_server);;
     "demo") local host=$(vertical_demo_server);;

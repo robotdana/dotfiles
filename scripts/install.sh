@@ -24,7 +24,6 @@ if [ ! -e ~/.dotfiles/locals/verticals ]; then
   cp ~/.dotfiles/locals.example/verticals ~/.dotfiles/locals/verticals
 fi
 
-curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash > ~/.dotfiles/locals/git-completion.bash
-./install_ttab.sh
+./update.sh
 source ~/.bash_profile && echo '••• finished •••'
 

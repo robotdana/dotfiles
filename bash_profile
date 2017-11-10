@@ -109,6 +109,14 @@ function echoerr(){
   return 1
 }
 
+function get_column(){
+  local column=$1
+  local separator=${2:-' '}
+  while read line; do
+    echo $line | awk -F"$separator" "{print \$$column}"
+  done
+}
+
 # # # # # # # # #
 # GIT SHORTCUTS #
 
@@ -354,7 +362,7 @@ function rg(){
 
 # `rgm MigrationName` open the migration file, then when the file is closed, run the migration.
 function rgm(){
-  local filename=$(rg migration $* | grep db/migrate | colrm 1 16)
+  local filename=$(rg migration $* | grep db/migrate | get_column 2)
   if [[ ! -z $filename ]]; then
     echodo subl -nw $filename && rd
   fi

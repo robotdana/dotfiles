@@ -5,25 +5,25 @@ alias vertical_rows="cat ~/.dotfiles/locals/verticals"
 alias missing_verticals='comm -13 <(long_verticals | sort ) <(marketplacer verticals | sort)'
 
 function short_vertical() {
-  vertical_row $* | awk -F':' '{print $2}' | tr -d ' '
+  vertical_row $* | get_column 2 " *: *"
 }
 
 function long_vertical() {
-  vertical_row $* | awk -F':' '{print $3}' | tr -d ' '
+  vertical_row $* | get_column 3 " *: *"
 }
 
 function vertical_row_number() {
-  vertical_row $* | awk -F':' '{print $1}' | tr -d ' '
+  vertical_row $* | get_column 1 " *: *"
 }
 
 function vertical_prod_server() {
-  vertical_row $* | awk -F':' '{print $4}' | tr -d ' '
+  vertical_row $* | get_column 4 " *: *"
 }
 function vertical_staging_server() {
-  vertical_row $* | awk -F':' '{print $5}' | tr -d ' '
+  vertical_row $* | get_column 5 " *: *"
 }
 function vertical_demo_server() {
-  vertical_row $* | awk -F':' '{print $6}' | tr -d ' '
+  vertical_row $* | get_column 6 " *: *"
 }
 
 function vertical_row() {
@@ -74,7 +74,6 @@ function vrc() {
 function remote_console() {
   local server=$1
 
-  # TODO: use case statement here.
   case $server in
     "prod") local host=$(vertical_prod_server);;
     "demo") local host=$(vertical_demo_server);;
@@ -104,10 +103,11 @@ function vrs() {
     fi
   fi
 
-  ports_respond 3808 || echodo "ttab -G 'title Webpack && yarn start'"
-  ports_respond 1080 || echodo "ttab -G 'title Mailcatcher && mailcatcher'"
-  ports_respond 6379 || echodo "ttab -G 'title Sidekiq && bundle exec sidekiq'"
-
+  ( ports_respond 3306 || echodo docker start m-mysql & )
+  ports_respond 3808 || echodo "ttab -G 'title Webpack; yarn start; exit'"
+  ( ports_respond 6379 || brew services start redis & )
+  pgrep sidekiq >/dev/null || echodo "ttab -G 'title Sidekiq; bundle exec sidekiq; exit'"
+  ( ports_respond 1080 || echodo mailcatcher & )
   local row=$((($(vertical_row_number $vertical) - 1)))
-  v $vertical && rs $row $VERTICAL $path 3808 1080 6379
+  v $vertical && rs $row $VERTICAL $path 3808 3306 1080 6379
 }

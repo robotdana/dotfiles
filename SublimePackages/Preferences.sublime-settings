@@ -45,7 +45,7 @@
 		"spec/examples.txt"
 	],
 	"font_face": "Inconsolata",
-	"font_size": 14,
+	"font_size": 12,
 	"highlight_modified_tabs": true,
 	"hot_exit": false,
 	"ignored_packages":

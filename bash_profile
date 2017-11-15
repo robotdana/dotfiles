@@ -53,6 +53,16 @@ function quote_lines(){
   done
 }
 
+function y(){
+  echodo kill_port 3808
+  echodo "ttab -G 'yarn start; exit'"
+}
+
+function yf(){
+  echodo kill_port 3808
+  echodo "ttab -G 'yarn && yarn start; exit'"
+}
+
 function prefix_relative_path(){
   while read line; do
     echo "./$line"
@@ -66,9 +76,6 @@ alias unblock="~/.dotfiles/scripts/unblock.sh"
 
 function new_mysql() {
   echodo docker run --name m-mysql -p '3306:3306' -e MYSQL_ROOT_PASSWORD=root mysql:5.7 --character-set-server=utf8mb4
-}
-function start_mysql() {
-  echodo docker start m-mysql
 }
 
 # # # # # # # # #
@@ -100,6 +107,14 @@ function echodo(){
 function echoerr(){
   ( echo -e "\033[1;31m$*\033[1;39m" )>&2
   return 1
+}
+
+function get_column(){
+  local column=$1
+  local separator=${2:-' '}
+  while read line; do
+    echo $line | awk -F"$separator" "{print \$$column}"
+  done
 }
 
 # # # # # # # # #
@@ -143,13 +158,14 @@ function git_add_conflicts() {
 
 function git_purge() {
   glm
+  echodo git fetch -p
   local local_merged=$(git branch --merged | colrm 1 2 | grep -Ev '^(master|release/.*|demo/.*)$' | quote_lines)
   local remote_tracking_merged=$(git branch -r --merged | colrm 1 2 | grep -Ev '^origin/(master|release/.*|demo/.*)$' | quote_lines)
   if [[ ! -z "$local_merged" ]]; then
     echodo git branch -d $local_merged
   fi
   if [[ ! -z "$remote_tracking_merged" ]]; then
-    echodo git branch -rd $local_merged
+    echodo git branch -rd $remote_tracking_merged
   fi
 }
 
@@ -346,7 +362,7 @@ function rg(){
 
 # `rgm MigrationName` open the migration file, then when the file is closed, run the migration.
 function rgm(){
-  local filename=$(rg migration $* | grep db/migrate | colrm 1 16)
+  local filename=$(rg migration $* | grep db/migrate | get_column 2)
   if [[ ! -z $filename ]]; then
     echodo subl -nw $filename && rd
   fi
@@ -443,7 +459,7 @@ function wait_for_ports(){
 function wait_for_port_then(){
   local cmd=$1
   local ports=${@:2}
-  ( ( wait_for_ports $ports && eval $cmd ) >/dev/null ) & 2>&1
+  ( wait_for_ports $ports && eval $cmd & ) >/dev/null
 }
 
 # `kill_port port` kills the process running the given port.

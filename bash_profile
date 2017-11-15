@@ -436,14 +436,14 @@ function ports_respond(){
 
 # `wait_for_ports port1 port2 port3...` sleeps until all the ports are running a process
 function wait_for_ports(){
-  until ( ports_respond $* ); do nanosleep 100; done
+  until ( ports_respond $* ); do sleep 1; done
 }
 
 # `wait_for_ports_then "command" port1 port2 port3...` runs command once all the ports are running a process.
 function wait_for_port_then(){
   local cmd=$1
   local ports=${@:2}
-  ( wait_for_ports $ports && eval $cmd ) >/dev/null 2>&1
+  ( ( wait_for_ports $ports && eval $cmd ) >/dev/null ) & 2>&1
 }
 
 # `kill_port port` kills the process running the given port.
@@ -454,6 +454,7 @@ function kill_port() {
 
 # `jeks` start a jekyll server on 4000, then after the server is started, open localhost:4000 in a browser
 function jeks(){
+  echodo kill_port 4000
   title "Jekyll Server:4000"
   wait_for_port_then "echodo open -g http://localhost:4000" 4000
   echodo bundle exec jekyll serve --incremental && title 'Terminal'

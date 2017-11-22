@@ -359,7 +359,12 @@ function rg(){
 function rgm(){
   local filename=$(rg migration $* | awk '/db\/migrate/ {print $2}')
   if [[ ! -z $filename ]]; then
-    echodo subl -nw $filename && rd
+    echodo subl -nw $filename
+    if [[ -s $filename ]]; then
+      rd
+    else
+      echodo rm $filename
+    fi
   fi
 }
 

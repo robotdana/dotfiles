@@ -337,7 +337,7 @@ function git_rebasable() {
   # TODO, forcepull all demo, release/, and master branches. then compare
   # compares commits_since_base to commits_to_release. if there are no commits in common allow rebasing
   echodo git fetch
-  if [[ ! -z "$(comm -12 <( git log --format=%H $base..HEAD | sort ) <( git log --format=%H $(git branch --list --all --no-color {origin/demo/*,origin/release/*,origin/master} | colrm 1 2) --not master | sort ))" ]]; then
+  if [[ ! -z "$(comm -12 <( git log --format=%H $base..HEAD | sort ) <( git log --format=%H $(git branch --list --all --no-color origin/{demo/*,release/*,master} | colrm 1 2) --not master | sort ))" ]]; then
     echoerr some commits were merged to a demo or release branch, only merge from now on
   fi
 }

@@ -313,10 +313,11 @@ function gmc {
 # `git_rebasable` checks that no commits added since this was branched from master have been merged into release/* demo/*
 # `git_rebasable commit-ish` checks that no commits added since `commit-ish` have been merged into something release-ish
 function git_rebasable() {
-  local base=${1:-master}
+  local base=${1:-origin/master}
   # TODO, forcepull all demo, release/, and master branches. then compare
   # compares commits_since_base to commits_to_release. if there are no commits in common allow rebasing
-  if [[ ! -z "$(comm -12 <( git log --format=%H $base..HEAD | sort ) <( git log --format=%H $(git branch --list --all --no-color {demo/*,release/*,master} | colrm 1 2) --not master | sort ))" ]]; then
+  echodo git fetch
+  if [[ ! -z "$(comm -12 <( git log --format=%H $base..HEAD | sort ) <( git log --format=%H $(git branch --list --all --no-color {origin/demo/*,origin/release/*,origin/master} | colrm 1 2) --not master | sort ))" ]]; then
     echoerr some commits were merged to a demo or release branch, only merge from now on
   fi
 }

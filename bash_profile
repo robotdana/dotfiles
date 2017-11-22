@@ -470,6 +470,7 @@ function kill_port() {
 
 # `jeks` start a jekyll server on 4000, then after the server is started, open localhost:4000 in a browser
 function jeks(){
+  echodo kill_port 4000
   title "Jekyll Server:4000"
   wait_for_port_then "echodo open -g http://localhost:4000" 4000
   echodo bundle exec jekyll serve --incremental && title 'Terminal'

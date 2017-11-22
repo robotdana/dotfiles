@@ -2,6 +2,15 @@ source ~/.dotfiles/locals/bash.sh
 
 alias ls="ls -FG"
 
+C_RED="\033[1;31m"
+C_GREEN="\033[1;32m"
+C_YELLOW="\033[0;33m"
+C_BLUE="\033[1;34m"
+C_AQUA="\033[1;36m"
+C_GREY="\033[1;90m"
+
+C_RESET="\033[0m"
+
 # `resource` reload bash profile
 function resource(){
   echodo source ~/.bash_profile
@@ -99,12 +108,12 @@ function ttabs(){
 }
 
 function echodo(){
-  ( echo -e "\033[1;90m$*\033[1;39m" )>/dev/tty
+  ( echo -e "$C_GREY$*$C_RESET" )>/dev/tty
   eval $*
 }
 
 function echoerr(){
-  ( echo -e "\033[1;31m$*\033[1;39m" )>&2
+  ( echo -e "$C_RED$*$C_RESET" )>&2
   return 1
 }
 
@@ -501,12 +510,6 @@ function __dir_context {
   fi
 }
 
-C_GREEN="\e[1;32m"
-C_RED="\e[1;31m"
-C_YELLOW="\e[0;33m"
-C_RESET="\e[0m"
-C_AQUA="\e[1;36m"
-C_BLUE="\e[1;34m"
 export PS1="\[$C_BLUE\]\w\[$C_AQUA\]\$(__dir_context)\[$C_RED\]\$(__git_dirty_branch)\[$C_GREEN\]\$(__git_clean_branch)\[$C_BLUE\]» \[$C_RESET\]"
 
 # # # # # #

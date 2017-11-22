@@ -52,15 +52,14 @@ function quote_lines(){
     echo "\"$line\""
   done
 }
-
-function y(){
+function ys(){
   echodo kill_port 3808
-  echodo "ttab -G 'yarn start; exit'"
+  echodo "ttab -G 'title Webpack; yarn start; exit'"
 }
 
 function yf(){
   echodo kill_port 3808
-  echodo "ttab -G 'yarn && yarn start; exit'"
+  echodo "ttab -G 'title Webpack; yarn && yarn start; exit'"
 }
 
 function prefix_relative_path(){

@@ -90,6 +90,20 @@ function remote_console() {
   fi
 }
 
+function prepare_app_with_webkit() {
+  ys
+  prepare_app
+  wait_for_ports 3808
+}
+
+function prepare_app() {
+  ( ports_respond 3306 || echodo docker start m-mysql & )
+  ( ports_respond 6379 || brew services start redis & )
+  pgrep sidekiq >/dev/null || echodo "ttab -G 'title Sidekiq; bundle exec sidekiq; exit'"
+  ( ports_respond 1080 || echodo mailcatcher & )
+  wait_for_ports 3306 1080 6379
+}
+
 function vrs() {
   local path="$2"
   local vertical_or_path="$1"
@@ -103,12 +117,16 @@ function vrs() {
       local vertical=$vertical_or_path
     fi
   fi
-
-  ( ports_respond 3306 || echodo docker start m-mysql & )
-  ports_respond 3808 || echodo "ttab -G 'title Webpack; yarn start; exit'"
-  ( ports_respond 6379 || brew services start redis & )
-  pgrep sidekiq >/dev/null || echodo "ttab -G 'title Sidekiq; bundle exec sidekiq; exit'"
-  ( ports_respond 1080 || echodo mailcatcher & )
+  prepare_app_with_webkit
   local row=$((($(vertical_row_number $vertical) - 1)))
-  v $vertical && rs $row $VERTICAL $path 3808 3306 1080 6379
+  v $vertical && rs $row $VERTICAL $path
+}
+
+function vrt() {
+  if [[ "$*" == *"/features/"* ]]; then
+    prepare_app_with_webkit
+  else
+    prepare_app
+  fi
+  rt $*
 }

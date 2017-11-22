@@ -13,7 +13,7 @@ function long_vertical() {
 }
 
 function vertical_row_number() {
-  vertical_field 'NR' $*
+  vertical_field 'NR-1' $*
 }
 
 function vertical_prod_server() {
@@ -118,8 +118,7 @@ function vrs() {
     fi
   fi
   prepare_app_with_webkit
-  local row=$((($(vertical_row_number $vertical) - 1)))
-  v $vertical && rs $row $VERTICAL $path
+  v $vertical && rs $(vertical_row_number) $VERTICAL $path
 }
 
 function vrt() {

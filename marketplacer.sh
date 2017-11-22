@@ -5,30 +5,31 @@ alias vertical_rows="cat ~/.dotfiles/locals/verticals"
 alias missing_verticals='comm -13 <(long_verticals | sort ) <(marketplacer verticals | sort)'
 
 function short_vertical() {
-  vertical_row $* | get_column 2 " *: *"
+  vertical_field '$1' $*
 }
 
 function long_vertical() {
-  vertical_row $* | get_column 3 " *: *"
+  vertical_field '$2' $*
 }
 
 function vertical_row_number() {
-  vertical_row $* | get_column 1 " *: *"
+  vertical_field 'NR' $*
 }
 
 function vertical_prod_server() {
-  vertical_row $* | get_column 4 " *: *"
+  vertical_field '$3' $*
 }
 function vertical_staging_server() {
-  vertical_row $* | get_column 5 " *: *"
+  vertical_field '$4' $*
 }
 function vertical_demo_server() {
-  vertical_row $* | get_column 6 " *: *"
+  vertical_field '$5' $*
 }
 
-function vertical_row() {
-  local vertical=${1:-$VERTICAL}
-  vertical_rows | grep -n -m 1 -e "$vertical\|: $vertical\s" | head -n 1
+function vertical_field() {
+  local vertical=${2:-$VERTICAL}
+  local column=$1
+  vertical_rows | awk -F' *: *' "/^$vertical|: $vertical/ {print $column; count++; if(count=1) exit}"
 }
 
 

@@ -195,13 +195,15 @@ function gbm() {
 
 # `gbl` list commits added to this branch since forked from master
 # `gbl branch` list commits added to this branch since forked from the given branch
+# `gbl branch filename` list commits that change this file since forked from the given branch.
 function gbl() {
   local other_branch=${1:-master}
   local branch=$(current_branch)
+  local filename=$2
   if [ "$branch" = "$other_branch" ]; then
-    echodo git log --oneline
+    echodo git log --oneline -- $filename
   else
-    echodo git log --oneline $other_branch..HEAD
+    echodo git log --oneline $other_branch..HEAD -- $filename
   fi
 }
 __git_complete gbl __git_complete_refs

@@ -9,14 +9,23 @@
 	excludesfile = ~/.gitignore
 	mergeoptions = --no-edit
 	editor = subl -nw
-[filter "lfs"]
-	clean = git-lfs clean %f
-	smudge = git-lfs smudge %f
-	required = true
+  whitespace = tab-in-indent, trailing-space, tabwidth=2
 [help]
 	autocorrect = -1
 [push]
 	default = simple
+[diff]
+  indentHeuristic = true
+  algorithm = minimal
+[merge]
+  verbosity = 1
+[interactive]
+	singleKey = true
+[status]
+  relativePaths = false
+  showUntrackedFiles = all
+[rerere]
+  enabled = true
 [alias]
 	unstage = ! bash -lc 'echodo "git reset --"'
 	purge = ! bash -lc "git_purge"

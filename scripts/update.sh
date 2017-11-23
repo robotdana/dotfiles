@@ -1,14 +1,6 @@
 #!/bin/bash
 
-# TODO: extract these into another file, and import into bash_profile & here
-function echodo(){
-  ( echo -e "\033[1;90m$*\033[1;39m" )>/dev/tty
-  eval $*
-}
-function echoerr(){
-  ( echo -e "\033[1;31m$*\033[1;39m" )>/dev/tty
-  return 1
-}
+source ~/.dotfiles/functions/bash_support.sh
 
 # get ttab
 echodo curl https://raw.githubusercontent.com/mklement0/ttab/stable/bin/ttab > ~/.dotfiles/locals/ttab
@@ -25,4 +17,5 @@ if [[ $(wc -l ~/.dotfiles/locals/git-completion.bash | awk -F' ' '{print $1}') =
   echoerr "git-completion didn't download correctly"
   exit 1
 fi
-source ~/.bash_profile
+
+resource

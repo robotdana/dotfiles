@@ -3,6 +3,8 @@
 # source:
 # https://gist.github.com/octocat/0831f3fbd83ac4d46451#gistcomment-2178506
 
+# TODO: move this to a function
+
 OLD_NAME=$1
 CORRECT_NAME=$(git config user.name)
 CORRECT_EMAIL=$(git config user.email)

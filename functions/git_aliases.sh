@@ -94,6 +94,14 @@ function glp(){
 }
 __git_complete glp __git_complete_remote_or_refspec
 
+# `grp [<remote>]` git pull push
+# pull using rebase, then push the current branch to <remote> or origin
+function grp(){
+  glr $* && gp $*
+}
+__git_complete glp __git_complete_remote_or_refspec
+
+
 # `gp [<remote>] [<options>]` git push
 # push the current branch to <remote> or origin
 function gp(){
@@ -122,7 +130,7 @@ function gl(){
 }
 __git_complete gl __git_complete_remote_or_refspec
 
-# `glf [<remote>] [<branch>]` git pull
+# `glf [<remote>] [<branch>]` git pull force
 # force pull <branch> or the current branch from <remote> or origin
 function glf() {
   local remote=${1:-origin}
@@ -131,7 +139,14 @@ function glf() {
 }
 __git_complete glf __git_complete_remote_or_refspec
 
-# TODO: add git pull with rebase and git pull&push with rebase
+# `glr [<remote>] [<branch>]` git pull rebase
+# rebase pull <branch> or the current branch from <remote> or origin
+function glr() {
+  local remote=${1:-origin}
+  local branch=${2:-$(current_branch)}
+  echodo git fetch $remote $branch && gr $remote/$branch
+}
+__git_complete gp __git_complete_remote_or_refspec
 
 # `glm` git pull master
 # switch to master and pull

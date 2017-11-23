@@ -2,7 +2,7 @@
 
 function prompt_dirty_branch() {
   local branch=$(git_current_branch)
-  git_status_clean || [[ $branch ]] && echo ":$branch"
+  git_status_clean || ( [ $branch ] && echo ":$branch" )
 }
 
 function prompt_clean_branch() {

@@ -1,6 +1,10 @@
 [ $VERTICAL ] || export VERTICAL=bikeexchange
 VERTICAL_FILE=~/.dotfiles/locals/verticals
 
+function vertical_rows() {
+  cat $VERTICAL_FILE
+}
+
 function edit_verticals() {
   $EDITOR $VERTICAL_FILE
 }
@@ -9,16 +13,16 @@ function missing_verticals() {
   comm -13 <(vertical_rows | awk -F' *: *' '{print $2}' | sort ) <(marketplacer verticals | sort)
 }
 
+function vertical_row_number() {
+  vertical_field 'NR-1' $*
+}
+
 function short_vertical() {
   vertical_field '$1' $*
 }
 
 function long_vertical() {
-  vertical_field '$5' $*
-}
-
-function vertical_row_number() {
-  vertical_field 'NR-1' $*
+  vertical_field '$2' $*
 }
 
 function vertical_prod_server() {

@@ -16,5 +16,6 @@ function prompt_context() {
 }
 
 function title() {
-  echo "\033]0;${*:-Terminal} $(prompt_context)\007"
+  local title=${*:-Terminal}
+  printf "\033]0;%s\007" "$title $(prompt_context)"
 }

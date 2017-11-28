@@ -48,7 +48,9 @@ function git_purge() {
 }
 
 function git_non_master() {
-  [ $(git_current_branch) = master ] && echoerr "can't do that on master"
+  if [ $(git_current_branch) = master ]; then
+    echoerr "can't do that on master"
+  fi
 }
 
 # `current_branch` the current branch name

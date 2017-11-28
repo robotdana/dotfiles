@@ -85,7 +85,9 @@ function git_rebasable() {
   local base=${1:-master}
   local since_base=$(git rev-list --count $base..HEAD)
   local unmerged_since_base=$(git rev-list --count $(git_release_branch_list | sed 's/$/..HEAD/'))
-  (( $since_base > $unmerged_since_base )) && echoerr some commits were merged to a demo or release branch, only merge from now on
+  if (( $since_base > $unmerged_since_base )); then
+    echoerr some commits were merged to a demo or release branch, only merge from now on
+  fi
 }
 
 function git_authors() {

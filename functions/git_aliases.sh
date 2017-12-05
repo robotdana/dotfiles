@@ -55,9 +55,7 @@ __git_complete gbf __git_complete_refs
 # `gwip` git wip
 # commit everything carelessly with the message `wip`
 function gwip(){
-  [ $(git_current_branch) == master ] && echoerr Tried to push wip to master
-  echodo "git add ."
-  echodo "OVERCOMMIT_DISABLE=1 git commit -m 'wip [skip ci]'"
+  git_non_master && echodo git add . && echodo 'OVERCOMMIT_DISABLE=1 git commit -m "wip [skip ci]"'
 }
 
 # `gwipp` git wip

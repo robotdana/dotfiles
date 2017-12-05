@@ -89,6 +89,12 @@ function gc() {
   fi
 }
 
+# `gcp [<message>]` git commit push
+# patch add, then commit with <message> or open editor for a message, then push
+function gcp() {
+  gc $* && gp
+}
+
 # `glp [<remote>]` git pull push
 # pull then push the current branch to <remote> or origin
 function glp(){

@@ -11,9 +11,13 @@ function ga() {
 # `gbn <new branch name>` git branch new
 # creates a branch named <new branch name> based on latest master
 # and switches to it.
-# TODO: format branch name
 function gbn() {
-  glm && echodo git checkout -b dana/$*
+  if [[ "$*" == "dana/"* ]]; then
+    local new_branch_name=$*
+  else
+    local new_branch_name=dana/$*
+  fi
+  glm && echodo git checkout -b $new_branch_name
 }
 
 # `gb <branch>` git branch

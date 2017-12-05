@@ -125,7 +125,7 @@ __git_complete gpf __git_complete_remote_or_refspec
 # pull <branch> or the current branch from <remote> or origin
 function gl(){
   local remote=${1:-origin}
-  local branch=${2:-$(current_branch)}
+  local branch=${2:-$(git_current_branch)}
   echodo git pull --no-edit $remote $branch
 }
 __git_complete gl __git_complete_remote_or_refspec
@@ -134,7 +134,7 @@ __git_complete gl __git_complete_remote_or_refspec
 # force pull <branch> or the current branch from <remote> or origin
 function glf() {
   local remote=${1:-origin}
-  local branch=${2:-$(current_branch)}
+  local branch=${2:-$(git_current_branch)}
   echodo git fetch $remote $branch && echodo git reset --hard $remote/$branch
 }
 __git_complete glf __git_complete_remote_or_refspec
@@ -143,7 +143,7 @@ __git_complete glf __git_complete_remote_or_refspec
 # rebase pull <branch> or the current branch from <remote> or origin
 function glr() {
   local remote=${1:-origin}
-  local branch=${2:-$(current_branch)}
+  local branch=${2:-$(git_current_branch)}
   echodo git fetch $remote $branch && gr $remote/$branch
 }
 __git_complete gp __git_complete_remote_or_refspec

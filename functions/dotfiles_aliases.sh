@@ -8,7 +8,7 @@ function cdot() {
 
 # `sdot` edit select few dotfiles that have high churn, reload profile when they are closed.
 function sdot() {
-  echodo $EDITOR ~/.dotfiles/marketplacer.sh ~/.bash_profile && resource
+  echodo $EDITOR ~/.dotfiles/functions/* ~/.bash_profile; resource
 }
 
 function ldot() {

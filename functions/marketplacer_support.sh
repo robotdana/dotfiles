@@ -1,4 +1,5 @@
-[ $VERTICAL ] || export VERTICAL=bikeexchange
+[ $MVERTICAL ] || export MVERTICAL=bikeexchange
+unset VERTICAL
 VERTICAL_FILE=~/.dotfiles/locals/verticals
 
 function vertical_rows() {
@@ -38,7 +39,7 @@ function vertical_demo_server() {
 }
 
 function vertical_field() {
-  local vertical=${2:-$VERTICAL}
+  local vertical=${2:-$MVERTICAL}
   local column=$1
   vertical_rows | awk -F' *: *' "/^$vertical|: $vertical/ {print $column; count++; if(count=1) exit}"
 }
@@ -55,9 +56,9 @@ function vertical_remote_console() {
   esac
 
   if [[ -z "$host" ]]; then
-    echoerr "No $server server set up for $VERTICAL"
+    echoerr "No $server server set up for $MVERTICAL"
   else
-    title "Console $server" && echodo script/console $host $VERTICAL
+    title "Console $server" && echodo script/console $host $MVERTICAL
   fi
 }
 

@@ -4,21 +4,25 @@ function v(){
     local vertical=$(long_vertical $maybe_vertical)
     if [ -z "$vertical" ]; then
       echoerr "No such vertical"
-    elif [[ "$vertical" != "$VERTICAL" ]]; then
-      echodo export VERTICAL=$vertical && title Terminal
+    elif [[ "$vertical" != "$MVERTICAL" ]]; then
+      echodo export MVERTICAL=$vertical && title Terminal
     fi
   fi
 }
 
 function vdl() {
-  v $* && echodo "yes | DISABLE_MARKETPLACER_CLI_PRODUCTION_CHECK=1 m database update $VERTICAL" && rds
+  v $* && echodo "yes | DISABLE_MARKETPLACER_CLI_PRODUCTION_CHECK=1 m database update $MVERTICAL" && VERTICAL=$MVERTICAL rds
+}
+
+function vtl() {
+  script/localeapp_pull.sh
 }
 
 function vrc() {
   if (( $# == 2 )); then
     v $1 && vertical_remote_console $2
   else
-    v $1 && rc
+    v $1 && VERTICAL=$MVERTICAL rc
   fi
 }
 
@@ -36,7 +40,7 @@ function vrs() {
     fi
   fi
   prepare_app_with_webkit
-  v $vertical && rs $(vertical_row_number) $VERTICAL $path
+  v $vertical && VERTICAL=$MVERTICAL rs $(vertical_row_number) $(long_vertical | tr _ -) $path
 }
 
 function vrt() {

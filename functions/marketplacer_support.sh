@@ -63,7 +63,7 @@ function vertical_remote_console() {
 }
 
 function prepare_app_with_webkit() {
-  ys
+  ports_respond 3808 || ys
   prepare_app
   wait_for_ports 3808
 }

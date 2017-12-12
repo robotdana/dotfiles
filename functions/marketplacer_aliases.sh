@@ -44,7 +44,7 @@ function vrs() {
 }
 
 function vrt() {
-  if [[ "$*" == *"/features/"* ]]; then
+  if [[ "$*" == *"/features/"* ]] || [[ "$*" == *"/controllers/"* ]]; then
     prepare_app_with_webkit
   else
     prepare_app

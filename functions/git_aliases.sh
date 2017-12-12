@@ -79,6 +79,10 @@ function gcf() {
   fi
 }
 
+function gcfp() {
+  gcf $* && gpf
+}
+
 # `gc [<message>]` git commit
 # patch add, then commit with <message> or open editor for a message
 function gc() {

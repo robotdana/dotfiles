@@ -88,6 +88,13 @@ function git_release_branch_match() {
   esac
 }
 
+function git_after_pull() {
+  case $(git_current_repo) in
+    marketplacer) bundle && yarn && vds && vdt;;
+    dotfiles) resource;;
+  esac
+}
+
 # `git_rebasable` checks that no commits added since this was branched from master have been merged into release/* demo/*
 # `git_rebasable commit-ish` checks that no commits added since `commit-ish` have been merged into something release-ish
 function git_rebasable() {

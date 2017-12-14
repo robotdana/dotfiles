@@ -12,7 +12,7 @@ function sdot() {
 }
 
 function ldot() {
-  ( cdot && glr ) && resource
+  ( cdot && glr )
 }
 
 function gdot() {

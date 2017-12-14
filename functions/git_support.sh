@@ -47,9 +47,9 @@ function git_purge() {
   [ ! -z "$tracking_merged" ] && echodo git branch -rd $tracking_merged
 }
 
-function git_non_master() {
-  if [ $(git_current_branch) = master ]; then
-    echoerr "can't do that on master"
+function git_non_release_branch() {
+  if [[ ! -z "$(git_release_branch_list | grep -Fx $(git_current_branch))" ]]; then
+    echoerr "can't do that on a release branch"
   fi
 }
 
@@ -69,21 +69,29 @@ function git_log_range() {
 }
 
 function git_branch_list() {
-  git branch --list --format="%(refname:short)" $*
+  git branch --all --list --format="%(refname:short)" $*
 }
 
 function git_release_branch_list() {
-  git_branch_list $* {origin/,}{master,demo/*,release/*}
+  git_branch_list $* | grep -Ex "$(git_release_branch_match)"
 }
 
 function git_non_release_branch_list() {
-  git_branch_list $* | grep -Ev '^(origin)?(master$|release/|demo/)'
+  git_branch_list $* | grep -Evx "$(git_release_branch_match)"
+}
+
+function git_release_branch_match() {
+  case $(git_current_repo) in
+    marketplacer) echo '(origin/)?(master$|release/|demo/)';;
+    dotfiles);;
+    *)            echo '(origin/)?master';;
+  esac
 }
 
 # `git_rebasable` checks that no commits added since this was branched from master have been merged into release/* demo/*
 # `git_rebasable commit-ish` checks that no commits added since `commit-ish` have been merged into something release-ish
 function git_rebasable() {
-  git_non_master
+  git_non_release_branch
   local base=${1:-master}
   local since_base=$(git rev-list --count $base..HEAD)
   local unmerged_since_base=$(git rev-list --count $(git_release_branch_list | sed 's/$/..HEAD/'))

@@ -59,7 +59,7 @@ __git_complete gbf __git_complete_refs
 # `gwip` git wip
 # commit everything carelessly with the message `wip`
 function gwip(){
-  git_non_master && echodo git add . && echodo 'OVERCOMMIT_DISABLE=1 git commit -m "wip [skip ci]"'
+  git_non_release_branch && echodo git add . && echodo 'OVERCOMMIT_DISABLE=1 git commit -m "wip [skip ci]"'
 }
 
 # `gwipp` git wip
@@ -129,7 +129,7 @@ __git_complete gp __git_complete_remote_or_refspec
 # force push the current branch to <remote> or origin
 function gpf(){
   local remote=${1:-origin}
-  git_non_master && gp $remote --force
+  git_non_release_branch && gp $remote --force
 }
 __git_complete gpf __git_complete_remote_or_refspec
 

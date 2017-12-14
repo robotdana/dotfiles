@@ -44,6 +44,13 @@ function vertical_field() {
   vertical_rows | awk -F' *: *' "/^$vertical|: $vertical/ {print $column; count++; if(count=1) exit}"
 }
 
+function update_all_databases() {
+  local short_verticals=$(vertical_rows | cut -d ':' -f 1)
+  for vertical in $short_verticals; do
+    echodo "ttab -G 'title Downloading $vertical database; vdl $vertical; exit'"
+  done
+}
+
 function vertical_remote_console() {
   local server=$1
 

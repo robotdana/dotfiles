@@ -18,3 +18,7 @@ function ldot() {
 function gdot() {
   ( cdot && gc $* && gp )
 }
+
+function rdot() {
+  ( cdot && echodo git reset --hard HEAD )
+}

@@ -6,13 +6,14 @@ function prompt_dirty_branch() {
 }
 
 function prompt_clean_branch() {
-  git_status_clean && echo ":$(git_current_branch)"
+  git_status_clean && echo :$(git_current_branch)
 }
 
 function prompt_context() {
-  if [[ $(git_current_repo) = "marketplacer" ]]; then
-    echo "($(short_vertical))"
-  fi
+  case $(git_current_repo) in
+    "marketplacer") echo "($(short_vertical))";;
+    *);;
+  esac
 }
 
 function title() {

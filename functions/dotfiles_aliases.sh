@@ -16,7 +16,7 @@ function ldot() {
 }
 
 function gdot() {
-  ( cdot && gc $* && gp )
+  ( cdot && gcp $* )
 }
 
 function rdot() {

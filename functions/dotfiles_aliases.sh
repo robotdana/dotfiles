@@ -12,7 +12,7 @@ function sdot() {
 }
 
 function ldot() {
-  ( cdot && glr )
+  ( cdot && gl )
 }
 
 function gdot() {

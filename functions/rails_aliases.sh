@@ -1,8 +1,21 @@
 # `rd` rails database
 function rd() {
   title 'Migrating'
-  echodo bundle exec rake db:migrate
+
+  echodo bundle exec rails db:migrate
   title
+}
+
+# `rds` rails database soft
+# migrate the database, but skip the schema dump
+function rds(){
+  SKIP_SCHEMA_DUMP=1 rd && gb db/schema.rb
+}
+
+# `rdt` rails database test
+# migrate the test database, and skip the schema dump
+function rdt(){
+  RAILS_ENV=test rd && gb db/schema.rb
 }
 
 # `rc` rails console
@@ -31,17 +44,6 @@ function rgm(){
   fi
 }
 
-# `rds` rails database soft
-# migrate the database, but skip the schema dump
-function rds(){
-  SKIP_SCHEMA_DUMP=1 rd && gb db/schema.rb
-}
-
-# `rdt` rails database test
-# migrate the test database, and skip the schema dump
-function rdt(){
-  RAILS_ENV=test rd && gb db/schema.rb
-}
 
 # `rs [<port offset>] [<host>] [<path>]` rails server
 # start a rails server on <port offset> or 3000

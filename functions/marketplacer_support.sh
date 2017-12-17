@@ -1,4 +1,4 @@
-[ $MVERTICAL ] || export MVERTICAL=bikeexchange
+[ $CURRENT_VERTICAL ] || export CURRENT_VERTICAL=bikeexchange
 unset VERTICAL
 VERTICAL_FILE=~/.dotfiles/locals/verticals
 
@@ -39,9 +39,16 @@ function vertical_demo_server() {
 }
 
 function vertical_field() {
-  local vertical=${2:-$MVERTICAL}
+  local vertical=${2:-$CURRENT_VERTICAL}
   local column=$1
   vertical_rows | awk -F' *: *' "/^$vertical|: $vertical/ {print $column; count++; if(count=1) exit}"
+}
+
+function update_all_databases() {
+  local short_verticals=$(vertical_rows | cut -d ':' -f 1)
+  for vertical in $short_verticals; do
+    echodo "ttab -G 'title Downloading $vertical database; vdl $vertical; exit'"
+  done
 }
 
 function vertical_remote_console() {
@@ -56,9 +63,9 @@ function vertical_remote_console() {
   esac
 
   if [[ -z "$host" ]]; then
-    echoerr "No $server server set up for $MVERTICAL"
+    echoerr "No $server server set up for $CURRENT_VERTICAL"
   else
-    title "Console $server" && echodo script/console $host $MVERTICAL
+    title "Console $server" && echodo script/console $host $CURRENT_VERTICAL
   fi
 }
 
@@ -77,5 +84,5 @@ function prepare_app() {
 }
 
 function reindex() {
-  echodo "rails r 'ES::Indexer.reindex_all'"
+  echodo "rails multitenant:reindex"
 }

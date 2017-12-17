@@ -4,14 +4,32 @@ function v(){
     local vertical=$(long_vertical $maybe_vertical)
     if [ -z "$vertical" ]; then
       echoerr "No such vertical"
-    elif [[ "$vertical" != "$MVERTICAL" ]]; then
-      echodo export MVERTICAL=$vertical && title Terminal
+    elif [[ "$vertical" != "$CURRENT_VERTICAL" ]]; then
+      echodo export CURRENT_VERTICAL=$vertical && title Terminal
     fi
   fi
 }
 
 function vdl() {
-  v $* && echodo "yes | DISABLE_MARKETPLACER_CLI_PRODUCTION_CHECK=1 m database update $MVERTICAL" && VERTICAL=$MVERTICAL rds
+  v $* && echodo "yes | DISABLE_MARKETPLACER_CLI_PRODUCTION_CHECK=1 m database update $CURRENT_VERTICAL" && vds $CURRENT_VERTICAL
+}
+
+function vdt() {
+  v $* && rdt
+}
+
+function vds() {
+  SKIP_SCHEMA_DUMP=1 vd $* && gb db/schema.rb
+}
+
+function vd() {
+  title 'Migrating'
+  if (( $# == 1 )); then
+    v $1 && echodo "VERTICAL=$CURRENT_VERTICAL bundle exec rails db:migrate"
+  else
+    echodo bundle exec rails multitenant:db:migrate
+  fi
+  title
 }
 
 function vtl() {
@@ -22,7 +40,7 @@ function vrc() {
   if (( $# == 2 )); then
     v $1 && vertical_remote_console $2
   else
-    v $1 && VERTICAL=$MVERTICAL rc
+    v $1 && rc
   fi
 }
 
@@ -40,7 +58,7 @@ function vrs() {
     fi
   fi
   prepare_app_with_webkit
-  v $vertical && VERTICAL=$MVERTICAL rs $(vertical_row_number) $(long_vertical | tr _ -) $path
+  v $vertical && rs $(vertical_row_number) $(long_vertical | tr _ -) $path
 }
 
 function vrt() {

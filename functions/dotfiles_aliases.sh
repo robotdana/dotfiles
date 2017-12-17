@@ -12,9 +12,13 @@ function sdot() {
 }
 
 function ldot() {
-  ( cdot && glr ) && resource
+  ( cdot && gl )
 }
 
 function gdot() {
-  ( cdot && gc $* && gp )
+  ( cdot && gcp $* )
+}
+
+function rdot() {
+  ( cdot && echodo git reset --hard HEAD )
 }

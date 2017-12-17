@@ -27,5 +27,5 @@ source ~/.dotfiles/functions/webpack_aliases.sh
 source ~/.dotfiles/functions/marketplacer_aliases.sh
 
 
-export PS1="\[$C_BLUE\]\w\[$C_AQUA\]\$(prompt_context)\[$C_BLUE\]:\[$C_RED\]\$(prompt_dirty_branch)\[$C_GREEN\]\$(prompt_clean_branch)\[$C_BLUE\]» \[$C_RESET\]"
+export PS1="\[$C_BLUE\]\w\[$C_AQUA\]\$(prompt_context)\[$C_BLUE\]\[$C_RED\]\$(prompt_dirty_branch)\[$C_GREEN\]\$(prompt_clean_branch)\[$C_BLUE\]» \[$C_RESET\]"
 

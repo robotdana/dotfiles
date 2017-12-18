@@ -4,6 +4,7 @@
 function jeks(){
   echodo kill_port 4000
   title "Server:4000"
+  echodo rm .jekyll-metadata
   wait_for_port_then "echodo open -g http://localhost:4000" 4000
-  echodo bundle exec jekyll serve --incremental && title
+  echodo bundle exec jekyll serve --incremental -H 0.0.0.0 --trace && title
 }

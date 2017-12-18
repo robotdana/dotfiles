@@ -20,7 +20,11 @@
 		"classist",
 		"ableist",
 		"cissexist",
-		"sidenote"
+		"sidenote",
+		"unwelcomeness",
+		"infantilizing",
+		"trans",
+		"unbiblical"
 	],
 	"always_prompt_for_file_reload": false,
 	"bold_folder_labels": true,
@@ -42,7 +46,8 @@
 		"public/assets",
 		"Input/to file",
 		"app/assets/javascripts/i18n/translations",
-		"spec/examples.txt"
+		"spec/examples.txt",
+		"_site"
 	],
 	"font_face": "Inconsolata",
 	"font_size": 12,

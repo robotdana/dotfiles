@@ -83,7 +83,7 @@ function git_non_release_branch_list() {
 function git_release_branch_match() {
   case $(git_current_repo) in
     marketplacer) echo '(origin/)?(master$|release/|demo/)';;
-    dotfiles);;
+    dotfiles)     echo 'origin/master';;
     *)            echo '(origin/)?master';;
   esac
 }

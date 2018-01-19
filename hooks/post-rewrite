@@ -1,0 +1,21 @@
+#!/bin/bash
+source ~/.dotfiles/functions/bash_support.sh
+source ~/.dotfiles/functions/git_support.sh
+
+cmd=$1
+
+# only care about amend commits. pre-rebase catches rebase commits
+[[ $cmd != "amend" ]] && exit 0
+
+# get the original commit sha
+while read -r line; do
+  commits=($line)
+  original="${commits[0]}"
+  new="${commits[1]}"
+done
+
+git_rebasable $original && exit 0
+
+git reset --soft @{1} # undo amend
+
+exit 1

@@ -73,9 +73,9 @@ function gwipp() {
 function gcf() {
   local commit=$1
   if [ -z "$commit" ]; then
-    git_rebasable HEAD^ && ga && echodo git commit --amend --no-edit
+    ga && echodo git commit --amend --no-edit
   else
-    git_rebasable $commit^ && ga && echodo git commit --fixup $commit && echodo GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash --autostash $commit^
+    ga && echodo git commit --fixup $commit && echodo GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash --autostash $commit^
   fi
 }
 
@@ -192,7 +192,7 @@ function gmc() {
 # TODO: if it's a commit, don't checkout the latest
 function gr() {
   local base=${1:-master}
-  git_rebasable $base && gb $base && gl && gbb && GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash $base
+  gb $base && gl && gbb && GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash $base
 }
 __git_complete gr __git_complete_refs
 alias grm=gr

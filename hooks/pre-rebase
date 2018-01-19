@@ -1,0 +1,9 @@
+#!/bin/bash
+source ~/.dotfiles/functions/bash_support.sh
+source ~/.dotfiles/functions/git_support.sh
+
+base=$1
+
+git_rebasable $base && exit 0
+
+exit 1

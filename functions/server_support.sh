@@ -22,14 +22,34 @@ function ports_respond(){
   $respond
 }
 
+function socks_exist(){
+  local respond=true
+  for sock in "$@"; do
+    if [[ ! -S $* ]]; then
+      local respond=false
+    fi
+  done
+  $respond
+}
+
 function wait_for_ports(){
   until ( ports_respond $* ); do sleep 1; done
+}
+
+function wait_for_socks(){
+  until ( socks_exist $* ); do sleep 1; done
 }
 
 function wait_for_port_then(){
   local cmd=$1
   local ports=${@:2}
   ( wait_for_ports $ports && eval $cmd & ) >/dev/null
+}
+
+function wait_for_sock_then(){
+  local cmd=$1
+  local socks=${@:2}
+  ( wait_for_socks $socks && eval $cmd & ) >/dev/null
 }
 
 function kill_port() {

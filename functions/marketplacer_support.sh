@@ -76,7 +76,7 @@ function prepare_app_with_webkit() {
 }
 
 function prepare_app() {
-  ( ports_respond 3306 || echodo docker start m-mysql & )
+  ( ports_respond 3306 || mysql_start & )
   ( ports_respond 6379 || brew services start redis & )
   pgrep sidekiq >/dev/null || echodo "ttab -G 'title Sidekiq; bundle exec sidekiq; exit'"
   ( ports_respond 1080 || echodo mailcatcher & )

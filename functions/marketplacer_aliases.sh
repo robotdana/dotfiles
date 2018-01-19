@@ -40,6 +40,7 @@ function vrc() {
   if (( $# == 2 )); then
     v $1 && vertical_remote_console $2
   else
+    prepare_app
     v $1 && rc
   fi
 }

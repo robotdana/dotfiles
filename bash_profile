@@ -19,6 +19,7 @@ source ~/.dotfiles/functions/prompt_support.sh
 source ~/.dotfiles/functions/server_support.sh
 source ~/.dotfiles/functions/marketplacer_support.sh
 source ~/.dotfiles/functions/mysql_support.sh
+source ~/.dotfiles/functions/rails_support.sh
 
 source ~/.dotfiles/functions/git_aliases.sh
 source ~/.dotfiles/functions/dotfiles_aliases.sh

@@ -15,11 +15,11 @@ function vdl() {
 }
 
 function vdt() {
-  v $* && rdt
+  rdt
 }
 
 function vds() {
-  SKIP_SCHEMA_DUMP=1 vd $* && gb db/schema.rb
+  rails_migrate_all_soft
 }
 
 function vd() {
@@ -27,7 +27,7 @@ function vd() {
   if (( $# == 1 )); then
     v $1 && echodo "VERTICAL=$CURRENT_VERTICAL bundle exec rails db:migrate"
   else
-    echodo bundle exec rails multitenant:db:migrate
+    rails_migrate_all
   fi
   title
 }

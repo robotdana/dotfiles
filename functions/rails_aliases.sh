@@ -2,20 +2,20 @@
 function rd() {
   title 'Migrating'
 
-  echodo bundle exec rails db:migrate
+  rails_migrate_all
   title
 }
 
 # `rds` rails database soft
 # migrate the database, but skip the schema dump
 function rds(){
-  SKIP_SCHEMA_DUMP=1 rd && gb db/schema.rb
+  rails_migrate_all_soft
 }
 
 # `rdt` rails database test
 # migrate the test database, and skip the schema dump
 function rdt(){
-  RAILS_ENV=test rd && gb db/schema.rb
+  RAILS_ENV=test rails_migrate_soft
 }
 
 # `rc` rails console

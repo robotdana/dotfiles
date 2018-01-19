@@ -1,0 +1,18 @@
+#!/bin/bash
+source ~/.dotfiles/functions/bash_support.sh
+source ~/.dotfiles/functions/git_support.sh
+source ~/.dotfiles/functions/server_support.sh
+source ~/.dotfiles/functions/rails_support.sh
+
+if git_changed_file "package.json"; then
+  echodo kill_port 3308
+  ttab "echodo yarn install && exit"
+fi
+
+git_changed_file "Gemfile(.lock)?" && ( echodo bundle install & )
+git_changed_file "db/schema.rb" && ( rails_migrate_all_soft & )
+
+case $(git_current_repo) in
+  dotfiles) resource;;
+esac
+

@@ -1,6 +1,6 @@
 function cdot() {
   if [[ $(git_current_repo) = "dotfiles" ]]; then
-    echodo cd $OLDPWD
+    echodo cd "$OLDPWD"
   else
     echodo cd ~/.dotfiles
   fi

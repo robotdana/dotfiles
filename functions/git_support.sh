@@ -108,7 +108,7 @@ function git_rebasable() {
 }
 
 function git_authors() {
-  echodo "shortlog -sen && git shortlog -secn"
+  echodo "git shortlog -sen && git shortlog -secn"
 }
 
 function git_status_clean() {

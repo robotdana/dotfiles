@@ -43,7 +43,7 @@ function gbm() {
 # list commits added to this branch since forked from <base branch> or master.
 function gbl() {
   local base_branch=${1:-master}
-  git log --oneline $(git_log_range $base_branch)
+  echodo git log --oneline $(git_log_range $base_branch)
 }
 __git_complete gbl __git_complete_refs
 
@@ -52,7 +52,7 @@ __git_complete gbl __git_complete_refs
 function gbf() {
   local filename=$1
   local base_branch=${2:-master}
-  git log --follow -p $(git_log_range $base_branch) -- $filename
+  echodo git log --oneline --follow $(git_log_range $base_branch) -- $filename
 }
 __git_complete gbf __git_complete_refs
 

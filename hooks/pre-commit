@@ -1,0 +1,17 @@
+#!/bin/bash
+
+source ~/.dotfiles/functions/bash_support.sh
+
+if [[ -f .eslintrc ]]; then
+  js_files=git diff --cached --name-only --diff-filter=ACM "*.js" "*.jsx"
+  if [[ ! -z $js_files ]]; then
+    echodo node_modules/.bin/eslint $(js_files) || exit 1
+  fi
+fi
+
+if [[ -f .rubocop.yml ]]; then
+  rb_files=git diff --cached --name-only --diff-filter=ACM "*.rb"
+  if [[ ! -z $js_files ]]; then
+    echodo bundle exec rubocop $(rb_files) || exit 1
+  fi
+fi

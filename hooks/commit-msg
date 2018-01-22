@@ -12,7 +12,9 @@ while ((i++)); read -r line; do
     2) max=0;;
     *) max=72;;
   esac
-  if (( ${#line[0]} > max )); then
+  if (( ${line[0:1]} == "#" )); then
+    break
+  elif (( ${#line[0]} > max )); then
     echoerr "Commit message line $i is too long ($max characters max)"
     $(git var GIT_EDITOR) $1
   fi
@@ -24,7 +26,7 @@ if [[ -z $(head -c 1 $1 | tr -d 'a-z') ]]; then
 fi
 
 if [[ $(head -n 1 $1 | tail -c 2) == "." ]]; then
-  echoerr "Commit message subject ends with a `.` character"
+  echoerr "Commit message subject ends with a \`.\` character"
   $(git var GIT_EDITOR) $1
 fi
 

@@ -201,3 +201,7 @@ alias grm=gr
 function grc() {
   git_open_conflicts && git_add_conflicts && echodo git rebase --continue
 }
+
+function gs() {
+  git status
+}

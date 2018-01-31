@@ -64,6 +64,6 @@ function rs(){
 # `rt [<test files>]` shortcut for rspec.
 function rt(){
   title "Spec"
-  echodo bundle exec rspec -f d $*
+  echodo bundle exec rspec --format documentation $*
   title
 }

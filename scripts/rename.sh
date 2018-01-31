@@ -4,6 +4,8 @@
 # https://gist.github.com/octocat/0831f3fbd83ac4d46451#gistcomment-2178506
 
 # TODO: move this to a function
+# use: `git log --format="%an <%ae>" | sort | uniq` to somehow bake mailmap
+# or just use git check-mailmap actually just do that.
 
 OLD_NAME=$1
 CORRECT_NAME=$(git config user.name)

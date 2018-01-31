@@ -72,6 +72,9 @@ function vrt() {
 }
 
 function vrtf() {
-  rm spec/examples.txt
-  vrt $(buildkite_failures)
+  local failures=$(buildkite_failures)
+  if [[ ! -z "$failures" ]]; then
+    rm spec/examples.txt
+    vrt $failures
+  fi
 }

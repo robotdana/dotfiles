@@ -4,12 +4,15 @@ source ~/.dotfiles/functions/bash_support.sh
 source ~/.dotfiles/functions/git_support.sh
 
 if [[ -f .eslintrc ]]; then
-  js_files=$(git diff --cached --name-only --diff-filter=ACM "*.js" "*.jsx")
+  js_files=$(git_modified js jsx)
   if [[ ! -z $js_files ]]; then
     echodo node_modules/.bin/eslint $js_files || exit 1
   fi
+  lint_changed_lines
 fi
 
 if [[ -f .rubocop.yml ]]; then
-  rubocop_only_changed_lines || exit 1
+  rubocop_only_changed_lines
 fi
+
+exit 0

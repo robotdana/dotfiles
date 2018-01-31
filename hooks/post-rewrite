@@ -1,8 +1,8 @@
 #!/bin/bash
-source ~/.dotfiles/functions/bash_support.sh
-source ~/.dotfiles/functions/git_support.sh
+# source ~/.dotfiles/functions/bash_support.sh
+# source ~/.dotfiles/functions/git_support.sh
 
-cmd=$1
+# cmd=$1
 
 # only care about amend commits. pre-rebase catches rebase commits
 # if [[ $cmd == "amend" ]]; then

@@ -11,7 +11,7 @@ function v(){
 }
 
 function vdl() {
-  v $* && echodo "yes | DISABLE_MARKETPLACER_CLI_PRODUCTION_CHECK=1 m database update $CURRENT_VERTICAL" && vds $CURRENT_VERTICAL
+  v $* && echodo "yes | DISABLE_MARKETPLACER_CLI_PRODUCTION_CHECK=1 m database update $CURRENT_VERTICAL" && VERTICAL=$CURRENT_VERTICAL rails_migrate_soft
 }
 
 function vdt() {
@@ -69,4 +69,9 @@ function vrt() {
     prepare_app
   fi
   rt $*
+}
+
+function vrtf() {
+  rm spec/examples.txt
+  vrt $(buildkite_failures)
 }

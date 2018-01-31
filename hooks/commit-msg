@@ -1,33 +1,35 @@
 #!/bin/bash
 
-# TODO: allow fixup! commits
+# TODO: retry after commit message fixed
+# TODO: handle -m messages
 
 source ~/.dotfiles/functions/bash_support.sh
 
-echo "filename $1"
+# while ((i++)); read -r line; do
+#   case $i in
+#     1) max=50;;
+#     2) max=0;;
+#     *) max=72;;
+#   esac
+#   if [[ "${line:0:1}" == "#" ]]; then # don't police commented lines or the lines following them
+#     break
+#   elif (( ${#line[0]} > max )); then
+#     echoerr "Commit message line $i is too long ($max characters max)"
+#     $(git var GIT_EDITOR) $1
+#     exit 1
+#   fi
+# done < $1
 
-while ((i++)); read -r line; do
-  case $i in
-    1) max=50;;
-    2) max=0;;
-    *) max=72;;
-  esac
-  if (( ${line[0:1]} == "#" )); then
-    break
-  elif (( ${#line[0]} > max )); then
-    echoerr "Commit message line $i is too long ($max characters max)"
-    $(git var GIT_EDITOR) $1
-  fi
-done < $1
+# # if [[ -z $(head -c 1 $1 | tr -d 'a-z') ]]; then
+# #   echoerr "Commit message subject starts with a lowercase character"
+# #   $(git var GIT_EDITOR) $1
+# #   exit 1
+# # fi
 
-if [[ -z $(head -c 1 $1 | tr -d 'a-z') ]]; then
-  echoerr "Commit message subject starts with a lowercase character"
-  $(git var GIT_EDITOR) $1
-fi
-
-if [[ $(head -n 1 $1 | tail -c 2) == "." ]]; then
-  echoerr "Commit message subject ends with a \`.\` character"
-  $(git var GIT_EDITOR) $1
-fi
+# if [[ $(head -n 1 $1 | tail -c 2) == "." ]]; then
+#   echoerr "Commit message subject ends with a \`.\` character"
+#   $(git var GIT_EDITOR) $1
+#   exit 1
+# fi
 
 exit 0

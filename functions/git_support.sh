@@ -22,6 +22,23 @@ function git_conflicts_with_line_numbers(){
   git_conflicts | xargs grep -nHoE '^<{6}|={6}|>{6}' | cut -d: -f1-2 | escape_spaces
 }
 
+function git_modified(){
+  git diff --name-only --cached --diff-filter=ACM
+}
+
+function git_modified_with_line_numbers(){
+  git_modified | while read -r line; do
+    git blame -fsw -M -C -- $line | awk -F' ' '/^0+ / {print $2 ":" $3+0}'
+  done
+}
+
+function rubocop_only_changed_lines(){
+  local files=$(git_modified "*.rb")
+  if [[ ! -z "$files" ]]; then
+    echodo bundle exec rubocop --color $files | echodo "grep --after-context=2 -E \"$(git_modified_with_line_numbers | tr "\n" '|' | sed 's/.$//' | sed 's/:/\.[^:\]\*:/g')\""
+  fi
+}
+
 function git_open_conflicts() {
   local active_conflicts=$(git_conflicts_with_line_numbers)
   if [[ ! -z "$active_conflicts" ]]; then
@@ -82,7 +99,7 @@ function git_non_release_branch_list() {
 
 function git_release_branch_match() {
   case $(git_current_repo) in
-    marketplacer) echo '(origin/)?(master$|release/|demo/)';;
+    marketplacer) echo '(origin/)?(master$|release/.*|demo/.*)';;
     dotfiles)     echo 'origin/master';;
     *)            echo '(origin/)?master';;
   esac
@@ -114,4 +131,15 @@ function git_changed_files() {
 
 function git_file_changed() {
   git_changed_files | grep -xE "$1"
+}
+
+
+function git_autostash() {
+  git stash save --include-untracked --quiet --keep-index -- MANUAL AUTOSTASH
+}
+
+function git_autostash_pop() {
+  if [[ "$(git stash list -n 1)" == "stash@{0}: On $(git_current_branch): MANUAL AUTOSTASH" ]]; then
+    git stash pop --quiet
+  fi
 }

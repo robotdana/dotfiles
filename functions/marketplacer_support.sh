@@ -86,3 +86,7 @@ function prepare_app() {
 function reindex() {
   echodo "rails multitenant:reindex"
 }
+
+function buildkite_failures() {
+  m build failures | awk -F'[\033 ]' '/^\033\[31mrspec / { print $3 }'
+}

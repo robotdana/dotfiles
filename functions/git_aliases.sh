@@ -59,7 +59,7 @@ __git_complete gbf __git_complete_refs
 # `gwip` git wip
 # commit everything carelessly with the message `wip`
 function gwip(){
-  git_non_release_branch && echodo git add . && echodo 'OVERCOMMIT_DISABLE=1 git commit -m "WIP [skip ci]"'
+  git_non_release_branch && echodo git add . && echodo 'OVERCOMMIT_DISABLE=1 git commit --no-verify -m "WIP [skip ci]"'
 }
 
 # `gwipp` git wip
@@ -68,14 +68,21 @@ function gwipp() {
   gwip && gp
 }
 
+function gunwip() {
+  if [[ "$(git log --format="%an | %s" -n 1)" == "Dana Sherson | WIP [skip ci]" ]]; then
+    git uncommit
+    git unstage
+  fi
+}
+
 # `gcf [<commit>]` git commit fix
 # fixups <commit> or the last commit & rebases
 function gcf() {
   local commit=$1
   if [ -z "$commit" ]; then
-    ga && echodo git commit --amend --no-edit
+    git_rebasable HEAD^ && ga && echodo git commit --amend --no-edit
   else
-    ga && echodo git commit --fixup $commit && echodo GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash --autostash $commit^
+    git_rebasable $commit^ && ga && echodo git commit --fixup $commit && echodo GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash --autostash $commit^
   fi
 }
 
@@ -187,6 +194,7 @@ function gmc() {
 # `gr [<branch or commit>]` git rebase
 # rebase the current branch against <branch or commit> or latest master
 # TODO: if it's a commit, don't checkout the latest
+# TODO: don't switch branches if you don't have to
 function gr() {
   local base=${1:-master}
   gb $base && gl && gbb && GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash $base

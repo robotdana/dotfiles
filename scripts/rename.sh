@@ -1,6 +1,7 @@
 #!/bin/bash
 # based on: https://gist.github.com/octocat/0831f3fbd83ac4d46451#gistcomment-2178506
-# will use the .mailmap file to rewrite all names/emails
+# Uses the .mailmap file to correct all names/emails
+# Then removes the unnecessary .mailmap file
 
 function correct_names () {
   ( git shortlog -sen ; git shortlog -secn ) | cut -f2 | sort | uniq
@@ -27,31 +28,35 @@ function split_email () {
   echo -e "$email"
 }
 
-function rename () {
-  local old_pair=$@
-  local old_name=$(split_name "$old_pair")
-  local old_email=$(split_email "$old_pair")
+function env_filter () {
+  incorrect_names | while read -r line; do
+    local old_pair=$line
+    local old_name=$(split_name "$old_pair")
+    local old_email=$(split_email "$old_pair")
 
-  local new_pair=$(git check-mailmap "$old_pair")
-  local new_name=$(split_name "$new_pair")
-  local new_email=$(split_email "$new_pair")
+    local new_pair=$(git check-mailmap "$old_pair")
+    local new_name=$(split_name "$new_pair")
+    local new_email=$(split_email "$new_pair")
 
-  echo "renaming '$old_name <$old_email>' to '$new_name <$new_email>'"
+    local author_types="COMMITTER AUTHOR"
 
-  git filter-branch --env-filter "
-    if [ \"\$GIT_COMMITTER_NAME\" = \"${old_name}\" ] && [ \"\$GIT_COMMITTER_EMAIL\" = \"${old_email}\" ]
-    then
-        export GIT_COMMITTER_NAME=\"${new_name}\"
-        export GIT_COMMITTER_EMAIL=\"${new_email}\"
-    fi
-    if [ \"\$GIT_AUTHOR_NAME\" = \"${old_name}\" ] && [ \"\$GIT_AUTHOR_EMAIL\" = \"${old_email}\" ]
-    then
-        export GIT_AUTHOR_NAME=\"${new_name}\"
-        export GIT_AUTHOR_EMAIL=\"${new_email}\"
-    fi
-    " --force --tag-name-filter cat -- --branches --tags
+    for author in ${author_types}; do
+      echo "if [ \"\$GIT_${author}_NAME\" = '${old_name}' ]\
+&& [ \"\$GIT_${author}_EMAIL\" = '${old_email}' ]
+then
+  export GIT_${author}_NAME='${new_name}'
+  export GIT_${author}_EMAIL='${new_email}'
+fi"
+    done
+  done
 }
 
-incorrect_names | while read -r line; do
-  rename $line
-done
+echo -e "\033[1;90m git filter-branch --force \\
+--env-filter \"$(env_filter)\" \\
+--index-filter 'git rm --cached --ignore-unmatch \".mailmap\"' \\
+--prune-empty --tag-name-filter cat -- --branches --tags \033[0m " >/dev/tty
+
+git filter-branch --force \
+--env-filter "$(env_filter)" \
+--index-filter 'git rm --cached --ignore-unmatch ".mailmap"' \
+--prune-empty --tag-name-filter cat -- --branches --tags

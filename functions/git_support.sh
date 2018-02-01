@@ -1,25 +1,25 @@
 # source ./bash_support.sh
 
 function git_track_untracked(){
-  local untracked=$(git status --untracked=all --porcelain | grep -e "^??" | cut -d' ' -f2 | escape_spaces)
+  local untracked=$(git status --untracked=all --porcelain | grep -e "^??" | colrm 1 3 | quote_lines)
   if [[ ! -z "$untracked" ]]; then
     echodo git add -N $untracked
   fi
 }
 
 function git_untrack_new_blank() {
-  local newblank=$(git diff --cached --numstat --no-renames | grep -E "^0\t0\t" | cut -f3 | escape_spaces)
+  local newblank=$(git diff --cached --numstat --no-renames | grep -E "^0\t0\t" | cut -f3 | quote_lines)
   if [[ ! -z "$newblank" ]]; then
     echodo git reset $newblank
   fi
 }
 
 function git_conflicts() {
-  git ls-files -u | awk '{print $4}' | sort -u | escape_spaces
+  git ls-files -u | awk '{print $4}' | sort -u | escape_spaces | escape_brackets
 }
 
 function git_conflicts_with_line_numbers(){
-  git_conflicts | xargs grep -nHoE '^<{6}|={6}|>{6}' | cut -d: -f1-2 | escape_spaces
+  git_conflicts | xargs grep -nHoE '^<{6}|={6}|>{6}' | cut -d: -f1-2 | escape_spaces | escape_brackets
 }
 
 function git_modified(){

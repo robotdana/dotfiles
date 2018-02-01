@@ -16,6 +16,16 @@ function escape_spaces() {
   sed -E 's/([^\]) /\1\\ /g'
 }
 
+function escape_brackets() {
+  sed -E 's/([^\])([()])/\1\\\2/g'
+}
+
+function quote_lines() {
+  while read -r line; do
+    echo "\"$line\""
+  done
+}
+
 function echodo(){
   ( echo -e "$C_GREY$*$C_RESET" )>/dev/tty
   eval $*

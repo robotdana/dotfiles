@@ -71,7 +71,11 @@ function vrt() {
   rt $*
 }
 
-function vrtf() {
+function vrtn() {
+  vrt --next-failure $*
+}
+
+function vrtl() {
   local failures=$(buildkite_failures)
   if [[ ! -z "$failures" ]]; then
     rm spec/examples.txt

@@ -67,3 +67,7 @@ function rt(){
   echodo bundle exec rspec --format documentation $*
   title
 }
+
+function rtn(){
+  rt --next-failure $*
+}

@@ -37,7 +37,7 @@ function git_modified_with_line_numbers(){
 function rubocop_only_changed_lines(){
   local files=$(git_modified rb)
   if [[ ! -z "$files" ]]; then
-    ( set -o pipefail; echodo bundle exec rubocop --color $files | echodo "grep --after-context=2 -E \"$(git_modified_with_line_numbers rb | tr "\n" '|' | sed 's/.$//' | sed 's/:/[^:\]\*:/g')\"" )
+    ( set -o pipefail; echodo bundle exec rubocop --color $files | echodo "grep --after-context=2 -E \"$(git_modified_with_line_numbers rb | tr "\n" '|' | sed 's/|/:\\d+|/g' | sed 's/.$//' | sed 's/rb:/rb[^:\]\*:/g')\"" )
   fi
 }
 

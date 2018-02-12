@@ -8,11 +8,10 @@ if [[ -f .eslintrc ]]; then
   if [[ ! -z $js_files ]]; then
     echodo node_modules/.bin/eslint $js_files || exit 1
   fi
-  lint_changed_lines
 fi
 
 if [[ -f .rubocop.yml ]]; then
-  rubocop_only_changed_lines
+  rubocop_only_changed_lines || exit 1
 fi
 
 exit 0

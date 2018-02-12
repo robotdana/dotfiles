@@ -28,16 +28,10 @@ function git_modified(){
   eval "git diff --name-only --cached --diff-filter=ACM $@"
 }
 
-function git_modified_with_line_numbers(){
-  git_modified $* | while read -r line; do
-    git blame -fs -M -C -- $line | awk -F' ' '/^0+ / {print $2 ":" $3+0}'
-  done
-}
-
 function rubocop_only_changed_lines(){
-  local files=$(git_modified rb)
-  if [[ ! -z "$files" ]]; then
-    echodo bundle exec rubocop --force-exclusion --color $(git_modified rb) | eval grep -A 2 -F $(git_modified_with_line_numbers rb | awk -F':' '{printf " -e \"" $1 "\033[0m:" $2 ":\""}')
+  local modified_with_line_numbers=$(for file in $(git_modified rb); do git blame -fs -M -C ..HEAD $file; done | awk -F' ' '/^0+ / {printf " -e \"" $2 "\033[0m:" $3+0 ":\""}')
+  if [[ ! -z "$modified_with_line_numbers" ]]; then
+    echodo bundle exec rubocop --force-exclusion --color $(git_modified rb) | eval grep -A 2 -F $modified_with_line_numbers
     if (( $? == 1 )); then
       return 0;
     fi

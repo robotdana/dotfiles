@@ -28,6 +28,8 @@ source ~/.dotfiles/functions/jekyll_aliases.sh
 source ~/.dotfiles/functions/webpack_aliases.sh
 source ~/.dotfiles/functions/marketplacer_aliases.sh
 
+cache_last_bash_profile_modification=$(last_bash_profile_modification)
+PROMPT_COMMAND='resource_if_modified_since $cache_last_bash_profile_modification'
 
 export PS1="\[$C_BLUE\]\w\[$C_AQUA\]\$(prompt_context)\[$C_BLUE\]\[$C_RED\]\$(prompt_dirty_branch)\[$C_GREEN\]\$(prompt_clean_branch)\[$C_BLUE\]» \[$C_RESET\]"
 

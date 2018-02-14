@@ -12,6 +12,16 @@ function resource(){
   echodo source ~/.bash_profile
 }
 
+function resource_if_modified_since(){
+  if (( $* < $(last_bash_profile_modification) )) ; then
+    resource
+  fi
+}
+
+function last_bash_profile_modification(){
+  stat -f %m ~/.dotfiles/{bash_profile,functions/*.sh,locals/git-completion.bash} | sort -rn | head -n 1
+}
+
 function escape_spaces() {
   sed -E 's/([^\]) /\1\\ /g'
 }

@@ -62,6 +62,8 @@ function git_purge() {
   [ ! -z "$local_merged" ] && echodo git branch -d $local_merged
   local tracking_merged=$(git_non_release_branch_list -r --merged)
   [ ! -z "$tracking_merged" ] && echodo git branch -rd $tracking_merged
+
+  gbb
 }
 
 function git_non_release_branch() {

@@ -8,14 +8,12 @@ git_autostash
 if [[ -f .eslintrc ]]; then
   js_files=$(git_modified js jsx)
   if [[ ! -z $js_files ]]; then
-    echodo node_modules/.bin/eslint $js_files || ( git_autostash_pop; exit 1 )
+    echodo node_modules/.bin/eslint $js_files || exit 1
   fi
 fi
 
 if [[ -f .rubocop.yml ]]; then
-  rubocop_only_changed_lines || ( git_autostash_pop; exit 1 )
+  rubocop_only_changed_lines || exit 1
 fi
-
-git_autostash_pop
 
 exit 0

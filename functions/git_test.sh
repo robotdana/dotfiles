@@ -16,7 +16,7 @@ end"
 }
 
 function git_test_init(){
-  echo -e "$C_GREEN$*$C_RESET"
+  echo_green $@
   echodo rm -rf ~/.git-test-repo
   echodo mkdir ~/.git-test-repo
   echodo cd ~/.git-test-repo

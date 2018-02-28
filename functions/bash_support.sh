@@ -7,6 +7,28 @@ C_GREY="\033[1;90m"
 
 C_RESET="\033[0m"
 
+function echo_red(){
+  echo -e "$C_RED$@$C_RESET"
+}
+function echo_green(){
+  echo -e "$C_GREEN$@$C_RESET"
+}
+function echo_yellow(){
+  echo -e "$C_YELLOW$@$C_RESET"
+}
+function echo_blue(){
+  echo -e "$C_BLUE$@$C_RESET"
+}
+function echo_aqua(){
+  echo -e "$C_AQUA$@$C_RESET"
+}
+function echo_grey(){
+  echo -e "$C_GREY$@$C_RESET"
+}
+function echo_reset(){
+  echo -e "$C_RESET$@$C_RESET"
+}
+
 # `resource` reload bash profile
 function resource(){
   echodo source ~/.bash_profile
@@ -36,13 +58,15 @@ function quote_lines() {
   done
 }
 
+
+
 function echodo(){
-  ( echo -e "$C_GREY$*$C_RESET" )>/dev/tty
-  eval $*
+  ( echo_grey $@ )>/dev/tty
+  eval "$@"
 }
 
 function echoerr(){
-  ( echo -e "$C_RED$*$C_RESET" )>&2
+  ( echo_red $@ )>&2
   return 1
 }
 

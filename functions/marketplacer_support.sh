@@ -47,7 +47,7 @@ function vertical_field() {
 function update_all_databases() {
   local short_verticals=$(vertical_rows | cut -d ':' -f 1)
   for vertical in $short_verticals; do
-    echodo "ttab -G 'title Downloading $vertical database; vdl $vertical; exit'"
+    echodo ttab -G "title Downloading $vertical database; vdl $vertical; exit"
   done
 }
 
@@ -78,13 +78,13 @@ function prepare_app_with_webkit() {
 function prepare_app() {
   ( ports_respond 3306 || mysql_start & )
   ( ports_respond 6379 || brew services start redis & )
-  pgrep sidekiq >/dev/null || echodo "ttab -G 'title Sidekiq; bundle exec sidekiq; exit'"
+  pgrep sidekiq >/dev/null || echodo ttab -G "title Sidekiq; bundle exec sidekiq; exit"
   ( ports_respond 1080 || echodo mailcatcher & )
   wait_for_ports 3306 1080 6379
 }
 
 function reindex() {
-  echodo "rails multitenant:reindex"
+  echodo rails multitenant:reindex
 }
 
 function buildkite_failures() {

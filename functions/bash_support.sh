@@ -58,15 +58,30 @@ function quote_lines() {
   done
 }
 
-
+function quote_array() {
+  if (( $# <= 1 )); then
+    echo "$@"
+  else
+    for n in "$@"; do
+      if [[ "$n" =~ "'" ]]; then
+        echo -en "\"$n\" "
+      elif [[ "$n" =~ ' ' ]] || [[ -z "$n" ]]; then
+        echo -en "'$n' "
+      else
+        echo -en "$n "
+      fi
+    done
+    echo ""
+  fi
+}
 
 function echodo(){
-  ( echo_grey $@ )>/dev/tty
-  eval "$@"
+  ( echo_grey $(quote_array "$@") )>/dev/tty
+  eval $(quote_array "$@")
 }
 
 function echoerr(){
-  ( echo_red $@ )>&2
+  ( echo_red $* )>&2
   return 1
 }
 

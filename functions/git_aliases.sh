@@ -60,7 +60,7 @@ __git_complete gbf __git_complete_refs
 # `gwip` git wip
 # commit everything carelessly with the message `wip`
 function gwip(){
-  git_non_release_branch && echodo git add . && echodo 'OVERCOMMIT_DISABLE=1 git commit --no-verify -m "WIP [skip ci]"'
+  git_non_release_branch && echodo git add . && echodo git commit --no-verify -m "WIP [skip ci]"
 }
 
 # `gwipp` git wip
@@ -97,7 +97,7 @@ function gc() {
   if [ -z "$1" ]; then
     ga && echodo git commit --verbose
   else
-    ga && echodo "git commit -m \"$*\""
+    ga && echodo git commit -m "$*"
   fi
 }
 

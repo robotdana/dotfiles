@@ -8,7 +8,7 @@ function rails_migrate_all_task_name {
 
 function rails_migrate_all {
   echodo bundle exec rails $(rails_migrate_all_task_name)
-  echodo "RAILS_ENV=test bundle exec rails db:migrate"
+  echodo RAILS_ENV=test bundle exec rails db:migrate
 }
 
 function rails_migrate_all_soft {

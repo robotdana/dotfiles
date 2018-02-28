@@ -178,7 +178,7 @@ function git_fake_stash() {
   git_track_untracked
   if [[ ! -z "$(git diff)" ]]; then
     local diff_path=$(git_fake_stash_next_path)
-    echodo git diff' > '$diff_path
+    echodo "git diff > $diff_path"
     if [[ -s $diff_path ]]; then
       echodo git apply -R $diff_path
       git_untrack_new_blank
@@ -204,7 +204,7 @@ function git_fake_stash_pop() {
 function git_unstage() {
   local has_staged=$(git diff --cached --numstat --no-renames | grep -Ev "^0\t0\t")
   if [[ ! -z "$has_staged" ]]; then
-    echodo "git reset --" && git_track_untracked
+    echodo git reset -- && git_track_untracked
   fi
 }
 

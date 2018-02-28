@@ -1,6 +1,6 @@
 function git_test_init(){
-  rm -rf ~/.dotfiles/locals/test
-  mkdir ~/.dotfiles/locals/test
+  rm -rf ~/.git-test-repo
+  mkdir ~/.git-test-repo
   cd ~/.dotfiles/locals/test
   git init
   git commit --no-verify -m "initial commit"

@@ -28,6 +28,8 @@ source ~/.dotfiles/functions/jekyll_aliases.sh
 source ~/.dotfiles/functions/webpack_aliases.sh
 source ~/.dotfiles/functions/marketplacer_aliases.sh
 
+source ~/.dotfiles/functions/git_test.sh
+
 PROMPT_COMMAND="update_terminal_cwd; resource_if_modified_since $(last_bash_profile_modification)"
 
 export PS1="\[$C_BLUE\]\w\[$C_AQUA\]\$(prompt_context)\[$C_BLUE\]\[$C_RED\]\$(prompt_dirty_branch)\[$C_GREEN\]\$(prompt_clean_branch)\[$C_BLUE\]» \[$C_RESET\]"

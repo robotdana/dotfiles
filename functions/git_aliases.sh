@@ -213,3 +213,7 @@ function grc() {
 function gs() {
   git status
 }
+
+function gt() {
+  git_untrack_new_blank && git stash -u $*
+}

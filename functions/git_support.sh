@@ -1,10 +1,7 @@
 # source ./bash_support.sh
 
 function git_track_untracked(){
-  local untracked=$(git status --untracked=all --porcelain | grep -e "^??" | colrm 1 3 | quote_lines)
-  if [[ ! -z "$untracked" ]]; then
-    echodo git add -N $untracked
-  fi
+  echodo git add -N .
 }
 
 function git_untrack_new_blank() {
@@ -135,13 +132,44 @@ function git_file_changed() {
   git_changed_files | grep -xE "$1"
 }
 
-
-function git_autostash() {
-  git stash save --include-untracked --quiet --keep-index -- MANUAL AUTOSTASH
+# doesn't actually use the stash because it stashes indexed changes as well and 90% of the time I don't want that because I end up with weird merges
+function git_fake_stash_dir() {
+  echo ~/.dotfiles/locals/fakestash/repo-$(git_current_repo)/$(git_current_branch)/
 }
 
-function git_autostash_pop() {
-  if [[ "$(git stash list -n 1)" == "stash@{0}: On $(git_current_branch): MANUAL AUTOSTASH" ]]; then
-    git stash pop --quiet
+function git_fake_stash_list() {
+  ( cd $(git_fake_stash_dir); tail *.diff & ) 2>/dev/null
+}
+
+function git_fake_stash_clear() {
+  rm -rf $(git_fake_stash_dir) 2>/dev/null
+}
+
+function git_fake_stash_head() {
+  local dir=$(git_fake_stash_dir)
+  ls $dir*.diff 2>/dev/null | sort -rh | head -n 1 || echo $dir"0.diff"
+}
+
+function git_fake_stash() {
+  git_track_untracked
+  git diff > /tmp/diff
+  if [[ -s /tmp/diff ]]; then
+    local dir=$(git_fake_stash_dir)
+    mkdir -pv $dir
+    local num=$(git_fake_stash_head)
+    local num=${num#$dir}
+    local num=${num%.diff}
+    local new_num=$(( $num + 1 ))
+    mv /tmp/diff $dir$new_num.diff
+    git apply -R $dir$new_num.diff
+  fi
+}
+
+function git_fake_stash_pop() {
+  local file=$(git_fake_stash_head)
+  if [[ -s $file ]]; then
+    git apply $file && rm $file && git_fake_stash_pop
+  elif [[ -f $file ]]; then
+    rm $file && git_fake_stash_pop
   fi
 }

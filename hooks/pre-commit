@@ -3,17 +3,19 @@
 source ~/.dotfiles/functions/bash_support.sh
 source ~/.dotfiles/functions/git_support.sh
 
-git_autostash
+git_fake_stash
+exit_code=0
 
 if [[ -f .eslintrc ]]; then
   js_files=$(git_modified js jsx)
   if [[ ! -z $js_files ]]; then
-    echodo node_modules/.bin/eslint $js_files || exit 1
+    echodo node_modules/.bin/eslint $js_files || exit_code=1
   fi
 fi
 
 if [[ -f .rubocop.yml ]]; then
-  rubocop_only_changed_lines || exit 1
+  rubocop_only_changed_lines || exit_code=1
 fi
 
-exit 0
+git_fake_stash_pop
+exit $exit_code

@@ -1,6 +1,3 @@
 #!/bin/bash
 
-source ~/.dotfiles/functions/bash_support.sh
-source ~/.dotfiles/functions/git_support.sh
-
-git_autostash_pop
+exit 0

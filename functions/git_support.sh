@@ -168,7 +168,7 @@ function git_fake_stash() {
 function git_fake_stash_pop() {
   local file=$(git_fake_stash_head)
   if [[ -s $file ]]; then
-    git apply $file && rm $file && git_fake_stash_pop
+    git apply --3way $file && rm $file && git_fake_stash_pop
   elif [[ -f $file ]]; then
     rm $file && git_fake_stash_pop
   fi

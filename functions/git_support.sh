@@ -204,7 +204,7 @@ function git_fake_stash_pop() {
 function git_unstage() {
   local has_staged=$(git diff --cached --numstat --no-renames | grep -Ev "^0\t0\t")
   if [[ ! -z "$has_staged" ]]; then
-    echodo git reset -- && git_track_untracked
+    echodo git reset --quiet -- && git_track_untracked
   fi
 }
 

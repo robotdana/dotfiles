@@ -9,7 +9,6 @@
 	excludesfile = ~/.gitignore
 	mergeoptions = --no-edit
 	editor = subl -nw
-  whitespace = tab-in-indent, trailing-space, tabwidth=2
   hooksPath = ~/.dotfiles/hooks
 [help]
 	autocorrect = -1

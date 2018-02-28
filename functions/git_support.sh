@@ -177,3 +177,7 @@ function git_fake_stash_pop() {
 function git_unstage() {
   echodo "git reset --" && git_track_untracked
 }
+
+function git_stash() {
+  git_untrack_new_blank && echodo git stash -u $*
+}

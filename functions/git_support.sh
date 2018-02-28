@@ -11,6 +11,16 @@ function git_untrack_new_blank() {
   fi
 }
 
+function git_remove_empty_untracked() {
+  local untracked=$(git status --untracked=all --porcelain | grep -e "^??" | colrm 1 3)
+  if [[ ! -z "$untracked" ]]; then
+    local untracked=$(find $untracked -size 0 | quote_lines)
+    if [[ ! -z "$untracked" ]]; then
+      echodo rm $untracked
+    fi
+  fi
+}
+
 function git_conflicts() {
   git ls-files -u | awk '{print $4}' | sort -u | escape_spaces | escape_brackets
 }
@@ -150,25 +160,38 @@ function git_fake_stash_head() {
   ls $dir*.diff 2>/dev/null | sort -rh | head -n 1 || echo $dir"0.diff"
 }
 
+function git_fake_stash_next_path() {
+  local dir=$(git_fake_stash_dir)
+  mkdir -pv $dir
+  local num=$(git_fake_stash_head)
+  local num=${num#$dir}
+  local num=${num%.diff}
+  local new_num=$(( $num + 1 ))
+
+  echo $dir$new_num.diff
+}
+
 function git_fake_stash() {
   git_track_untracked
-  git diff > /tmp/diff
-  if [[ -s /tmp/diff ]]; then
-    local dir=$(git_fake_stash_dir)
-    mkdir -pv $dir
-    local num=$(git_fake_stash_head)
-    local num=${num#$dir}
-    local num=${num%.diff}
-    local new_num=$(( $num + 1 ))
-    mv /tmp/diff $dir$new_num.diff
-    git apply -R $dir$new_num.diff
+
+  local diff_path=$(git_fake_stash_next_path)
+  echodo git diff > $diff_path
+  if [[ -s $diff_path ]]; then
+    echodo git apply -R $diff_path
+    git_untrack_new_blank
+    git_remove_empty_untracked
   fi
 }
 
 function git_fake_stash_pop() {
   local file=$(git_fake_stash_head)
   if [[ -s $file ]]; then
-    git apply --3way $file && rm $file && git_fake_stash_pop
+    untracked=$(git apply --3way --check $file 2>&1 | awk -F':' '/error: .*: does not exist in index/ {print $2}')
+    if [[ ! -z "$untracked" ]]; then
+      touch $untracked
+      git add .
+    fi
+    echodo git apply --3way $file && rm $file && git_unstage && git_fake_stash_pop
   elif [[ -f $file ]]; then
     rm $file && git_fake_stash_pop
   fi

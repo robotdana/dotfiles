@@ -17,5 +17,4 @@ if [[ -f .rubocop.yml ]]; then
   rubocop_only_changed_lines || exit_code=1
 fi
 
-git_fake_stash_pop
 exit $exit_code

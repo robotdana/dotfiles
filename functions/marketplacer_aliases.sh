@@ -82,3 +82,7 @@ function vrtl() {
     vrt $failures
   fi
 }
+
+function cdm() {
+  cd ~/M/marketplacer
+}

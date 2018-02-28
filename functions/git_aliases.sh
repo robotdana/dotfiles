@@ -5,7 +5,8 @@ source ~/.dotfiles/locals/git-completion.bash
 # interactively add, including new files
 # TODO: cope with binary files
 function ga() {
-  git_track_untracked && echodo git add -p && git_untrack_new_blank
+  git_track_untracked
+  git_status_clean || echodo git add -p
 }
 
 # `gbn <new branch name>` git branch new

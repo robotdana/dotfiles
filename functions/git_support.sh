@@ -1,7 +1,10 @@
 # source ./bash_support.sh
 
 function git_track_untracked(){
-  echodo git add -N .
+  local has_untracked=$(git status --untracked=all --porcelain | grep -e "^??")
+  if [[ ! -z "$has_untracked" ]]; then
+    echodo git add -N .
+  fi
 }
 
 function git_untrack_new_blank() {

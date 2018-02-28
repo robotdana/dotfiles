@@ -30,6 +30,7 @@
 	"bold_folder_labels": true,
 	"caret_style": "fade",
 	"color_scheme": "Packages/User/SublimeLinter/base16-eighties.dark (SL).tmTheme",
+	"detect_indentation": true,
 	"ensure_newline_at_eof_on_save": true,
 	"folder_exclude_patterns":
 	[

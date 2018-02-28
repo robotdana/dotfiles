@@ -9,27 +9,29 @@
 	excludesfile = ~/.gitignore
 	mergeoptions = --no-edit
 	editor = subl -nw
-  whitespace = tab-in-indent, trailing-space, tabwidth=2
-  hooksPath = ~/.dotfiles/hooks
+	whitespace = tab-in-indent, trailing-space, tabwidth=2
+	hooksPath = ~/.dotfiles/hooks
 [help]
 	autocorrect = -1
 [push]
 	default = simple
 [diff]
-  indentHeuristic = true
-  algorithm = minimal
+	indentHeuristic = true
+	algorithm = minimal
 [merge]
-  verbosity = 1
+	verbosity = 1
 [interactive]
 	singleKey = true
 [status]
-  relativePaths = false
-  showUntrackedFiles = all
+	relativePaths = false
+	showUntrackedFiles = all
 [rerere]
-  enabled = true
+	enabled = true
 [alias]
 	unstage = ! bash -lc 'git_unstage'
 	purge = ! bash -lc "git_purge"
 	uncommit = ! bash -lc 'git_uncommit'
 [log]
 	mailmap = true
+[mailmap]
+	file = ~/.gitmailmap

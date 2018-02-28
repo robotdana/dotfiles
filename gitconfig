@@ -28,7 +28,7 @@
 [rerere]
   enabled = true
 [alias]
-	unstage = ! bash -lc 'echodo "git reset --"'
+	unstage = ! bash -lc 'git_unstage'
 	purge = ! bash -lc "git_purge"
 	uncommit = ! bash -lc 'echodo "git reset --soft HEAD^"'
 [log]

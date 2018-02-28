@@ -173,3 +173,7 @@ function git_fake_stash_pop() {
     rm $file && git_fake_stash_pop
   fi
 }
+
+function git_unstage() {
+  echodo "git reset --" && git_track_untracked
+}

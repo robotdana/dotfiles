@@ -188,7 +188,7 @@ alias gmm=gm
 # TODO: sometimes the conflict is one is deleted, and I want deletion.
 # TODO: only allow to run during a merge
 function gmc() {
-  git_open_conflicts && git_add_conflicts && echodo "OVERCOMMIT_DISABLE=1 git commit --no-edit"
+  git_open_conflicts && git_add_conflicts && echodo git commit --no-verify --no-edit
 }
 
 # `gr [<branch or commit>]` git rebase

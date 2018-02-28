@@ -211,3 +211,7 @@ function git_unstage() {
 function git_stash() {
   git_untrack_new_blank && echodo git stash -u $*
 }
+
+function git_uncommit() {
+  echodo git reset --soft HEAD^ && git_unstage
+}

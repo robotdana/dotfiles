@@ -72,15 +72,12 @@ function vrt() {
 }
 
 function vrtn() {
-  vrt --next-failure $*
+  vrt --next-failure
 }
 
 function vrtl() {
-  local failures=$(buildkite_failures)
-  if [[ ! -z "$failures" ]]; then
-    rm spec/examples.txt
-    vrt $failures
-  fi
+  rm spec/examples.txt
+  vrtn $(buildkite_failures)
 }
 
 function cdm() {

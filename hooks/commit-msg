@@ -3,7 +3,11 @@
 # TODO: retry after commit message fixed
 # TODO: handle -m messages
 
+
 source ~/.dotfiles/functions/bash_support.sh
+source ~/.dotfiles/functions/git_support.sh
+
+git_system && exit 0
 
 # while ((i++)); read -r line; do
 #   case $i in

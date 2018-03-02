@@ -2,7 +2,7 @@
 source ~/.dotfiles/functions/bash_support.sh
 source ~/.dotfiles/functions/git_support.sh
 
-base=$1
+git_system && exit 0
 
 if git_rebasable $base; then
   exit 0

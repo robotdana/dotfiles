@@ -129,6 +129,15 @@ function git_rebasable() {
   fi
 }
 
+function git_system() {
+  local path=$(git rev-parse --show-toplevel)
+  if [[ "$path" == $HOME/.gem ]] || [[ "$path" == $HOME/Library ]] || [[ "$path" != $HOME/* ]]; then
+    true
+  else
+    false
+  fi
+}
+
 function git_authors() {
   echodo "git shortlog -sen && git shortlog -secn"
 }

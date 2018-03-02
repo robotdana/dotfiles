@@ -1,6 +1,6 @@
 #!/bin/bash
-# source ~/.dotfiles/functions/bash_support.sh
-# source ~/.dotfiles/functions/git_support.sh
+source ~/.dotfiles/functions/bash_support.sh
+source ~/.dotfiles/functions/git_support.sh
 
 git_system && exit 0
 

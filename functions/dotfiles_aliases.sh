@@ -7,7 +7,7 @@ function cdot() {
 }
 
 function sdot() {
-  echodo $EDITOR ~/.dotfiles
+  echodo subl -n ~/.dotfiles
 }
 
 function ldot() {

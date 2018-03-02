@@ -155,6 +155,7 @@ function git_file_changed() {
 }
 
 # doesn't actually use the stash because it stashes indexed changes as well and 90% of the time I don't want that because I end up with weird merges
+# TODO: look into replacing with something similar to https://stackoverflow.com/questions/20479794
 function git_fake_stash_dir() {
   echo .git-fake-stash/$(git_current_branch)/
 }

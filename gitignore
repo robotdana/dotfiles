@@ -1,3 +1,4 @@
 .DS_Store
 .overcommit.yml
 .git-fake-stash
+.buildkite-failures

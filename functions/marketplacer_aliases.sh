@@ -68,16 +68,18 @@ function vrt() {
   else
     prepare_app
   fi
-  rt $*
+  rt "$@"
 }
 
 function vrtn() {
-  vrt --next-failure
+  vrt --next-failure $(cat .buildkite-failures)
 }
 
 function vrtl() {
+  local failures=$(buildkite_failures)
   rm spec/examples.txt
-  vrtn $(buildkite_failures)
+  echo $(buildkite_failures) > .buildkite-failures
+  vrtn
 }
 
 function cdm() {

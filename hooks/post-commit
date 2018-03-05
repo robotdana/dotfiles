@@ -5,7 +5,7 @@ source ~/.dotfiles/functions/git_support.sh
 
 git_system && exit 0
 
-git_fake_stash_pop
+git_fake_auto_stash_pop
 
 exit 0
 

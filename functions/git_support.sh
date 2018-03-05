@@ -1,21 +1,21 @@
 # source ./bash_support.sh
 
 function git_track_untracked(){
-  local has_untracked=$(git status --untracked=all --porcelain | grep -e "^??")
+  local has_untracked=$(git ls-files --others --exclude-standard)
   if [[ ! -z "$has_untracked" ]]; then
     echodo git add -N .
   fi
 }
 
 function git_untrack_new_blank() {
-  local newblank=$(git diff --cached --numstat --no-renames | grep -E "^0\t0\t" | cut -f3 | quote_lines)
+  local newblank=$(git diff --cached --numstat --no-renames --diff-filter=A | awk -F'\t' '/^0\t0\t/ { print "\"" $3 "\""}')
   if [[ ! -z "$newblank" ]]; then
     echodo git reset $newblank
   fi
 }
 
 function git_remove_empty_untracked() {
-  local untracked=$(git status --untracked=all --porcelain | grep -e "^??" | colrm 1 3)
+  local untracked=$(git ls-files --others --exclude-standard)
   if [[ ! -z "$untracked" ]]; then
     local untracked=$(find $untracked -size 0 | quote_lines)
     if [[ ! -z "$untracked" ]]; then
@@ -143,7 +143,11 @@ function git_authors() {
 }
 
 function git_status_clean() {
-  git diff --quiet HEAD &>/dev/null
+  if [[ -z "$(git status --porcelain 2>/dev/null)" ]]; then
+    true
+  else
+    false
+  fi
 }
 
 function git_changed_files() {
@@ -156,60 +160,60 @@ function git_file_changed() {
 
 # doesn't actually use the stash because it stashes indexed changes as well and 90% of the time I don't want that because I end up with weird merges
 # TODO: look into replacing with something similar to https://stackoverflow.com/questions/20479794
-function git_fake_stash_dir() {
-  echo .git-fake-stash/$(git_current_branch)/
-}
+# function git_fake_stash_dir() {
+#   echo .git-fake-stash/$(git_current_branch)/
+# }
 
-function git_fake_stash_list() {
-  ( cd $(git_fake_stash_dir); tail *.diff & ) 2>/dev/null
-}
+# function git_fake_stash_list() {
+#   ( cd $(git_fake_stash_dir); tail *.diff & ) 2>/dev/null
+# }
 
-function git_fake_stash_clear() {
-  rm -rf $(git_fake_stash_dir) 2>/dev/null
-}
+# function git_fake_stash_clear() {
+#   rm -rf $(git_fake_stash_dir) 2>/dev/null
+# }
 
-function git_fake_stash_head() {
-  local dir=$(git_fake_stash_dir)
-  ls $dir*.diff 2>/dev/null | sort -rh | head -n 1 || echo $dir"0.diff"
-}
+# function git_fake_stash_head() {
+#   local dir=$(git_fake_stash_dir)
+#   ls $dir*.diff 2>/dev/null | sort -rh | head -n 1 || echo $dir"0.diff"
+# }
 
-function git_fake_stash_next_path() {
-  local dir=$(git_fake_stash_dir)
-  mkdir -pv $dir
-  local num=$(git_fake_stash_head)
-  local num=${num#$dir}
-  local num=${num%.diff}
-  local new_num=$(( $num + 1 ))
+# function git_fake_stash_next_path() {
+#   local dir=$(git_fake_stash_dir)
+#   mkdir -pv $dir
+#   local num=$(git_fake_stash_head)
+#   local num=${num#$dir}
+#   local num=${num%.diff}
+#   local new_num=$(( $num + 1 ))
 
-  echo $dir$new_num.diff
-}
+#   echo $dir$new_num.diff
+# }
 
-function git_fake_stash() {
-  git_track_untracked
-  if [[ ! -z "$(git diff)" ]]; then
-    local diff_path=$(git_fake_stash_next_path)
-    echodo "git diff > $diff_path"
-    if [[ -s $diff_path ]]; then
-      echodo git apply -R $diff_path
-      git_untrack_new_blank
-      git_remove_empty_untracked
-    fi
-  fi
-}
+# function git_fake_stash() {
+#   git_track_untracked
+#   if [[ ! -z "$(git diff)" ]]; then
+#     local diff_path=$(git_fake_stash_next_path)
+#     echodo "git diff > $diff_path"
+#     if [[ -s $diff_path ]]; then
+#       echodo git apply -R $diff_path
+#       git_untrack_new_blank
+#       git_remove_empty_untracked
+#     fi
+#   fi
+# }
 
-function git_fake_stash_pop() {
-  local file=$(git_fake_stash_head)
-  if [[ -s $file ]]; then
-    untracked=$(git apply --3way --check $file 2>&1 | awk -F':' '/error: .*: does not exist in index/ {print $2}')
-    if [[ ! -z "$untracked" ]]; then
-      touch $untracked
-      git add .
-    fi
-    echodo git apply --3way $file && rm $file && git_unstage && git_fake_stash_pop
-  elif [[ -f $file ]]; then
-    rm $file && git_fake_stash_pop
-  fi
-}
+# function git_fake_stash_pop() {
+#   local file=$(git_fake_stash_head)
+#   if [[ -s $file ]]; then
+#     untracked=$(git apply --3way --check $file 2>&1 | awk -F':' '/error: .*: does not exist in index/ {print $2}')
+#     if [[ ! -z "$untracked" ]]; then
+#       touch $untracked
+#       git add .
+#     fi
+#     echodo git apply --3way $file && rm $file && git_unstage && git_fake_stash_pop
+#   elif [[ -f $file ]]; then
+#     rm $file && git_fake_stash_pop
+#   fi
+# }
 
 function git_unstage() {
   local has_staged=$(git diff --cached --numstat --no-renames | grep -Ev "^0\t0\t")
@@ -224,4 +228,17 @@ function git_stash() {
 
 function git_uncommit() {
   echodo git reset --soft HEAD^ && git_unstage
+}
+function git_fake_auto_stash() {
+  if [[ ! -z "$(git diff)$(git ls-files --others --exclude-standard)" ]]; then
+    git commit --no-verify --quiet --message "fake autostash index"
+    echodo git stash save --include-untracked --quiet "fake autostash"
+    git reset --soft HEAD^ --quiet
+  fi
+}
+
+function git_fake_auto_stash_pop() {
+  while [[ "$(git stash list -n 1)" = "stash@{0}: On $(git_current_branch): fake autostash" ]]; do
+    echodo git stash pop --quiet
+  done
 }

@@ -39,15 +39,15 @@ function git_test_fake_stash(){
   git_test_init git_test_fake_stash
   git_test_good_rb > foo.rb
   git_test_good_rb > bar.rb
-  git_fake_stash
+  git_fake_auto_stash
 
-  if [[ -s foo.rb ]] && [[ -s bar.rb ]]; then
+  if [[ -s foo.rb ]] || [[ -s bar.rb ]]; then
     echoerr "didn't remove added files"
   fi
 
   git_status_clean || echoerr "branch is not clean"
 
-  if [[ -z "$(git_fake_stash_list)" ]]; then
+  if [[ -z "$(git stash list)" ]]; then
     echoerr "fake stash is empty"
   fi
 }
@@ -56,15 +56,15 @@ function git_test_fake_stash_pop(){
   git_test_init git_test_fake_stash_pop
   git_test_good_rb > foo.rb
   git_test_good_rb > bar.rb
-  git_fake_stash
-  git_fake_stash_pop
+  git_fake_auto_stash
+  git_fake_auto_stash_pop
   if [[ ! -z "$(comm -3 foo.rb <( git_test_good_rb ))" ]] && [[ ! -z "$(comm -3 bar.rb <( git_test_good_rb ))" ]]; then
     echoerr "didn't restore added files"
   fi
 
   git_status_clean && echoerr "branch is not dirty"
 
-  if [[ ! -z "$(git_fake_stash_list)" ]]; then
+  if [[ ! -z "$(git stash list)" ]]; then
     echoerr "fake stash is not empty"
   fi
 }
@@ -76,7 +76,7 @@ function git_test_pass_rubocop(){
   echodo git add .
   gc "pass rubocop"
   git_status_clean || echoerr "branch is not clean"
-  if [[ ! -z "$(git_fake_stash_list)" ]]; then
+  if [[ ! -z "$(git stash list)" ]]; then
     echoerr "fake stash is not empty"
   fi
 }
@@ -88,7 +88,7 @@ function git_test_fail_rubocop(){
   echodo git add .
   gc "fail rubocop" 2>&1
   git_status_clean && echoerr "branch is clean"
-  if [[ ! -z "$(git_fake_stash_list)" ]]; then
+  if [[ ! -z "$(git stash list)" ]]; then
     echoerr "fake stash is not empty"
   fi
 
@@ -111,7 +111,7 @@ function git_test_partial_add_pass_rubocop(){
   echodo git add foo.rb
   echodo git commit -m "pass rubocop"
   git_status_clean && echoerr "branch is not dirty"
-  if [[ ! -z "$(git_fake_stash_list)" ]]; then
+  if [[ ! -z "$(git stash list)" ]]; then
     echoerr "fake stash is not empty"
   fi
   if [[ ! -z "$(comm -3 bar.rb <( git_test_bad_rb ))" ]]; then
@@ -126,7 +126,7 @@ function git_test_partial_add_fail_rubocop(){
   echodo git add bar.rb
   echodo git commit -m "fail rubocop"
   git_status_clean && echoerr "branch is not dirty"
-  if [[ -z "$(git_fake_stash_list)" ]]; then
+  if [[ -z "$(git stash list)" ]]; then
     echoerr "fake stash is empty"
   fi
   if [[ -s foo.rb ]]; then
@@ -139,7 +139,7 @@ function git_test_partial_add_fail_rubocop(){
   echodo git commit -m "pass rubocop"
 
   git_status_clean && echoerr "branch is not dirty"
-  if [[ ! -z "$(git_fake_stash_list)" ]]; then
+  if [[ ! -z "$(git stash list)" ]]; then
     echoerr "fake stash is not empty"
   fi
 }
@@ -151,7 +151,7 @@ function git_test_patch_add_pass_rubocop(){
   git_test_bad_rb >> foo.rb
   echodo git commit -m "pass rubocop"
   git_status_clean && echoerr "branch is not dirty"
-  if [[ ! -z "$(git_fake_stash_list)" ]]; then
+  if [[ ! -z "$(git stash list)" ]]; then
     echoerr "fake stash is not empty"
   fi
   git_test_good_rb > baz.rb
@@ -169,13 +169,13 @@ function git_test_patch_add_fail_rubocop(){
   git_test_good_rb >> foo.rb
   echodo git commit -m "fail rubocop"
   git_status_clean && echoerr "branch is not dirty"
-  if [[ -z "$(git_fake_stash_list)" ]]; then
+  if [[ -z "$(git stash list)" ]]; then
     echoerr "fake stash is empty"
   fi
   git_test_good_rb > foo.rb
   echodo git add foo.rb
   echodo git commit -m "pass rubocop"
-  if [[ ! -z "$(git_fake_stash_list)" ]]; then
+  if [[ ! -z "$(git stash list)" ]]; then
     echoerr "fake stash is not empty"
   fi
   git_test_good_rb > baz.rb

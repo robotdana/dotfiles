@@ -1,21 +1,21 @@
 # source ./bash_support.sh
 
 function git_track_untracked(){
-  local has_untracked=$(git status --untracked=all --porcelain | grep -e "^??")
+  local has_untracked=$(git ls-files --others --exclude-standard)
   if [[ ! -z "$has_untracked" ]]; then
     echodo git add -N .
   fi
 }
 
 function git_untrack_new_blank() {
-  local newblank=$(git diff --cached --numstat --no-renames | grep -E "^0\t0\t" | cut -f3 | quote_lines)
+  local newblank=$(git diff --cached --numstat --no-renames --diff-filter=A | awk -F'\t' '/^0\t0\t/ { print "\"" $3 "\""}')
   if [[ ! -z "$newblank" ]]; then
     echodo git reset $newblank
   fi
 }
 
 function git_remove_empty_untracked() {
-  local untracked=$(git status --untracked=all --porcelain | grep -e "^??" | colrm 1 3)
+  local untracked=$(git ls-files --others --exclude-standard)
   if [[ ! -z "$untracked" ]]; then
     local untracked=$(find $untracked -size 0 | quote_lines)
     if [[ ! -z "$untracked" ]]; then

@@ -89,7 +89,6 @@ function reindex() {
 
 function buildkite_failures() {
   local failures=$(m build failures)
-  local messages="$(echo "$failures" | head -n 2)"
-  echo "$messages" >/dev/tty
-  echo "$failures" | awk -F'[\033 ]' '/^\033\[31mrspec / { print $3 }' | colrm 1 2
+  echo "$failures" | head -n 2 >/dev/tty
+  echo "$failures" | awk -F'[\033 ]' '/^\033\[31mrspec / { print $3 }' | colrm 1 2 > .buildkite-failures
 }

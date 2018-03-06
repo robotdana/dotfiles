@@ -76,9 +76,8 @@ function vrtn() {
 }
 
 function vrtl() {
-  local failures=$(buildkite_failures)
   rm spec/examples.txt
-  echo $(buildkite_failures) > .buildkite-failures
+  buildkite_failures
   vrtn
 }
 

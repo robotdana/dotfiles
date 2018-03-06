@@ -69,6 +69,31 @@ function git_test_fake_stash_pop(){
   fi
 }
 
+function git_test_amend(){
+  git_test_init git_test_amend
+  git_test_good_rb > foo.rb
+  echodo git add .
+  echodo git commit --no-verify -m "Original commit"
+  echodo git commit --amend -m "Amended commit"
+  git_test_good_rb > bar.rb
+  echodo git add .
+  echodo git commit --amend -m "Amended commit with bar.rb"
+
+  if [[ ! -z "$(comm -3 foo.rb <( git_test_good_rb ))" ]] && [[ ! -z "$(comm -3 bar.rb <( git_test_good_rb ))" ]]; then
+    echoerr "didn't restore added files"
+  fi
+
+  git_status_clean || echoerr "branch is not clean"
+
+  if [[ ! -z "$(git stash list)" ]]; then
+    echoerr "stash is not empty"
+  fi
+
+  if [[ "$(git log --format=%s | paste -sd '|' -)" != "Amended commit with bar.rb|initial commit" ]]; then
+    echoerr "log is not correct"
+  fi
+}
+
 function git_test_pass_rubocop(){
   git_test_init_rubocop git_test_pass_rubocop
   git_test_good_rb > foo.rb
@@ -189,6 +214,7 @@ function git_test_patch_add_fail_rubocop(){
 function git_test(){
   ( git_test_fake_stash )
   ( git_test_fake_stash_pop )
+  ( git_test_amend )
   ( git_test_pass_rubocop )
   ( git_test_fail_rubocop )
   ( git_test_partial_add_pass_rubocop )

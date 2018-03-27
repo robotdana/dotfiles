@@ -68,7 +68,7 @@ function vrt() {
   else
     prepare_app
   fi
-  rt "$@"
+  JAVASCRIPT_DRIVER=selenium rt "$@"
 }
 
 function vrtn() {

@@ -53,7 +53,7 @@ __git_complete gbl __git_complete_refs
 function gbf() {
   local filename=$1
   local base_branch=${2:-master}
-  echodo git log --oneline --follow $(git_log_range $base_branch) -- $filename
+  echodo git log --oneline --follow --patch $(git_log_range $base_branch) -- $filename
 }
 __git_complete gbf __git_complete_refs
 

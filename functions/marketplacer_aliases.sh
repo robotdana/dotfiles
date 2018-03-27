@@ -81,6 +81,11 @@ function vrtl() {
   vrtn
 }
 
+function vrts() {
+  tail -n +2 .buildkite-failures | tee .buildkite-failures &>/dev/null
+  vrt --next-failure
+}
+
 function cdm() {
   cd ~/M/marketplacer
 }

@@ -7,7 +7,7 @@ if [ "$1" == "" ]; then
 fi
 
 for url in "$@"; do
-  cat /etc/hosts | sed -e "/$url/d" | sudo tee /etc/hosts &>/dev/null
+  cat /etc/hosts | grep -vF $url | sudo tee /etc/hosts &>/dev/null
 done
 dscacheutil -flushcache
 sudo killall mDNSResponder

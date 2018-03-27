@@ -90,5 +90,5 @@ function reindex() {
 function buildkite_failures() {
   local failures=$(m build failures)
   echo "$failures" | head -n 2 >/dev/tty
-  echo "$failures" | awk -F'[\033 ]' '/^\033\[31mrspec / { print $3 }' | colrm 1 2 > .buildkite-failures
+  echo "$failures" | awk -F'[\033 ]' '/^\033\[31mrspec / { print $3 }' | tr -d "'" > .buildkite-failures
 }

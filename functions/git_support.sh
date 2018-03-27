@@ -38,14 +38,27 @@ function git_modified(){
   eval "git diff --name-only --cached --diff-filter=ACM $@"
 }
 
+# this is horrifying
+# I would like to pass line numbers to rubocop but they don't want you to do that because that's not _really_ going to catch all the issue, especially spacing issues
+# but it's at least (roughly) consistent with what rubocop does with pronto
 function rubocop_only_changed_lines(){
-  local modified_with_line_numbers=$(for file in $(git_modified rb); do git blame -fs -M -C ..HEAD $file; done | awk -F' ' '/^0+ / {printf " -e \"" $2 "\033[0m:" $3+0 ":\""}')
-  if [[ ! -z "$modified_with_line_numbers" ]]; then
-    echodo bundle exec rubocop --force-exclusion --color $(git_modified rb) | eval grep -A 2 -F $modified_with_line_numbers
-    if (( $? == 1 )); then
-      return 0;
-    fi
-    return 1;
+  local modified_grep_arguments_with_line_numbers=$(for file in $(git_modified rb); do git blame -fs -M -C ..HEAD $file; done | awk -F' ' '/^0+ / {printf " -e \"" $2 "\033[0m:" $3+0 ":\""}')
+  if [[ ! -z "$modified_grep_arguments_with_line_numbers" ]]; then
+    echodo bundle exec rubocop --force-exclusion --except Metrics/AbcSize,Metrics/PerceivedComplexity --color $(git_modified rb) |
+      eval grep -A 2 -F $modified_grep_arguments_with_line_numbers |
+      awk '
+        BEGIN {num_printed = 0}
+        {
+          if(NR==1 || prev=="--" || (prev_printed==1 && substr($0,1,1) == " ")) {
+            prev_printed=1;
+            print $0;
+            num_printed++
+          } else {
+            prev_printed=0
+          };
+          prev=$0
+        };
+        END { exit num_printed }'
   fi
 }
 

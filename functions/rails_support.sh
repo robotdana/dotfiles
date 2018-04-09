@@ -1,14 +1,11 @@
-
-function rails_migrate_all_task_name {
-  case $(git_current_repo) in
-    marketplacer) echo 'multitenant:db:migrate';;
-    *)            echo 'db:migrate';;
-  esac
-}
-
 function rails_migrate_all {
-  echodo bundle exec rails $(rails_migrate_all_task_name)
-  echodo RAILS_ENV=test bundle exec rails db:migrate
+  case $(git_current_repo) in
+    marketplacer) local task_name='multitenant:db:migrate';;
+    *)            local task_name='db:migrate';;
+  esac
+  echodo bundle exec rails $task_name
+  [[ ! $SKIP_SCHEMA_DUMP ]] && local schema_dump='db:schema:dump'
+  echodo RAILS_ENV=test bundle exec rails db:migrate $schema_dump
 }
 
 function rails_migrate_all_soft {

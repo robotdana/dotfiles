@@ -246,6 +246,7 @@ function git_fake_auto_stash() {
   if [[ ! -z "$(git diff)$(git ls-files --others --exclude-standard)" ]]; then
     if [[ ! -z "$(git diff --cached)" ]]; then
       git commit --no-verify --quiet --message "fake autostash index"
+      git_untrack_new_blank
       echodo git stash save --include-untracked --quiet "fake autostash"
       git reset --soft HEAD^ --quiet
     else

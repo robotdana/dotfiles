@@ -53,7 +53,7 @@ function rs(){
   local host=$(local_host_name $2)
   local path=$3
 
-  echodo kill_port $port
+  # echodo kill_port $port
   wait_for_port_then "echodo open -g http://$host:$port$path" $port
 
   title "Server:$port"

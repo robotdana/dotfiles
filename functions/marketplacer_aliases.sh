@@ -25,7 +25,7 @@ function vds() {
 function vd() {
   title 'Migrating'
   if (( $# == 1 )); then
-    v $1 && echodo "VERTICAL=$CURRENT_VERTICAL bundle exec rails db:migrate"
+    v "$1" && echodo "VERTICAL=$CURRENT_VERTICAL bundle exec rails db:migrate"
   else
     rails_migrate_all
   fi
@@ -38,28 +38,22 @@ function vtl() {
 
 function vrc() {
   if (( $# == 2 )); then
-    v $1 && vertical_remote_console $2
+    v "$1" && vertical_remote_console "$2"
   else
     prepare_app
-    v $1 && rc
+    v "$1" && rc
   fi
 }
 
 function vrs() {
-  local path="$2"
-  local vertical_or_path="$1"
+  local vertical="$1"
 
-  if [[ -z "$path" ]]; then
-    if [[ "$vertical_or_path" =~ ^/.* ]]; then
-      local path="$vertical_or_path"
-      local vertical=""
-    else
-      local path="/"
-      local vertical=$vertical_or_path
-    fi
-  fi
   prepare_app_with_webkit
-  v $vertical && rs $(vertical_row_number) $(long_vertical | tr _ -) $path
+  rs 0 "$(long_vertical "$vertical" | tr _ -)"
+}
+function vrsf() {
+  kill_port 3000
+  vrs "$@"
 }
 
 function vrt() {

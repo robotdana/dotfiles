@@ -1,3 +1,9 @@
 if defined?(Vertical) && Vertical.respond_to?(:set)
-  Vertical.set(ENV['CURRENT_VERTICAL'])
+  def v vertical=ENV['CURRENT_VERTICAL']
+    ActiveRecord::Base.logger.silence do
+      Vertical.set(vertical) if vertical
+    end
+  end
+
+  v
 end

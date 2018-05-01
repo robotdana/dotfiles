@@ -95,9 +95,10 @@ function git_non_release_branch() {
   fi
 }
 
-# `current_branch` the current branch name
+# `git_current_branch [optional_prefix]` the current branch name possibly with a prefix
 function git_current_branch() {
-  git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>/dev/null
+  local branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>/dev/null)
+  [[ ! -z "$branch" ]] && echo "$1$branch"
 }
 
 function git_current_repo() {
@@ -160,6 +161,14 @@ function git_status_clean() {
     true
   else
     false
+  fi
+}
+
+function git_status_color() {
+  if git_status_clean; then
+    printf "$C_GREEN" ""
+  else
+    printf "$C_RED" ""
   fi
 }
 

@@ -9,14 +9,6 @@ function prompt_clean_branch() {
   git_status_clean && echo :$(git_current_branch)
 }
 
-function prompt_context() {
-  case $(git_current_repo) in
-    "marketplacer") echo "($(short_vertical))";;
-    *);;
-  esac
-}
-
 function title() {
-  local title=${*:-Terminal}
-  printf "\033]0;%s\007" "$title $(prompt_context)"
+  printf "\\033]0;%s\\007" "${*:-Terminal}"
 }

@@ -137,7 +137,7 @@ __git_complete gp __git_complete_remote_or_refspec
 # force push the current branch to <remote> or origin
 function gpf(){
   local remote=${1:-origin}
-  git_non_release_branch && gp $remote --force
+  git_non_release_branch && gp $remote --force-with-lease
 }
 __git_complete gpf __git_complete_remote_or_refspec
 

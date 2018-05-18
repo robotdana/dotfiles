@@ -27,15 +27,25 @@ function long_vertical() {
 }
 
 function vertical_prod_server() {
-  vertical_field '$3' $*
+  vertical_server 'primary' "$@"
 }
 
 function vertical_staging_server() {
-  vertical_field '$4' $*
+  vertical_server 'staging' "$@"
 }
 
 function vertical_demo_server() {
-  vertical_field '$5' $*
+  vertical_server 'demo' "$@"
+}
+
+function vertical_standby_server() {
+  vertical_server 'standby' "$@"
+}
+
+function vertical_server() {
+  local vertical=${2:-$CURRENT_VERTICAL}
+  local server=$1
+  basename -s '.teg.io.json' $(grep "\"$vertical\":" -l ~/M/operations/chef/nodes/*$server*.json)
 }
 
 function vertical_field() {
@@ -58,7 +68,10 @@ function vertical_remote_console() {
     "prod") local host=$(vertical_prod_server);;
     "demo") local host=$(vertical_demo_server);;
     "staging") local host=$(vertical_staging_server);;
-    "office") local host="office.int";;
+    "office") local host="office-mt.private";;
+    "cabal") local host="test-cabal.private";;
+    "heart") local host="test-heart.private";;
+    "rocket") local host="test-rocket.private";;
     *) local host=$server;;
   esac
 

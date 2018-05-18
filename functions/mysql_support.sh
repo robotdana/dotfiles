@@ -1,5 +1,5 @@
 function mysql_new() {
-  echodo docker run --name m-mysql -p '3306:3306' -e MYSQL_ROOT_PASSWORD=root mysql:5.7 --character-set-server=utf8mb4
+  echodo docker run --name m-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root mysql:5.7 --character-set-server=utf8mb4
 }
 function mysql_start() {
   socks_exist /var/run/docker.sock || docker_start

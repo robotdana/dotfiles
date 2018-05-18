@@ -43,7 +43,7 @@ function git_modified(){
 function rubocop_only_changed_lines(){
   local modified_grep_arguments_with_line_numbers=$(for file in $(git_modified rb); do git blame -fs -M -C ..HEAD $file; done | awk -F' ' '/^0+ / {printf " -e \"" $2 "\033[0m:" $3+0 ":\""}')
   if [[ ! -z "$modified_grep_arguments_with_line_numbers" ]]; then
-    echodo bundle exec rubocop --force-exclusion --except Metrics/AbcSize,Metrics/PerceivedComplexity --color $(git_modified rb) |
+    echodo bundle exec rubocop --force-exclusion --except Metrics/AbcSize,Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity --color $(git_modified rb) |
       eval grep -A 2 -F $modified_grep_arguments_with_line_numbers |
       awk '
         BEGIN {num_printed = 0}

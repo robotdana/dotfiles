@@ -1,9 +1,8 @@
 # source ./bash_support.sh
 
 function git_track_untracked(){
-  local has_untracked=$(git ls-files --others --exclude-standard)
-  if [[ ! -z "$has_untracked" ]]; then
-    echodo git add -N .
+  if [[ ! -z "$(git ls-files --others --exclude-standard)" ]]; then
+    echodo git add -N $(git ls-files --others --exclude-standard | quote_lines)
   fi
 }
 

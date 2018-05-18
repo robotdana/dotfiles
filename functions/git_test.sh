@@ -124,7 +124,7 @@ function git_test_fail_rubocop(){
   gc "pass rubocop"
 
   git_status_clean || echoerr "branch is dirty"
-  if [[ ! -z "$(git_fake_stash_list)" ]]; then
+  if [[ ! -z "$(git stash list)" ]]; then
     echoerr "fake stash is not empty"
   fi
 }

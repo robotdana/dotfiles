@@ -1,29 +1,19 @@
 [ $CURRENT_VERTICAL ] || export CURRENT_VERTICAL=bikeexchange
 unset VERTICAL
-VERTICAL_FILE=~/.dotfiles/locals/verticals
 
-function vertical_rows() {
-  cat $VERTICAL_FILE
-}
-
-function edit_verticals() {
-  $EDITOR $VERTICAL_FILE
-}
-
-function missing_verticals() {
-  comm -13 <(vertical_rows | awk -F' *: *' '{print $2}' | sort ) <(marketplacer verticals | sort)
-}
-
-function vertical_row_number() {
-  vertical_field 'NR-1' $*
+function locale_row() {
+  local vertical=${1:-$CURRENT_VERTICAL}
+  local locale=${vertical:0:2}
+  local country=${vertical:2:2}
+  sed -n -e '/def locale/,/end/ p' ~/M/marketplacer/app/lib/site_context.rb | grep -Fi -m 1 -e "$country-$locale'" -e ":$vertical "
 }
 
 function short_vertical() {
-  vertical_field '$1' $*
+  locale_row "$@" | awk -F" +|:|-|'" '{ if($9=="be") { print $9 tolower($8) } else { print $9 } }'
 }
 
 function long_vertical() {
-  vertical_field '$2' $*
+  locale_row "$@" | awk -F' +|:|-' '{ print $4 }'
 }
 
 function vertical_prod_server() {
@@ -46,19 +36,6 @@ function vertical_server() {
   local vertical=${2:-$CURRENT_VERTICAL}
   local server=$1
   basename -s '.teg.io.json' $(grep "\"$vertical\":" -l ~/M/operations/chef/nodes/*$server*.json)
-}
-
-function vertical_field() {
-  local vertical=${2:-$CURRENT_VERTICAL}
-  local column=$1
-  vertical_rows | awk -F' *: *' "/^$vertical|: $vertical/ {print $column; count++; if(count=1) exit}"
-}
-
-function update_all_databases() {
-  local short_verticals=$(vertical_rows | cut -d ':' -f 1)
-  for vertical in $short_verticals; do
-    echodo ttab -G "title Downloading $vertical database; vdl $vertical; exit"
-  done
 }
 
 function vertical_remote_console() {

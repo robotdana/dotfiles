@@ -19,11 +19,4 @@ if [ ! -d ~/.dotfiles/locals ]; then
 	echodo mkdir ~/.dotfiles/locals
 fi
 
-if [ ! -e ~/.dotfiles/locals/bash.sh ]; then
-  echodo cp ~/.dotfiles/locals.example/bash.sh ~/.dotfiles/locals/bash.sh
-fi
-if [ ! -e ~/.dotfiles/locals/verticals ]; then
-  echodo cp ~/.dotfiles/locals.example/verticals ~/.dotfiles/locals/verticals
-fi
-
 ./update.sh

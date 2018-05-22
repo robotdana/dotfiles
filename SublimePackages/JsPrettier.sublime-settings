@@ -1,0 +1,6 @@
+{
+  "auto_format_on_save": true,
+  "additional_cli_args": {
+    "--config": "/Users/dana/M/marketplacer/.eslintrc"
+  }
+}

@@ -225,5 +225,29 @@ function gs() {
 }
 
 function gt() {
-  git_untrack_new_blank && git stash -u $*
+  git_untrack_new_blank && git stash -u "$@"
+}
+
+function gbt() {
+  gbc bundle exec rspec --format documentation --fail-fast "$@"
+}
+
+
+function gbc() {
+  if echodo "$@"; then
+    echo_green HEAD passes
+  else
+    echodo git bisect reset
+    echodo git bisect start
+    echodo git bisect bad
+    echodo git checkout "$(git log --format=%H master..HEAD | tail -n 1)"
+    if echodo "$@"; then
+      echodo git bisect good
+      echodo git bisect run "$@"
+      echodo git bisect reset
+    else
+      echodo git bisect reset
+      echoerr 'This whole branch fails'
+    fi
+  fi
 }

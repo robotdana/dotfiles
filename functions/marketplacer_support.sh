@@ -5,7 +5,7 @@ function locale_row() {
   local vertical=${1:-$CURRENT_VERTICAL}
   local locale=${vertical:0:2}
   local country=${vertical:2:2}
-  sed -n -e '/def locale/,/end/ p' ~/M/marketplacer/app/lib/site_context.rb | grep -Fi -m 1 -e "$country-$locale'" -e ":$vertical "
+  sed -n -e '/def locale/,/ end$/ p' ~/M/marketplacer/app/lib/site_context.rb | grep -Fi -m 1 -e "$country-$locale'" -e ":$vertical "
 }
 
 function short_vertical() {
@@ -50,7 +50,7 @@ function vertical_remote_console() {
   if [[ -z "$host" ]]; then
     echoerr "No $server server set up for $CURRENT_VERTICAL"
   else
-    title "Console $server" && echodo script/console $host $CURRENT_VERTICAL
+    title "Console $server" && echodo script/console $host marketplacer
   fi
 }
 

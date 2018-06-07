@@ -203,10 +203,14 @@ function gmc() {
 # TODO: don't switch branches if you don't have to
 function gr() {
   local base=${1:-master}
-  gb $base && gl && gbb && GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash $base
+  gb $base && gl && gbb && git_rebase_i $base
 }
 __git_complete gr __git_complete_refs
-alias grm=gr
+
+function grm() {
+  git_force_pull_release_branches
+  git_rebase_i master
+}
 
 # `grc` git rebase conflicts
 # load the rebase conflicts into an editor, then once issues are resolved, continue the rebase.

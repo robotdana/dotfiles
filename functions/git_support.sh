@@ -76,8 +76,9 @@ function git_edit() {
   $(git config core.editor) $*
 }
 
+# TODO: remove switching to master if I don't have to
 function git_purge() {
-  glm
+  echodo git checkout master
   echodo git fetch -p
 
   local local_merged=$(git_non_release_branch_list --merged)
@@ -115,11 +116,19 @@ function git_branch_list() {
 }
 
 function git_release_branch_list() {
-  git_branch_list $* | grep -Ex "$(git_release_branch_match)"
+  git_branch_list "$@" | grep -Ex "$(git_release_branch_match)"
 }
 
 function git_non_release_branch_list() {
-  git_branch_list $* | grep -Evx "$(git_release_branch_match)"
+  git_branch_list "$@" | grep -Evx "$(git_release_branch_match)"
+}
+
+function git_force_pull_release_branches() {
+  local branches;
+  branches=$(git_release_branch_list origin/* | sed 's/^origin\/\(.*\)$/\1:\1/')
+  if [[ ! -z "$branches" ]]; then
+    echodo git fetch --force origin $branches
+  fi
 }
 
 function git_release_branch_match() {
@@ -134,12 +143,17 @@ function git_release_branch_match() {
 # `git_rebasable commit-ish` checks that no commits added since `commit-ish` have been merged into something release-ish
 function git_rebasable() {
   git_non_release_branch
+  git_force_pull_release_branches
   local base=${1:-master}
   local since_base=$(git rev-list --count $base..HEAD)
   local unmerged_since_base=$(git rev-list --count $(git_release_branch_list | sed 's/$/..HEAD/'))
   if (( $since_base > $unmerged_since_base )); then
     echoerr some commits were merged to a demo or release branch, only merge from now on
   fi
+}
+
+function git_rebase_i() {
+  GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash "$@"
 }
 
 function git_system() {

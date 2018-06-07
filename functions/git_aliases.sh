@@ -18,7 +18,8 @@ function gbn() {
   else
     local new_branch_name=dana/$*
   fi
-  glm && echodo git checkout -b $new_branch_name
+  git_force_pull_release_branches
+  echodo git checkout -b $new_branch_name master
 }
 
 # `gb <branch>` git branch
@@ -83,7 +84,7 @@ function gcf() {
   if [ -z "$commit" ]; then
     git_rebasable HEAD^ && ga && echodo git commit --amend --no-edit
   else
-    git_rebasable $commit^ && ga && echodo git commit --fixup $commit && echodo GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash --autostash $commit^
+    git_rebasable $commit^ && ga && echodo git commit --fixup $commit && git_rebase_i $commit^
   fi
 }
 
@@ -171,7 +172,7 @@ __git_complete gp __git_complete_remote_or_refspec
 # `glm` git pull master
 # switch to master and pull
 function glm() {
-  gb master && gl
+  git_force_pull_release_branches && gb master
 }
 
 # `gm <branch>` git merge
@@ -182,7 +183,11 @@ function gm() {
   echodo git fetch origin $branch && echodo git merge origin/$branch --no-edit
 }
 __git_complete gm __git_complete_refs
-alias gmm=gm
+
+function gmm() {
+  git_force_pull_release_branches
+  git merge master
+}
 
 # `gmc` git merge conflicts
 # load the merge conflicts into the editor, then once the issues are resolved, commit the merge.

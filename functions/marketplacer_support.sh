@@ -24,10 +24,6 @@ function vertical_staging_server() {
   vertical_server 'staging' "$@"
 }
 
-function vertical_demo_server() {
-  vertical_server 'demo' "$@"
-}
-
 function vertical_standby_server() {
   vertical_server 'standby' "$@"
 }
@@ -43,7 +39,6 @@ function vertical_remote_console() {
 
   case $server in
     "prod") local host=$(vertical_prod_server);;
-    "demo") local host=$(vertical_demo_server);;
     "staging") local host=$(vertical_staging_server);;
     "office") local host="office-mt.private";;
     "cabal") local host="test-cabal.private";;

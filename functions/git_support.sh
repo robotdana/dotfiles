@@ -133,13 +133,13 @@ function git_force_pull_release_branches() {
 
 function git_release_branch_match() {
   case $(git_current_repo) in
-    marketplacer) echo '(origin/)?(master$|release/.*|demo/.*)';;
+    marketplacer) echo '(origin/)?(master$|release/.*)';;
     dotfiles)     echo 'origin/master';;
     *)            echo '(origin/)?master';;
   esac
 }
 
-# `git_rebasable` checks that no commits added since this was branched from master have been merged into release/* demo/*
+# `git_rebasable` checks that no commits added since this was branched from master have been merged into release/*
 # `git_rebasable commit-ish` checks that no commits added since `commit-ish` have been merged into something release-ish
 function git_rebasable() {
   git_non_release_branch
@@ -148,7 +148,7 @@ function git_rebasable() {
   local since_base=$(git rev-list --count $base..HEAD)
   local unmerged_since_base=$(git rev-list --count $(git_release_branch_list | sed 's/$/..HEAD/'))
   if (( $since_base > $unmerged_since_base )); then
-    echoerr some commits were merged to a demo or release branch, only merge from now on
+    echoerr some commits were merged to a release branch, only merge from now on
   fi
 }
 

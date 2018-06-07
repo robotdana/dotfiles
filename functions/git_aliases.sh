@@ -217,7 +217,7 @@ function grm() {
 # TODO: sometimes the conflict is one is deleted, and I want deletion.
 # TODO: only allow to run during a rebase
 function grc() {
-  git_open_conflicts && git_add_conflicts && echodo git rebase --continue
+  git_open_conflicts && git_add_conflicts && GIT_EDITOR=true echodo git rebase --continue
 }
 
 function gs() {

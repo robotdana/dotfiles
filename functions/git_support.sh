@@ -276,7 +276,7 @@ function git_stash() {
 }
 
 function git_uncommit() {
-  echodo git reset --soft HEAD^ && git_unstage
+  echodo git reset --quiet HEAD^ --
 }
 function git_fake_auto_stash() {
   if [[ ! -z "$(git diff)$(git ls-files --others --exclude-standard)" ]]; then

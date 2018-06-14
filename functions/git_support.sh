@@ -153,6 +153,11 @@ function git_release_branch_match() {
 function git_rebasable() {
   git_non_release_branch
   git_force_pull_release_branches
+  git_rebasable_quick
+}
+
+function git_rebasable_quick() {
+  git_non_release_branch
   local base=${1:-master}
   local since_base=$(git rev-list --count $base..HEAD)
   local unmerged_since_base=$(git rev-list --count $(git_release_branch_list | sed 's/$/..HEAD/'))

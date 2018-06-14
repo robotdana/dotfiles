@@ -82,9 +82,9 @@ function gunwip() {
 function gcf() {
   local commit=$1
   if [ -z "$commit" ]; then
-    git_rebasable HEAD^ && ga && echodo git commit --amend --no-edit
+    git_rebasable_quick HEAD^ && ga && echodo git commit --amend --no-edit
   else
-    git_rebasable $commit^ && ga && echodo git commit --fixup $commit && git_rebase_i $commit^
+    git_rebasable_quick $commit^ && ga && echodo git commit --fixup $commit && git_rebase_i $commit^
   fi
 }
 

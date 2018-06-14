@@ -97,8 +97,17 @@ function git_non_release_branch() {
 
 # `git_current_branch [optional_prefix]` the current branch name possibly with a prefix
 function git_current_branch() {
-  local branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>/dev/null)
-  [[ ! -z "$branch" ]] && echo "$1$branch"
+  git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>/dev/null
+}
+
+function git_prompt_current_branch() {
+  local branch
+  branch=$(git_current_branch)
+  if [[ $branch == 'HEAD' ]]; then
+    branch=$(git branch --format='%(refname:short)' --contains HEAD | grep -Evx "($(git_release_branch_match)|\\(HEAD detached at.*)")
+    branch="$branch[$(git rev-parse --short HEAD)]"
+  fi
+  [[ ! -z $branch ]] && echo "$1$branch"
 }
 
 function git_current_repo() {

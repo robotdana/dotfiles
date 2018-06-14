@@ -9,7 +9,7 @@ function git_track_untracked(){
 function git_untrack_new_blank() {
   local newblank=$(git diff --cached --numstat --no-renames --diff-filter=A | awk -F'\t' '/^0\t0\t/ { print "\"" $3 "\""}')
   if [[ ! -z "$newblank" ]]; then
-    echodo git reset $newblank
+    echodo git reset -- $newblank
   fi
 }
 

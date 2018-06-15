@@ -211,63 +211,6 @@ function git_file_changed() {
   git_changed_files | grep -xE "$1"
 }
 
-# doesn't actually use the stash because it stashes indexed changes as well and 90% of the time I don't want that because I end up with weird merges
-# TODO: look into replacing with something similar to https://stackoverflow.com/questions/20479794
-# function git_fake_stash_dir() {
-#   echo .git-fake-stash/$(git_current_branch)/
-# }
-
-# function git_fake_stash_list() {
-#   ( cd $(git_fake_stash_dir); tail *.diff & ) 2>/dev/null
-# }
-
-# function git_fake_stash_clear() {
-#   rm -rf $(git_fake_stash_dir) 2>/dev/null
-# }
-
-# function git_fake_stash_head() {
-#   local dir=$(git_fake_stash_dir)
-#   ls $dir*.diff 2>/dev/null | sort -rh | head -n 1 || echo $dir"0.diff"
-# }
-
-# function git_fake_stash_next_path() {
-#   local dir=$(git_fake_stash_dir)
-#   mkdir -pv $dir
-#   local num=$(git_fake_stash_head)
-#   local num=${num#$dir}
-#   local num=${num%.diff}
-#   local new_num=$(( $num + 1 ))
-
-#   echo $dir$new_num.diff
-# }
-
-# function git_fake_stash() {
-#   git_track_untracked
-#   if [[ ! -z "$(git diff)" ]]; then
-#     local diff_path=$(git_fake_stash_next_path)
-#     echodo "git diff > $diff_path"
-#     if [[ -s $diff_path ]]; then
-#       echodo git apply -R $diff_path
-#       git_untrack_new_blank
-#       git_remove_empty_untracked
-#     fi
-#   fi
-# }
-
-# function git_fake_stash_pop() {
-#   local file=$(git_fake_stash_head)
-#   if [[ -s $file ]]; then
-#     untracked=$(git apply --3way --check $file 2>&1 | awk -F':' '/error: .*: does not exist in index/ {print $2}')
-#     if [[ ! -z "$untracked" ]]; then
-#       touch $untracked
-#       git add .
-#     fi
-#     echodo git apply --3way $file && rm $file && git_unstage && git_fake_stash_pop
-#   elif [[ -f $file ]]; then
-#     rm $file && git_fake_stash_pop
-#   fi
-# }
-
 function git_unstage() {
   local has_staged=$(git diff --cached --numstat --no-renames | grep -Ev "^0\t0\t")
   if [[ ! -z "$has_staged" ]]; then

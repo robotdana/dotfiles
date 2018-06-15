@@ -89,4 +89,12 @@ function alias_frequency() {
   history | sed -E "s/ *[0-9]+\*? *[0-9 :-]+ *//" | sort | uniq -c | sort -rn | head -50
 }
 
+function strip_color() {
+  if (( $# = 0 )); then
+    sed -E "s/[[:cntrl:]]\\[[0-9]{1,3}(;[0-9]{1,3})*m//g"
+  else
+    echo -e "$@" | sed -E "s/[[:cntrl:]]\\[[0-9]{1,3}(;[0-9]{1,3})*m//g"
+  fi
+}
+
 alias default_latest_ruby="ls ~/.rubies | grep ruby- | sort -t- -k2,2 -n | tail -1 | cut -d '/' -f 1 > ~/.ruby-version"

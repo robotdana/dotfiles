@@ -1,8 +1,12 @@
 # source ./bash_support.sh
 
+function git_untracked(){
+  git ls-files --others --exclude-standard
+}
+
 function git_track_untracked(){
   if [[ ! -z "$(git ls-files --others --exclude-standard)" ]]; then
-    echodo git add -N $(git ls-files --others --exclude-standard | quote_lines)
+    echodo git add -N $(git_untracked | quote_lines)
   fi
 }
 
@@ -14,7 +18,7 @@ function git_untrack_new_blank() {
 }
 
 function git_remove_empty_untracked() {
-  local untracked=$(git ls-files --others --exclude-standard)
+  local untracked=$(git_untracked)
   if [[ ! -z "$untracked" ]]; then
     local untracked=$(find $untracked -size 0 | quote_lines)
     if [[ ! -z "$untracked" ]]; then

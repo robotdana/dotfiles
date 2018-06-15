@@ -21,6 +21,7 @@ source ~/.dotfiles/functions/mysql_support.sh
 source ~/.dotfiles/functions/rails_support.sh
 
 source ~/.dotfiles/functions/git_aliases.sh
+source ~/.dotfiles/functions/git_alias_completion.sh
 source ~/.dotfiles/functions/dotfiles_aliases.sh
 source ~/.dotfiles/functions/rails_aliases.sh
 source ~/.dotfiles/functions/jekyll_aliases.sh

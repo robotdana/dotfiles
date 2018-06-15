@@ -1,5 +1,4 @@
 # source ./git_support.sh
-source ~/.dotfiles/locals/git-completion.bash
 
 # `ga` git add
 # interactively add, including new files
@@ -27,7 +26,6 @@ function gbn() {
 function gb() {
   echodo git checkout $*
 }
-__git_complete gb __git_complete_refs
 
 # `gbb` git branch back
 # switches to previous branch
@@ -47,7 +45,6 @@ function gbl() {
   local base_branch=${1:-master}
   echodo git log --oneline $(git_log_range $base_branch)
 }
-__git_complete gbl __git_complete_refs
 
 # `gbf <filename> [<base branch>]` git branch file
 # shows commits modifying <filename> since this branch forked from <base_branch> or master.
@@ -56,7 +53,6 @@ function gbf() {
   local base_branch=${2:-master}
   echodo git log --oneline --follow --patch $(git_log_range $base_branch) -- $filename
 }
-__git_complete gbf __git_complete_refs
 
 # `gwip` git wip
 # commit everything carelessly with the message `wip`
@@ -113,14 +109,12 @@ function gcp() {
 function glp(){
   gl $* && gp $*
 }
-__git_complete glp __git_complete_remote_or_refspec
 
 # `grp [<remote>]` git pull push
 # pull using rebase, then push the current branch to <remote> or origin
 function grp(){
   glr $* && gp $*
 }
-__git_complete glp __git_complete_remote_or_refspec
 
 
 # `gp [<remote>] [<options>]` git push
@@ -131,7 +125,6 @@ function gp(){
   local options=${@:2}
   echodo git push $options $remote $branch
 }
-__git_complete gp __git_complete_remote_or_refspec
 
 
 # `gpf [<remote>]` git push force
@@ -140,7 +133,6 @@ function gpf(){
   local remote=${1:-origin}
   git_non_release_branch && gp $remote --force-with-lease
 }
-__git_complete gpf __git_complete_remote_or_refspec
 
 # `gl [<remote>] [<branch>]` git pull
 # pull <branch> or the current branch from <remote> or origin
@@ -149,7 +141,6 @@ function gl(){
   local branch=${2:-$(git_current_branch)}
   echodo git pull --no-edit $remote $branch
 }
-__git_complete gl __git_complete_remote_or_refspec
 
 # `glf [<remote>] [<branch>]` git pull force
 # force pull <branch> or the current branch from <remote> or origin
@@ -158,7 +149,6 @@ function glf() {
   local branch=${2:-$(git_current_branch)}
   echodo git fetch $remote $branch && echodo git reset --hard $remote/$branch
 }
-__git_complete glf __git_complete_remote_or_refspec
 
 # `glr [<remote>] [<branch>]` git pull rebase
 # rebase pull <branch> or the current branch from <remote> or origin
@@ -167,7 +157,6 @@ function glr() {
   local branch=${2:-$(git_current_branch)}
   echodo git fetch $remote $branch && gr $remote/$branch
 }
-__git_complete gp __git_complete_remote_or_refspec
 
 # `glm` git pull master
 # switch to master and pull
@@ -182,7 +171,6 @@ function gm() {
   local branch=${1:-master}
   echodo git fetch origin $branch && echodo git merge origin/$branch --no-edit
 }
-__git_complete gm __git_complete_refs
 
 function gmm() {
   git_force_pull_release_branches
@@ -205,7 +193,6 @@ function gr() {
   local base=${1:-master}
   gb $base && gl && gbb && git_rebase_i $base
 }
-__git_complete gr __git_complete_refs
 
 function grm() {
   git_force_pull_release_branches

@@ -1,0 +1,14 @@
+source ~/.dotfiles/locals/git-completion.bash
+
+__git_complete gb __git_complete_refs
+__git_complete gbl __git_complete_refs
+__git_complete gbf __git_complete_refs
+__git_complete glp __git_complete_remote_or_refspec
+__git_complete glp __git_complete_remote_or_refspec
+__git_complete gp __git_complete_remote_or_refspec
+__git_complete gpf __git_complete_remote_or_refspec
+__git_complete gl __git_complete_remote_or_refspec
+__git_complete glf __git_complete_remote_or_refspec
+__git_complete gp __git_complete_remote_or_refspec
+__git_complete gm __git_complete_refs
+__git_complete gr __git_complete_refs

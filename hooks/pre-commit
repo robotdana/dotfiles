@@ -5,18 +5,22 @@ source ~/.dotfiles/functions/git_support.sh
 
 git_system && exit 0
 
-git_fake_auto_stash
 exit_code=0
 
 if [[ -f .eslintrc ]]; then
   js_files=$(git_modified js jsx)
   if [[ ! -z $js_files ]]; then
+    git_fake_auto_stash
     echodo node_modules/.bin/eslint $js_files || exit_code=1
   fi
 fi
 
 if [[ -f .rubocop.yml ]]; then
-  rubocop_only_changed_lines || exit_code=1
+  rb_files=$(git_modified rb jbuilder)
+  if [[ ! -z $rb_files ]]; then
+    git_fake_auto_stash
+    rubocop_only_changed_lines || exit_code=1
+  fi
 fi
 
 exit $exit_code

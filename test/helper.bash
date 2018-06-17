@@ -14,23 +14,25 @@ source "${TEST_BREW_PREFIX}/lib/bats-support/load.bash"
 source "${TEST_BREW_PREFIX}/lib/bats-assert/load.bash"
 source "${TEST_BREW_PREFIX}/lib/bats-file/load.bash"
 
-function git_test_init() {
-  rm -rf ~/.git-test-repo
-  mkdir ~/.git-test-repo
-  cd ~/.git-test-repo
-  git init
-  echo "#TODO" > readme.txt
-  git add readme.txt
-  git commit --no-verify -m "initial commit"
-}
+function reset_to_first_commit() {
+  cd ~/.git-test-repo || exit
 
-function git_test_init_rubocop() {
-  git_test_init
-  echo 'gem "rubocop"' > Gemfile
-  bundle --quiet
-  echo > .rubocop.yml
-  git add .
-  git commit -m "add rubocop"
+  git reset --hard "$(git log --reverse --format="%H" | head -n 1)" --
+  git clean -fd
+  git stash clear
+
+  run git status
+  assert_output "On branch master
+nothing to commit, working tree clean"
+
+  run git stash list
+  assert_output ""
+
+  run git log --format="%s"
+  assert_output "initial commit"
+
+  assert_equal "$(ls -1A)" ".git
+$(git show --pretty="" --name-only HEAD)"
 }
 
 function assert_git_status_clean {

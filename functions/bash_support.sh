@@ -90,7 +90,7 @@ function alias_frequency() {
 }
 
 function strip_color() {
-  if (( $# = 0 )); then
+  if (( $# == 0 )); then
     sed -E "s/[[:cntrl:]]\\[[0-9]{1,3}(;[0-9]{1,3})*m//g"
   else
     echo -e "$@" | sed -E "s/[[:cntrl:]]\\[[0-9]{1,3}(;[0-9]{1,3})*m//g"

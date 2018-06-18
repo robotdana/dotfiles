@@ -7,8 +7,6 @@ function echodo(){
   eval $(quote_array "$@")
 }
 
-source ~/.dotfiles/functions/git_support.sh
-
 TEST_BREW_PREFIX="$(brew --prefix)"
 source "${TEST_BREW_PREFIX}/lib/bats-support/load.bash"
 source "${TEST_BREW_PREFIX}/lib/bats-assert/load.bash"

@@ -2,6 +2,8 @@
 
 load helper
 
+source ~/.dotfiles/functions/git_support.sh
+
 function setup() {
   if [[ "$BATS_TEST_NUMBER" -eq "1" ]]; then
     rm -rf ~/.git-test-repo

@@ -59,20 +59,16 @@ function quote_lines() {
 }
 
 function quote_array() {
-  if (( $# <= 1 )); then
-    echo "$@"
-  else
-    for n in "$@"; do
-      if [[ "$n" =~ "'" ]]; then
-        echo -en "\"$n\" "
-      elif [[ "$n" =~ ' ' ]] || [[ -z "$n" ]]; then
-        echo -en "'$n' "
-      else
-        echo -en "$n "
-      fi
-    done
-    echo ""
-  fi
+  for n in "$@"; do
+    if [[ "$n" =~ "'" ]]; then
+      echo -en "\"$n\" "
+    elif [[ "$n" =~ ' ' ]] || [[ -z "$n" ]] || [[ "$n" =~ \(|\) ]]; then
+      echo -en "'$n' "
+    else
+      echo -en "$n "
+    fi
+  done
+  echo ""
 }
 
 function echodo(){

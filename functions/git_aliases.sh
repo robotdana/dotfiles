@@ -179,10 +179,10 @@ function gmm() {
 
 # `gmc` git merge conflicts
 # load the merge conflicts into the editor, then once the issues are resolved, commit the merge.
-# TODO: sometimes the conflict is one is deleted, and I want deletion.
 # TODO: only allow to run during a merge
 function gmc() {
-  git_open_conflicts && git_add_conflicts && echodo git commit --no-verify --no-edit
+  git_handle_conflicts
+  echodo git commit --no-verify --no-edit
 }
 
 # `gr [<branch or commit>]` git rebase
@@ -191,20 +191,20 @@ function gmc() {
 # TODO: don't switch branches if you don't have to
 function gr() {
   local base=${1:-master}
-  gb $base && gl && gbb && git_rebase_i $base
+  gb "$base" && gl && gbb && git_rebase_i "$base"
 }
 
 function grm() {
   git_force_pull_release_branches
-  git_rebase_i master
+  git_rebase_i origin/master
 }
 
 # `grc` git rebase conflicts
 # load the rebase conflicts into an editor, then once issues are resolved, continue the rebase.
-# TODO: sometimes the conflict is one is deleted, and I want deletion.
 # TODO: only allow to run during a rebase
 function grc() {
-  git_open_conflicts && git_add_conflicts && GIT_EDITOR=true echodo git rebase --continue
+  git_handle_conflicts
+  GIT_EDITOR=true echodo git rebase --continue
 }
 
 function gs() {

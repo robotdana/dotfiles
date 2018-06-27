@@ -2,19 +2,25 @@
 
 source ~/.dotfiles/functions/bash_support.sh
 
-function echodo(){
-  echo $(quote_array "$@")
-  eval $(quote_array "$@")
-}
-
 TEST_BREW_PREFIX="$(brew --prefix)"
 source "${TEST_BREW_PREFIX}/lib/bats-support/load.bash"
 source "${TEST_BREW_PREFIX}/lib/bats-assert/load.bash"
 source "${TEST_BREW_PREFIX}/lib/bats-file/load.bash"
 
+function setup_git() {
+  rm -rf ~/.git-test-repo
+  mkdir ~/.git-test-repo
+  cd ~/.git-test-repo || exit
+  git init
+}
+
 function reset_to_first_commit() {
   cd ~/.git-test-repo || exit
 
+  run git merge --abort
+  run git rebase --abort
+  git checkout --quiet  master --
+  git branch --list | grep -Fv '* master' | xargs git branch -D
   git reset --hard "$(git log --reverse --format="%H" | head -n 1)" --
   git clean -fd
   git stash clear

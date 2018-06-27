@@ -6,10 +6,7 @@ source ~/.dotfiles/functions/git_support.sh
 
 function setup() {
   if [[ "$BATS_TEST_NUMBER" -eq "1" ]]; then
-    rm -rf ~/.git-test-repo
-    mkdir ~/.git-test-repo
-    cd ~/.git-test-repo || exit
-    git init
+    setup_git
     echo 'gem "rubocop"' > Gemfile
     echo '#' > .rubocop.yml
     bundle --quiet

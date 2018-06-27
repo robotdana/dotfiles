@@ -5,7 +5,7 @@ function git_untracked(){
 }
 
 function git_track_untracked(){
-  if [[ ! -z "$(git ls-files --others --exclude-standard)" ]]; then
+  if [[ ! -z "$(git_untracked)" ]]; then
     echodo git add -N $(git_untracked | quote_lines)
   fi
 }
@@ -25,14 +25,6 @@ function git_remove_empty_untracked() {
       echodo rm $untracked
     fi
   fi
-}
-
-function git_conflicts() {
-  git ls-files -u | awk '{print $4}' | sort -u | escape_spaces | escape_brackets
-}
-
-function git_conflicts_with_line_numbers(){
-  git_conflicts | xargs grep -nHoE '^<{6}|={6}|>{6}' | cut -d: -f1-2 | escape_spaces | escape_brackets
 }
 
 function git_modified(){
@@ -63,15 +55,68 @@ function rubocop_only_changed_lines(){
   fi
 }
 
+
+
+function git_handle_conflicts {
+  # store merge flags
+  cp .git/MERGE_MSG /tmp/conflict_MERGE_MSG
+  local merge_head=$(cat .git/MERGE_HEAD)
+
+  # prepare working directory for interactive add
+  git_prepare_content_conflicts
+  git_prepare_their_deletions
+  git_prepare_our_deletions
+
+  # interactive add
+  git_track_untracked
+  git add -p
+
+  # clean up un-added
+  git_untrack_new_blank
+
+  git stash save --keep-index --include-untracked --quiet
+  comm -12 <(git_status_filtered ?? | sort) <(git_status_filtered 'D ' | sort) | xargs rm
+
+  # restore merge flags
+  cp /tmp/conflict_MERGE_MSG .git/MERGE_MSG
+  echo -e $merge_head > .git/MERGE_HEAD
+}
+
+function git_status_filtered() {
+  git status --porcelain | grep -F "$* " | colrm 1 3 | quote_lines
+}
+
+function git_conflicts_with_line_numbers(){
+  git_status_filtered UU | xargs grep -nHoE -m 1 '^<{6}|={6}|>{6}' | cut -d: -f1-2 | quote_lines
+}
+
+function git_prepare_content_conflicts() {
+  git_open_conflicts
+  git_status_filtered UU | xargs git add
+}
+
+function git_prepare_their_deletions() {
+  local conflicted=$(git_status_filtered UD)
+  if [[ ! -z "$conflicted" ]]; then
+    git rm $conflicted
+    git reset --quiet -- $conflicted # so we can interactively add the removal in the git add conflicts step
+  fi
+}
+
+function git_prepare_our_deletions() {
+  local conflicted=$(git_status_filtered DU)
+  if [[ ! -z "$conflicted" ]]; then
+    git add $conflicted
+    git reset --quiet -- $conflicted # so we can interactively re-add in the git add conflicts step
+    git add -N $conflicted
+  fi
+}
+
 function git_open_conflicts() {
   local active_conflicts=$(git_conflicts_with_line_numbers)
   if [[ ! -z "$active_conflicts" ]]; then
     git_edit $active_conflicts && git_open_conflicts
   fi
-}
-
-function git_add_conflicts() {
-  echodo git add $(git_conflicts)
 }
 
 function git_edit() {

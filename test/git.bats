@@ -3,13 +3,11 @@
 load helper
 
 source ~/.dotfiles/functions/git_support.sh
+source ~/.dotfiles/functions/git_aliases.sh
 
 function setup() {
   if [[ "$BATS_TEST_NUMBER" -eq "1" ]]; then
-    rm -rf ~/.git-test-repo
-    mkdir ~/.git-test-repo
-    cd ~/.git-test-repo || exit
-    git init
+    setup_git
     echo "#TODO" > readme.txt
     git add readme.txt
     git commit --no-verify -m "initial commit"
@@ -54,7 +52,7 @@ b"
 @test "amend cleans up" {
   echo a > a
   git add .
-  git commit --no-verify -m "Original commit"
+  git commit -m "Original commit"
   git commit --amend -m "Amended commit"
   echo b > b
   git add .
@@ -66,4 +64,95 @@ b"
   run git log --format=%s
   assert_output "Amended commit with b
 initial commit"
+}
+
+@test "resolve merge conflict: theirs deleted: keep ours" {
+  echo 'text' > file1
+  git add file1
+  git commit -m "commit1"
+  git checkout -b "branch2"
+  rm file1
+  echo 'something' > file2
+  git add file1 file2
+  git commit -m "commit2"
+  git checkout master
+  echo 'amended text' > file1
+  git add file1
+  git commit -m "commit3"
+  run git merge branch2
+  assert_output "CONFLICT (modify/delete): file1 deleted in branch2 and modified in HEAD. Version HEAD of file1 left in tree.
+Automatic merge failed; fix conflicts and then commit the result."
+  yes n | run gmc
+  run git log --format=%s -n 1
+  assert_output "Merge branch 'branch2'"
+  assert_file_exist file1
+  assert_file_exist file2
+  run cat file1
+  assert_output 'amended text'
+}
+
+@test "resolve merge conflict: ours deleted: delete ours" {
+  echo 'text' > file1
+  git add file1
+  git commit -m "commit1"
+  git checkout -b "branch2"
+  echo 'amended text' > file1
+  echo 'something' > file2
+  git add file1 file2
+  git commit -am "commit2"
+  git checkout master
+  rm file1
+  git commit -am "commit3"
+  run git merge branch2
+  assert_output "CONFLICT (modify/delete): file1 deleted in HEAD and modified in branch2. Version branch2 of file1 left in tree.
+Automatic merge failed; fix conflicts and then commit the result."
+  yes n | run gmc
+  assert_file_not_exist file1
+  assert_file_exist file2
+  assert_equal "$(git show --format="%s" HEAD)" "Merge branch 'branch2'"
+}
+
+@test "resolve merge conflict: ours deleted: keep theirs" {
+  echo 'text' > file1
+  git add file1
+  git commit -m "commit1"
+  git checkout -b "branch2"
+  echo 'amended text' > file1
+  git add file1
+  git commit -m "commit2"
+  git checkout master
+  rm file1
+  echo 'something' > file2
+  git add file1 file2
+  git commit -m "commit3"
+  run git merge branch2
+  assert_output "CONFLICT (modify/delete): file1 deleted in HEAD and modified in branch2. Version branch2 of file1 left in tree.
+Automatic merge failed; fix conflicts and then commit the result."
+  yes | run gmc
+  assert_file_exist file1
+  assert_file_exist file2
+  run git log --format=%s -n 1
+  assert_output "Merge branch 'branch2'"
+  run cat file1
+  assert_output 'amended text'
+}
+
+@test "resolve merge conflict: theirs deleted: delete ours" {
+  echo 'text' > file1
+  git add file1
+  git commit -m "commit1"
+  git checkout -b "branch2"
+  rm file1
+  git commit -am "commit2"
+  git checkout master
+  echo 'amended text' > file1
+  git add file1
+  git commit -m "commit3"
+  run git merge branch2
+  assert_output "CONFLICT (modify/delete): file1 deleted in branch2 and modified in HEAD. Version HEAD of file1 left in tree.
+Automatic merge failed; fix conflicts and then commit the result."
+  yes | run gmc
+  assert_file_not_exist file1
+  run git show --format="%s" HEAD
+  assert_output "Merge branch 'branch2'"
 }

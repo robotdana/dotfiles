@@ -127,7 +127,7 @@ function git_purge() {
 }
 
 function git_non_release_branch() {
-  if [[ ! -z "$(git_release_branch_list | grep -Fx $(git_current_branch))" ]]; then
+  if (git_current_branch | grep -qEx $(git_release_branch_match)); then
     echoerr "can't do that on a release branch"
   fi
 }
@@ -171,7 +171,7 @@ function git_non_release_branch_list() {
 
 function git_force_pull_release_branches() {
   local branches;
-  branches=$(git_release_branch_list origin/* | sed 's/^origin\/\(.*\)$/\1:\1/')
+  branches=$(git_release_branch_list origin/* | colrm 1 7)
   if [[ ! -z "$branches" ]]; then
     echodo git fetch --force origin $branches
   fi

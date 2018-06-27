@@ -293,3 +293,8 @@ function git_fake_auto_stash_pop() {
     echodo git reset --quiet --
   done
 }
+
+function git_undo () {
+  echodo git stash save --include-untracked --quiet
+  echodo git reset --hard HEAD@{1}
+}

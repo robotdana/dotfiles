@@ -17,16 +17,6 @@ function git_untrack_new_blank() {
   fi
 }
 
-function git_remove_empty_untracked() {
-  local untracked=$(git_untracked)
-  if [[ ! -z "$untracked" ]]; then
-    local untracked=$(find $untracked -size 0 | quote_lines)
-    if [[ ! -z "$untracked" ]]; then
-      echodo rm $untracked
-    fi
-  fi
-}
-
 function git_modified(){
   eval git diff --name-only --cached --diff-filter=ACM "${@/#/\*.}"
 }

@@ -105,4 +105,13 @@ function strip_color() {
   fi
 }
 
+function bt() {
+  if (( $# == 0 )); then
+    ( cd ~/.dotfiles/test && command bats *.bats )
+  else
+    ( cd ~/.dotfiles/test && command bats ${@/%/.bats} )
+  fi
+  cd $PWD
+}
+
 alias default_latest_ruby="ls ~/.rubies | grep ruby- | sort -t- -k2,2 -n | tail -1 | cut -d '/' -f 1 > ~/.ruby-version"

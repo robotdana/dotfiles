@@ -230,9 +230,9 @@ function git_status_clean() {
 
 function git_status_color() {
   if git_status_clean; then
-    printf "$C_GREEN" ""
+    echo -en "$C_GREEN"
   else
-    printf "$C_RED" ""
+    echo -en "$C_RED"
   fi
 }
 

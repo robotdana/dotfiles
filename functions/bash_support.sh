@@ -1,11 +1,11 @@
-C_RED="\033[1;31m"
-C_GREEN="\033[1;32m"
-C_YELLOW="\033[0;33m"
-C_BLUE="\033[1;34m"
-C_AQUA="\033[1;36m"
-C_GREY="\033[1;90m"
+C_RED=$'\033[1;31m'
+C_GREEN=$'\033[1;32m'
+C_YELLOW=$'\033[0;33m'
+C_BLUE=$'\033[1;34m'
+C_AQUA=$'\033[1;36m'
+C_GREY=$'\033[1;90m'
 
-C_RESET="\033[0m"
+C_RESET=$'\033[0m'
 
 function echo_red(){
   echo -e "$C_RED$@$C_RESET"

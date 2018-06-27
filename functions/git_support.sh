@@ -11,7 +11,7 @@ function git_track_untracked(){
 }
 
 function git_untrack_new_blank() {
-  local newblank=$(git diff --cached --numstat --no-renames --diff-filter=A | awk -F'\t' '/^0\t0\t/ { print "\"" $3 "\""}')
+  local newblank=$(git diff --cached --numstat --no-renames --diff-filter=A | awk -F'\t' '/^0\t0\t/ { print $3 }' | quote_lines)
   if [[ ! -z "$newblank" ]]; then
     echodo git reset -- $newblank
   fi
@@ -36,16 +36,14 @@ function git_conflicts_with_line_numbers(){
 }
 
 function git_modified(){
-  set -- ${@/#/\"*.}
-  set -- ${@/%/\"}
-  eval "git diff --name-only --cached --diff-filter=ACM $@"
+  eval git diff --name-only --cached --diff-filter=ACM "${@/#/\*.}"
 }
 
 # this is horrifying
 # I would like to pass line numbers to rubocop but they don't want you to do that because that's not _really_ going to catch all the issue, especially spacing issues
 # but it's at least (roughly) consistent with what rubocop does with pronto
 function rubocop_only_changed_lines(){
-  local modified_grep_arguments_with_line_numbers=$(for file in $(git_modified rb); do git blame -fs -M -C ..HEAD $file; done | awk -F' ' '/^0+ / {printf " -e \"" $2 "\033[0m:" $3+0 ":\""}')
+  local modified_grep_arguments_with_line_numbers=$(for file in $(git_modified rb); do git blame -fs -M -C ..HEAD "$file"; done | awk -F' ' '/^0+ / {printf " -e \"" $2 "\033[0m:" $3+0 ":\""}')
   if [[ ! -z "$modified_grep_arguments_with_line_numbers" ]]; then
     echodo bundle exec rubocop --force-exclusion --except Metrics/AbcSize,Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity --color $(git_modified rb) |
       eval grep -A 2 -F $modified_grep_arguments_with_line_numbers |
@@ -68,7 +66,7 @@ function rubocop_only_changed_lines(){
 function git_open_conflicts() {
   local active_conflicts=$(git_conflicts_with_line_numbers)
   if [[ ! -z "$active_conflicts" ]]; then
-    echodo git_edit $active_conflicts && git_open_conflicts
+    git_edit $active_conflicts && git_open_conflicts
   fi
 }
 
@@ -77,7 +75,7 @@ function git_add_conflicts() {
 }
 
 function git_edit() {
-  $(git config core.editor) $*
+  echodo $(git config core.editor) "$@"
 }
 
 # TODO: remove switching to master if I don't have to
@@ -121,7 +119,7 @@ function git_current_repo() {
 function git_log_range() {
   local from=$1
   local to=${2:-HEAD}
-  [[ "$from" != "$(git_current_branch)" ]] && echo $from..$to
+  [[ "$from" != "$(git_current_branch)" ]] && echo "$from".."$to"
 }
 
 function git_branch_list() {
@@ -163,7 +161,7 @@ function git_rebasable() {
 function git_rebasable_quick() {
   git_non_release_branch
   local base=${1:-master}
-  local since_base=$(git rev-list --count $base..HEAD)
+  local since_base=$(git rev-list --count "$base"..HEAD)
   local unmerged_since_base=$(git rev-list --count $(git_release_branch_list | sed 's/$/..HEAD/'))
   if (( $since_base > $unmerged_since_base )); then
     echoerr some commits were merged to a release branch, only merge from now on
@@ -184,7 +182,7 @@ function git_system() {
 }
 
 function git_authors() {
-  echodo "git shortlog -sen && git shortlog -secn"
+  echodo git shortlog -sen && echodo git shortlog -secn
 }
 
 function git_status_clean() {
@@ -219,7 +217,7 @@ function git_unstage() {
 }
 
 function git_stash() {
-  git_untrack_new_blank && echodo git stash -u $*
+  git_untrack_new_blank && echodo git stash -u "$@"
 }
 
 function git_uncommit() {

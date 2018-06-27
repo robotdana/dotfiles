@@ -18,13 +18,13 @@ function gbn() {
     local new_branch_name=dana/$*
   fi
   git_force_pull_release_branches
-  echodo git checkout -b $new_branch_name master
+  echodo git checkout -b "$new_branch_name" master
 }
 
 # `gb <branch>` git branch
 # switches to branch <branch>
 function gb() {
-  echodo git checkout $*
+  echodo git checkout "$@"
 }
 
 # `gbb` git branch back
@@ -43,7 +43,7 @@ function gbm() {
 # list commits added to this branch since forked from <base branch> or master.
 function gbl() {
   local base_branch=${1:-master}
-  echodo git log --oneline $(git_log_range $base_branch)
+  echodo git log --oneline $(git_log_range "$base_branch")
 }
 
 # `gbf <filename> [<base branch>]` git branch file
@@ -51,7 +51,7 @@ function gbl() {
 function gbf() {
   local filename=$1
   local base_branch=${2:-master}
-  echodo git log --oneline --follow --patch $(git_log_range $base_branch) -- $filename
+  echodo git log --oneline --follow --patch $(git_log_range "$base_branch") -- "$filename"
 }
 
 # `gwip` git wip
@@ -80,12 +80,12 @@ function gcf() {
   if [ -z "$commit" ]; then
     git_rebasable_quick HEAD^ && ga && echodo git commit --amend --no-edit
   else
-    git_rebasable_quick $commit^ && ga && echodo git commit --fixup $commit && git_rebase_i $commit^
+    git_rebasable_quick "$commit^" && ga && echodo git commit --fixup "$commit" && git_rebase_i "$commit^"
   fi
 }
 
 function gcfp() {
-  gcf $* && gpf
+  gcf "$*" && gpf
 }
 
 # `gc [<message>]` git commit
@@ -101,19 +101,19 @@ function gc() {
 # `gcp [<message>]` git commit push
 # patch add, then commit with <message> or open editor for a message, then push
 function gcp() {
-  gc $* && gp
+  gc "$*" && gp
 }
 
 # `glp [<remote>]` git pull push
 # pull then push the current branch to <remote> or origin
 function glp(){
-  gl $* && gp $*
+  gl "$@" && gp "$@"
 }
 
 # `grp [<remote>]` git pull push
 # pull using rebase, then push the current branch to <remote> or origin
 function grp(){
-  glr $* && gp $*
+  glr "$@" && gp "$@"
 }
 
 
@@ -123,7 +123,7 @@ function gp(){
   local remote=${1:-origin}
   local branch=$(git_current_branch)
   local options=${@:2}
-  echodo git push $options $remote $branch
+  echodo git push $options "$remote" "$branch"
 }
 
 
@@ -131,7 +131,7 @@ function gp(){
 # force push the current branch to <remote> or origin
 function gpf(){
   local remote=${1:-origin}
-  git_non_release_branch && gp $remote --force-with-lease
+  git_non_release_branch && gp "$remote" --force-with-lease
 }
 
 # `gl [<remote>] [<branch>]` git pull
@@ -139,7 +139,7 @@ function gpf(){
 function gl(){
   local remote=${1:-origin}
   local branch=${2:-$(git_current_branch)}
-  echodo git pull --no-edit $remote $branch
+  echodo git pull --no-edit "$remote" "$branch"
 }
 
 # `glf [<remote>] [<branch>]` git pull force
@@ -147,7 +147,7 @@ function gl(){
 function glf() {
   local remote=${1:-origin}
   local branch=${2:-$(git_current_branch)}
-  echodo git fetch $remote $branch && echodo git reset --hard $remote/$branch
+  echodo git fetch "$remote" "$branch" && echodo git reset --hard "$remote"/"$branch"
 }
 
 # `glr [<remote>] [<branch>]` git pull rebase
@@ -155,7 +155,7 @@ function glf() {
 function glr() {
   local remote=${1:-origin}
   local branch=${2:-$(git_current_branch)}
-  echodo git fetch $remote $branch && gr $remote/$branch
+  echodo git fetch "$remote" "$branch" && gr "$remote"/"$branch"
 }
 
 # `glm` git pull master
@@ -169,7 +169,7 @@ function glm() {
 # TODO: allow merging directly from any origin
 function gm() {
   local branch=${1:-master}
-  echodo git fetch origin $branch && echodo git merge origin/$branch --no-edit
+  echodo git fetch origin "$branch" && echodo git merge origin/"$branch" --no-edit
 }
 
 function gmm() {

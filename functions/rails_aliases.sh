@@ -27,19 +27,19 @@ function rc(){
 
 # `rg <generate command>` rails generate
 function rg(){
-  echodo rails generate $*
+  echodo rails generate "$@"
 }
 
 # `rgm <new migration>` rails generate migration
 # run rails generate <new migration>, open the migration file, migrate the database.
 function rgm(){
-  local filename=$(rg migration $* | awk '/db\/migrate/ {print $2}')
+  local filename=$(rg migration "$@" | awk '/db\/migrate/ {print $2}')
   if [[ ! -z $filename ]]; then
-    echodo subl -nw $filename
+    echodo subl -nw "$filename"
     if [[ -s $filename ]]; then
       rd
     else
-      echodo rm $filename
+      echodo rm "$filename"
     fi
   fi
 }
@@ -49,15 +49,15 @@ function rgm(){
 # start a rails server on <port offset> or 3000
 # once it's ready, open <host>.lvh.me:<port>/<path>
 function rs(){
-  local port=$(port_offset 3000 $1)
-  local host=$(local_host_name $2)
-  local path=$3
+  local port=$(port_offset 3000 "$1")
+  local host=$(local_host_name "$2")
+  local path="$3"
 
   # echodo kill_port $port
   wait_for_port_then "echodo open -g http://$host:$port$path" $port
 
   title "Server:$port"
-  echodo rails server -p $port --pid=tmp/pids/server$port.pid -b 0.0.0.0
+  echodo rails server -p $port --pid=tmp/pids/server"$port".pid -b 0.0.0.0
   title
 }
 
@@ -69,5 +69,5 @@ function rt(){
 }
 
 function rtn(){
-  rt --next-failure $*
+  rt --next-failure "$@"
 }

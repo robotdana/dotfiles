@@ -1,5 +1,5 @@
 function rehosts(){
-  echodo "dscacheutil -flushcache && sudo killall mDNSResponder"
+  echodo dscacheutil -flushcache && echodo sudo killall mDNSResponder
 }
 
 function shosts(){

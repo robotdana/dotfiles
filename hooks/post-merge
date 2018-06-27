@@ -6,7 +6,7 @@ source ~/.dotfiles/functions/rails_support.sh
 
 git_system && exit 0
 
-git_file_changed "package.json" && echodo "kill_port 3308 && yarn install"
+git_file_changed "package.json" && echodo kill_port 3308 && echodo yarn install
 git_file_changed "Gemfile(.lock)?" && echodo bundle install
 git_file_changed "db/schema.rb" && rails_migrate_all_soft
 

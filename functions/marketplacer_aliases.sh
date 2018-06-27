@@ -1,17 +1,17 @@
 function v(){
   local maybe_vertical=$1
   if [[ ! -z $maybe_vertical ]]; then
-    local vertical=$(long_vertical $maybe_vertical)
+    local vertical=$(long_vertical "$maybe_vertical")
     if [ -z "$vertical" ]; then
       echoerr "No such vertical"
     elif [[ "$vertical" != "$CURRENT_VERTICAL" ]]; then
-      echodo export CURRENT_VERTICAL=$vertical && title Terminal
+      echodo export CURRENT_VERTICAL="$vertical" && title Terminal
     fi
   fi
 }
 
 function vdl() {
-  v $* && echodo "yes | DISABLE_MARKETPLACER_CLI_PRODUCTION_CHECK=1 m database update $CURRENT_VERTICAL" && VERTICAL=$CURRENT_VERTICAL rails_migrate_soft
+  v "$@" && ( yes | echodo DISABLE_MARKETPLACER_CLI_PRODUCTION_CHECK=1 m database update $CURRENT_VERTICAL ) && VERTICAL=$CURRENT_VERTICAL rails_migrate_soft
 }
 
 function vdt() {
@@ -25,7 +25,7 @@ function vds() {
 function vd() {
   title 'Migrating'
   if (( $# == 1 )); then
-    v "$1" && echodo "VERTICAL=$CURRENT_VERTICAL bundle exec rails db:migrate"
+    v "$1" && echodo VERTICAL=$CURRENT_VERTICAL bundle exec rails db:migrate
   else
     rails_migrate_all
   fi

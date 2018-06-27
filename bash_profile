@@ -3,6 +3,8 @@ alias ls="ls -FG"
 bind '"\e[A":history-search-backward'
 bind '"\e[B":history-search-forward'
 
+set +H
+
 export PATH=/usr/local/heroku/bin:/usr/local/bin:/usr/local/sbin:/usr/local/lib/node:$PATH
 export EDITOR='/usr/local/bin/subl -nw'
 export GUI_EDITOR=$EDITOR

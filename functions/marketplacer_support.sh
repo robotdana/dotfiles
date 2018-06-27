@@ -38,8 +38,8 @@ function vertical_remote_console() {
   local server=$1
 
   case $server in
-    "prod") local host=$(vertical_prod_server);;
-    "staging") local host=$(vertical_staging_server);;
+    "prod") local host="$(vertical_prod_server)";;
+    "staging") local host="$(vertical_staging_server)";;
     "office") local host="office-mt.private";;
     "cabal") local host="test-cabal.private";;
     "heart") local host="test-heart.private";;

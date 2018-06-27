@@ -54,25 +54,37 @@ function escape_brackets() {
 
 function quote_lines() {
   while read -r line; do
-    echo "\"$line\""
+    echo -e $(quote "$line")
   done
 }
 
 function quote_array() {
-  for n in "$@"; do
-    if [[ "$n" =~ "'" ]]; then
-      echo -en "\"$n\" "
-    elif [[ "$n" =~ ' ' ]] || [[ -z "$n" ]] || [[ "$n" =~ \(|\) ]]; then
-      echo -en "'$n' "
-    else
-      echo -en "$n "
-    fi
+  local space=""
+  for string in "$@"; do
+    echo -en "$space"
+    quote "$string"
+    space=" "
   done
   echo ""
 }
 
+function quote() {
+  if (( $# > 0 )); then
+    local string=$*
+    if [[ -z "$string" ]]; then
+      echo -en '""'
+    elif [[ "$string" = *"'"* ]]; then
+      echo -en \""$(echo -en "$string" | sed -E "s/([\"\$])/\\\\\\1/g")\""
+    elif [[ "$string" =~ \ |\(|\)|\[|\]|\$ ]]; then
+      echo -en "'$string'"
+    else
+      echo -en "$string"
+    fi
+  fi
+}
+
 function echodo(){
-  ( echo_grey $(quote_array "$@") )>/dev/tty
+  ( echo_grey $(quote_array "$@") )>&2
   eval $(quote_array "$@")
 }
 
@@ -87,9 +99,9 @@ function alias_frequency() {
 
 function strip_color() {
   if (( $# == 0 )); then
-    sed -E "s/[[:cntrl:]]\\[[0-9]{1,3}(;[0-9]{1,3})*m//g"
+    sed -E "/^[[:cntrl:]]\\[1;90m.*[[:cntrl:]]\\[0m$/d;s/([[:cntrl:]]\\[[0-9]{1,3}(;[0-9]{1,3})*m)//g"
   else
-    echo -e "$@" | sed -E "s/[[:cntrl:]]\\[[0-9]{1,3}(;[0-9]{1,3})*m//g"
+    echo -e "$@" | sed -E "/^[[:cntrl:]]\\[1;90m.*[[:cntrl:]]\\[0m$/d;s/([[:cntrl:]]\\[[0-9]{1,3}(;[0-9]{1,3})*m)//g"
   fi
 }
 

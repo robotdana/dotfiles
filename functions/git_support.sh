@@ -50,7 +50,9 @@ function rubocop_only_changed_lines(){
 function git_handle_conflicts {
   # store merge flags
   cp .git/MERGE_MSG /tmp/conflict_MERGE_MSG
-  local merge_head=$(cat .git/MERGE_HEAD)
+  if [[ -e .git/MERGE_HEAD ]]; then
+    local merge_head=$(cat .git/MERGE_HEAD)
+  fi
 
   # prepare working directory for interactive add
   git_prepare_content_conflicts
@@ -69,7 +71,9 @@ function git_handle_conflicts {
 
   # restore merge flags
   cp /tmp/conflict_MERGE_MSG .git/MERGE_MSG
-  echo -e $merge_head > .git/MERGE_HEAD
+  if [[ ! -z "$merge_head" ]]; then
+    echo -e $merge_head > .git/MERGE_HEAD
+  fi
 }
 
 function git_status_filtered() {

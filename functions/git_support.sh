@@ -232,9 +232,21 @@ function git_status_clean() {
   fi
 }
 
+function git_head_pushed() {
+  if [[ "$(git rev-parse origin/$(git_current_branch) 2>/dev/null)" == "$(git rev-parse HEAD)" ]]; then
+    true
+  else
+    false
+  fi
+}
+
 function git_status_color() {
   if git_status_clean; then
-    echo -en "$C_GREEN"
+    if git_head_pushed; then
+      echo -en "$C_AQUA"
+    else
+      echo -en "$C_GREEN"
+    fi
   else
     echo -en "$C_RED"
   fi

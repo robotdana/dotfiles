@@ -83,6 +83,7 @@ function quote() {
   fi
 }
 
+# TODO: make this work with xargs
 function echodo(){
   ( echo_grey $(quote_array "$@") )>&2
   eval $(quote_array "$@")

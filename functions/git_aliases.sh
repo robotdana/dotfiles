@@ -17,7 +17,7 @@ function gbn() {
   else
     local new_branch_name=dana/$*
   fi
-  git_force_pull_release_branches
+  glm
   echodo git checkout -b "$new_branch_name" master
 }
 
@@ -161,7 +161,7 @@ function glr() {
 # `glm` git pull master
 # switch to master and pull
 function glm() {
-  git_force_pull_release_branches && gb master
+  gb master && gl master
 }
 
 # `gm <branch>` git merge
@@ -173,8 +173,7 @@ function gm() {
 }
 
 function gmm() {
-  git_force_pull_release_branches
-  git merge master
+  gm master
 }
 
 # `gmc` git merge conflicts
@@ -195,8 +194,7 @@ function gr() {
 }
 
 function grm() {
-  git_force_pull_release_branches
-  git_rebase_i origin/master
+  gr master
 }
 
 # `grc` git rebase conflicts

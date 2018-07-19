@@ -16,10 +16,10 @@ if [[ -f .eslintrc ]]; then
 fi
 
 if [[ -f .rubocop.yml ]]; then
-  rb_files=$(git_modified rb jbuilder)
+  rb_files=$(git_modified rb jbuilder builder Gemfile)
   if [[ ! -z $rb_files ]]; then
     git_fake_auto_stash
-    rubocop_only_changed_lines || exit_code=1
+    echodo bundle exec rubocop --parallel --force-exclusion --color $rb_files || exit_code=1
   fi
 fi
 

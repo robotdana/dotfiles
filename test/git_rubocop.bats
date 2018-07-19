@@ -31,7 +31,15 @@ function setup() {
   bad_rb > bar.rb
   git add .
   run git commit -m "fail rubocop"
-  assert_cleaned_output "bar.rb:4:1: C: Layout/EmptyLinesAroundMethodBody: Extra empty line detected at method body beginning."
+  assert_cleaned_output "Inspecting 2 files
+CC
+
+Offenses:
+
+bar.rb:4:1: C: Layout/EmptyLinesAroundMethodBody: Extra empty line detected at method body beginning.
+foo.rb:4:1: C: Layout/EmptyLinesAroundMethodBody: Extra empty line detected at method body beginning.
+
+2 files inspected, 2 offenses detected"
   run git diff --cached --name-only
   assert_line "bar.rb"
   assert_line "foo.rb"
@@ -65,7 +73,14 @@ function setup() {
   bad_rb > bar.rb
   git add bar.rb
   run git commit -m "fail rubocop"
-  assert_cleaned_output "bar.rb:4:1: C: Layout/EmptyLinesAroundMethodBody: Extra empty line detected at method body beginning."
+  assert_cleaned_output "Inspecting 1 file
+C
+
+Offenses:
+
+bar.rb:4:1: C: Layout/EmptyLinesAroundMethodBody: Extra empty line detected at method body beginning.
+
+1 file inspected, 1 offense detected"
   run git diff --cached --name-only
   assert_output "bar.rb"
   run git_untracked
@@ -97,7 +112,14 @@ $(bad_rb)"
   git add foo.rb
   good_rb >> foo.rb
   run git commit -m "fail rubocop"
-  assert_cleaned_output "foo.rb:4:1: C: Layout/EmptyLinesAroundMethodBody: Extra empty line detected at method body beginning."
+  assert_cleaned_output "Inspecting 1 file
+C
+
+Offenses:
+
+foo.rb:4:1: C: Layout/EmptyLinesAroundMethodBody: Extra empty line detected at method body beginning.
+
+1 file inspected, 1 offense detected"
   good_rb > foo.rb
   git add foo.rb
   git commit -m "pass rubocop"
@@ -111,7 +133,14 @@ $(good_rb)"
   good_rb > foo.rb
   echo "CONFLICT = false" >> foo.rb
   run git commit -m "fail rubocop"
-  assert_cleaned_output "foo.rb:4:1: C: Layout/EmptyLinesAroundMethodBody: Extra empty line detected at method body beginning."
+  assert_cleaned_output "Inspecting 1 file
+C
+
+Offenses:
+
+foo.rb:4:1: C: Layout/EmptyLinesAroundMethodBody: Extra empty line detected at method body beginning.
+
+1 file inspected, 1 offense detected"
   good_rb > foo.rb
   echo "CONFLICTED = true" >> foo.rb
   git add foo.rb

@@ -13,6 +13,10 @@ export JAVA_HOME="/Library/Internet\\ Plug-Ins/JavaAppletPlugin.plugin/Contents/
 source /usr/local/opt/chruby/share/chruby/chruby.sh
 source /usr/local/opt/chruby/share/chruby/auto.sh
 
+if [[ "$(ruby -v)" == "$(chruby system && ruby -v)" ]]; then
+  chruby $(chruby | grep -vF 'preview' | tail -n1 | colrm 1 3)
+fi
+
 source ~/.dotfiles/functions/bash_support.sh
 source ~/.dotfiles/functions/git_support.sh
 source ~/.dotfiles/functions/hosts_support.sh

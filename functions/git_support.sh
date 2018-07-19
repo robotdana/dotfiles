@@ -203,7 +203,7 @@ function git_status_clean() {
 }
 
 function git_head_pushed() {
-  if [[ "$(git rev-parse origin/$(git_current_branch) 2>/dev/null)" == "$(git rev-parse HEAD)" ]]; then
+  if [[ "$(git rev-parse origin/$(git_current_branch) 2>/dev/null)" == "$(git rev-parse HEAD 2>/dev/null)" ]]; then
     true
   else
     false

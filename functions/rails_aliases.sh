@@ -63,9 +63,7 @@ function rs(){
 
 # `rt [<test files>]` shortcut for rspec.
 function rt(){
-  title "Spec"
   bundle exec rspec --format documentation "$@"
-  title
 }
 
 function rtn(){

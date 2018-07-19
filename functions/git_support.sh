@@ -21,36 +21,12 @@ function git_modified(){
   eval git diff --name-only --cached --diff-filter=ACM "${@/#/\*.}"
 }
 
-# this is horrifying
-# I would like to pass line numbers to rubocop but they don't want you to do that because that's not _really_ going to catch all the issue, especially spacing issues
-# but it's at least (roughly) consistent with what rubocop does with pronto
-function rubocop_only_changed_lines(){
-  local modified_grep_arguments_with_line_numbers=$(for file in $(git_modified rb); do git blame -fs -M -C ..HEAD "$file"; done | awk -F' ' '/^0+ / {printf " -e \"" $2 "\033[0m:" $3+0 ":\""}')
-  if [[ ! -z "$modified_grep_arguments_with_line_numbers" ]]; then
-    echodo bundle exec rubocop --force-exclusion --except Metrics/AbcSize,Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity --color $(git_modified rb) |
-      eval grep -A 2 -F $modified_grep_arguments_with_line_numbers |
-      awk '
-        BEGIN {num_printed = 0}
-        {
-          if(NR==1 || prev=="--" || (prev_printed==1 && substr($0,1,1) == " ")) {
-            prev_printed=1;
-            print $0;
-            num_printed++
-          } else {
-            prev_printed=0
-          };
-          prev=$0
-        };
-        END { exit num_printed }'
-  fi
-}
-
-
-
 function git_handle_conflicts {
   # store merge flags
   cp .git/MERGE_MSG /tmp/conflict_MERGE_MSG
-  local merge_head=$(cat .git/MERGE_HEAD)
+  if [[ -e .git/MERGE_HEAD ]]; then
+    local merge_head=$(cat .git/MERGE_HEAD)
+  fi
 
   # prepare working directory for interactive add
   git_prepare_content_conflicts
@@ -69,15 +45,13 @@ function git_handle_conflicts {
 
   # restore merge flags
   cp /tmp/conflict_MERGE_MSG .git/MERGE_MSG
-  echo -e $merge_head > .git/MERGE_HEAD
+  if [[ ! -z "$merge_head" ]]; then
+    echo -e $merge_head > .git/MERGE_HEAD
+  fi
 }
 
 function git_status_filtered() {
   git status --porcelain | grep -F "$* " | colrm 1 3 | quote_lines
-}
-
-function git_conflicts_with_line_numbers(){
-  git_status_filtered UU | xargs grep -nHoE -m 1 '^<{6}|={6}|>{6}' | cut -d: -f1-2 | quote_lines
 }
 
 function git_prepare_content_conflicts() {
@@ -228,9 +202,21 @@ function git_status_clean() {
   fi
 }
 
+function git_head_pushed() {
+  if [[ "$(git rev-parse origin/$(git_current_branch) 2>/dev/null)" == "$(git rev-parse HEAD 2>/dev/null)" ]]; then
+    true
+  else
+    false
+  fi
+}
+
 function git_status_color() {
   if git_status_clean; then
-    echo -en "$C_GREEN"
+    if git_head_pushed; then
+      echo -en "$C_AQUA"
+    else
+      echo -en "$C_GREEN"
+    fi
   else
     echo -en "$C_RED"
   fi

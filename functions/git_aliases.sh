@@ -220,12 +220,12 @@ function gbt() {
   gbc bundle exec rspec --format documentation --fail-fast "$@"
 }
 
-
+# TODO: do in bash -c land so i have my aliases.
 function gbc() {
   if echodo "$@"; then
     echo_green HEAD passes
   else
-    echodo git bisect reset
+    echodo git bisect reset # TODO: don't do this if you're not bisecting so there's no error
     echodo git bisect start
     echodo git bisect bad
     echodo git checkout "$(git log --format=%H master..HEAD | tail -n 1)"

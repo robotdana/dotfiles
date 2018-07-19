@@ -31,7 +31,8 @@ function setup() {
   bad_rb > bar.rb
   git add .
   run git commit -m "fail rubocop"
-  assert_cleaned_output "Inspecting 2 files
+  assert_cleaned_output "bundle exec rubocop --parallel --force-exclusion --color bar.rb foo.rb
+Inspecting 2 files
 CC
 
 Offenses:
@@ -73,7 +74,9 @@ foo.rb:4:1: C: Layout/EmptyLinesAroundMethodBody: Extra empty line detected at m
   bad_rb > bar.rb
   git add bar.rb
   run git commit -m "fail rubocop"
-  assert_cleaned_output "Inspecting 1 file
+  assert_cleaned_output "git stash save --include-untracked --quiet 'fake autostash'
+bundle exec rubocop --parallel --force-exclusion --color bar.rb
+Inspecting 1 file
 C
 
 Offenses:
@@ -112,7 +115,9 @@ $(bad_rb)"
   git add foo.rb
   good_rb >> foo.rb
   run git commit -m "fail rubocop"
-  assert_cleaned_output "Inspecting 1 file
+  assert_cleaned_output "git stash save --include-untracked --quiet 'fake autostash'
+bundle exec rubocop --parallel --force-exclusion --color foo.rb
+Inspecting 1 file
 C
 
 Offenses:
@@ -133,7 +138,9 @@ $(good_rb)"
   good_rb > foo.rb
   echo "CONFLICT = false" >> foo.rb
   run git commit -m "fail rubocop"
-  assert_cleaned_output "Inspecting 1 file
+  assert_cleaned_output "git stash save --include-untracked --quiet 'fake autostash'
+bundle exec rubocop --parallel --force-exclusion --color foo.rb
+Inspecting 1 file
 C
 
 Offenses:

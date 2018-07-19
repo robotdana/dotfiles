@@ -87,6 +87,9 @@ function gcf() {
 function gcfp() {
   gcf "$*" && gpf
 }
+function gcpf() {
+  gcfp "$*"
+}
 
 # `gc [<message>]` git commit
 # patch add, then commit with <message> or open editor for a message

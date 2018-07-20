@@ -231,7 +231,7 @@ function gbc() {
     echodo git checkout "$(git log --format=%H master..HEAD | tail -n 1)"
     if echodo "$@"; then
       echodo git bisect good
-      echodo git bisect run "$@"
+      echodo git bisect run bash -cl "$@"
       echodo git bisect reset
     else
       echodo git bisect reset

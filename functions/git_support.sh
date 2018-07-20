@@ -125,6 +125,27 @@ function git_current_repo() {
   basename "$(git config --get remote.origin.url 2>/dev/null)" .git
 }
 
+function find_sha() {
+  local commits=()
+  while IF= read -r line; do
+    commits+=( "$line" )
+  done < <(git log --color --format='%C(Yellow)%h %Creset%s' master..HEAD | grep -E -e "\\e\\[33m$*" -e "\\e\\[m.*$*")
+
+  if (( ${#commits[@]} > 1 )); then
+    echoerr "Multiple possible commits found:"
+    for commit in "${commits[@]}"; do
+      echo -e "$commit" >&2
+    done
+    return ${#commits[@]}
+  elif (( ${#commits[@]} == 0 )); then
+    echoerr "Commit not found:"
+    gbl >&2
+    return 1
+  else
+    echo "${commits[0]}" | cut -d' ' -f1 | strip_color
+  fi
+}
+
 function git_log_range() {
   local from=$1
   local to=${2:-HEAD}

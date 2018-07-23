@@ -76,3 +76,7 @@ function buildkite_failures() {
   echo "$failures" | head -n 2 >/dev/tty
   echo "$failures" | awk -F'[\033 ]' '/^\033\[31mrspec / { print $3 }' | tr -d "'" > .buildkite-failures
 }
+
+function buildkite() {
+  open "https://buildkite.com/marketplacer/marketplacer-remote/builds?branch=$(git_current_branch)"
+}

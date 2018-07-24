@@ -130,6 +130,7 @@ function gp(){
   local branch=$(git_current_branch)
   local options=${@:2}
   echodo git push $options "$remote" "$branch"
+  buildkite
 }
 
 

@@ -76,13 +76,16 @@ function gunwip() {
 # `gcf [<commit>]` git commit fix
 # fixups <commit> or the last commit & rebases
 function gcf() {
-  if (( $# == 0 )); then
+  if [[ -z "$1" ]]; then
+    # TODO: bail if there's nothing to commit.
     git_rebasable_quick HEAD^ && ga && echodo git commit --amend --no-edit
   else
     local commit
     commit=$(find_sha $*)
     if (( $? < 1 )); then
       git_rebasable_quick "$commit^" && ga && echodo git commit --fixup "$commit" && git_rebase_i "$commit^"
+    else
+      return 1
     fi
   fi
 }

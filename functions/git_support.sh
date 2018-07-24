@@ -87,17 +87,35 @@ function git_edit() {
   echodo $(git config core.editor) "$@"
 }
 
-# TODO: remove switching to master if I don't have to
 function git_purge() {
-  echodo git checkout master
-  echodo git fetch -p
+  echodo git fetch -p origin $(git_branch_local_and_remote)
 
-  local local_merged=$(git_non_release_branch_list --merged)
-  [ ! -z "$local_merged" ] && echodo git branch -d $local_merged
-  local tracking_merged=$(git_non_release_branch_list -r --merged)
-  [ ! -z "$tracking_merged" ] && echodo git branch -rd $tracking_merged
+  git_purge_merged
+  git_purge_rebase_merged
+  git_purge_only_tracking
 
-  gbb
+
+}
+
+function git_purge_rebase_merged() {
+  for branch in $(git_non_release_branch_list); do
+    local message=( $(git show -s --pretty="%at %aN %aE %s" "$branch") )
+    if [[ ! -z "$(git log --since="${message[0]}" --pretty="%at %aN %aE %s" master | grep -F "$message")" ]]; then
+      echodo git branch -D "$branch"
+    fi
+  done
+}
+
+function git_purge_merged() {
+  local merged=$(git_non_release_branch_list --merged master)
+  [ ! -z "$merged" ] && echodo git branch -d "${local_merged[@]}"
+}
+
+function git_purge_only_tracking() {
+  local only_tracking=$(comm -13 <( git_non_release_branch_list | sed 's/^/origin\//' ) <( git_non_release_branch_list -r ))
+  if [[ ! -z $only_tracking ]]; then
+    echodo git branch -rD $only_tracking
+  fi
 }
 
 function git_non_release_branch() {
@@ -153,7 +171,19 @@ function git_log_range() {
 }
 
 function git_branch_list() {
-  git branch --all --list --format="%(refname:short)" $*
+  git branch --list --format="%(refname:short)" $*
+}
+
+function git_branch_local_only() {
+  comm -23 <( git_branch_list ) <( git_remote_branch_list )
+}
+
+function git_branch_local_and_remote() {
+  comm -12 <( git_branch_list ) <( git_remote_branch_list )
+}
+
+function git_remote_branch_list() {
+  git ls-remote --heads -q | colrm 1 59
 }
 
 function git_release_branch_list() {
@@ -166,7 +196,7 @@ function git_non_release_branch_list() {
 
 function git_force_pull_release_branches() {
   local branches;
-  branches=$(git_release_branch_list origin/* | colrm 1 7)
+  branches=$(git_release_branch_list -r | cut -d'/' -f 2-)
   if [[ ! -z "$branches" ]]; then
     echodo git fetch --force origin $branches
   fi
@@ -192,7 +222,7 @@ function git_rebasable_quick() {
   git_non_release_branch
   local base=${1:-master}
   local since_base=$(git rev-list --count "$base"..HEAD)
-  local unmerged_since_base=$(git rev-list --count $(git_release_branch_list | sed 's/$/..HEAD/'))
+  local unmerged_since_base=$(git rev-list --count $(git_release_branch_list --all | sed 's/$/..HEAD/'))
   if (( $since_base > $unmerged_since_base )); then
     echoerr some commits were merged to a release branch, only merge from now on
   fi

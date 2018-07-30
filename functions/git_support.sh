@@ -94,7 +94,9 @@ function git_purge() {
   git_purge_rebase_merged
   git_purge_only_tracking
 
-
+  case $(git_current_repo) in
+    marketplacer) cc_menu_remove_purged;;
+  esac
 }
 
 function git_purge_rebase_merged() {

@@ -17,6 +17,8 @@ if [[ "$(ruby -v)" == "$(chruby system && ruby -v)" ]]; then
   chruby $(chruby | grep -vF 'preview' | tail -n1 | colrm 1 3)
 fi
 
+source ~/.dotfiles/locals/secrets
+
 source ~/.dotfiles/functions/bash_support.sh
 source ~/.dotfiles/functions/git_support.sh
 source ~/.dotfiles/functions/hosts_support.sh

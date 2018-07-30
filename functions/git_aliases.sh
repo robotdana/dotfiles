@@ -133,7 +133,10 @@ function gp(){
   local branch=$(git_current_branch)
   local options=${@:2}
   echodo git push $options "$remote" "$branch"
-  buildkite
+
+  case $(git_current_repo) in
+    marketplacer) cc_menu_add;;
+  esac
 }
 
 
@@ -171,7 +174,7 @@ function glr() {
 # `glm` git pull master
 # switch to master and pull
 function glm() {
-  gb master && gl master
+  gb master && gl
 }
 
 # `gm <branch>` git merge

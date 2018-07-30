@@ -24,7 +24,8 @@
 		"unwelcomeness",
 		"infantilizing",
 		"trans",
-		"unbiblical"
+		"unbiblical",
+		"Github"
 	],
 	"always_prompt_for_file_reload": false,
 	"bold_folder_labels": true,
@@ -51,18 +52,12 @@
 		"_site"
 	],
 	"font_face": "Inconsolata",
-	"font_size": 12,
+	"font_size": 14,
 	"highlight_modified_tabs": true,
 	"hot_exit": false,
 	"ignored_packages":
 	[
-		"Markdown",
-		"SideBarEnhancements",
 		"Vintage"
-	],
-	"ignored_words":
-	[
-		"Github"
 	],
 	"remember_open_files": false,
 	"rulers":

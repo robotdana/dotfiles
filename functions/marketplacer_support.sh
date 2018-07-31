@@ -98,7 +98,7 @@ function cc_menu_remove {
 }
 
 function cc_menu_remove_purged {
-  cc_menu_initialize $(comm -12 <( cc_menu_list ) <( git_non_release_branch_list ))
+  cc_menu_initialize $(comm -12 <( cc_menu_list | sort ) <( git_non_release_branch_list | sort ))
 }
 
 function cc_menu_add_item {

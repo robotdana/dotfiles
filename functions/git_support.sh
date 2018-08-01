@@ -21,6 +21,10 @@ function git_modified(){
   eval git diff --name-only --cached --diff-filter=ACM "${@/#/\*.}"
 }
 
+function git_conflicts_with_line_numbers(){
+  git_status_filtered UU | xargs grep -nHoE -m 1 '^<{6}|={6}|>{6}' | cut -d: -f1-2 | quote_lines
+}
+
 function git_handle_conflicts {
   # store merge flags
   cp .git/MERGE_MSG /tmp/conflict_MERGE_MSG

@@ -25,6 +25,7 @@ source ~/.dotfiles/functions/hosts_support.sh
 source ~/.dotfiles/functions/prompt_support.sh
 source ~/.dotfiles/functions/server_support.sh
 source ~/.dotfiles/functions/marketplacer_support.sh
+source ~/.dotfiles/functions/cc_menu_support.sh
 source ~/.dotfiles/functions/rails_support.sh
 source ~/.dotfiles/functions/less_support.sh
 

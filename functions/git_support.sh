@@ -92,21 +92,26 @@ function git_edit() {
 }
 
 function git_purge() {
-  echodo git fetch -p origin $(git_branch_local_and_remote)
+  if [[ "$(git_current_branch)" != "master" ]]; then
+    echoerr "must do this on master branch"
+  else
+    echodo git fetch -qp origin $(git_branch_local_and_remote)
+    git reset --hard --quiet origin/master
 
-  git_purge_merged
-  git_purge_rebase_merged
-  git_purge_only_tracking
+    git_purge_merged
+    git_purge_rebase_merged
+    git_purge_only_tracking
 
-  case $(git_current_repo) in
-    marketplacer) cc_menu_remove_purged;;
-  esac
+    case $(git_current_repo) in
+      marketplacer) cc_menu_remove_purged;;
+    esac
+  fi
 }
 
 function git_purge_rebase_merged() {
   for branch in $(git_non_release_branch_list); do
-    local message=( $(git show -s --pretty="%at %aN %aE %s" "$branch") )
-    if [[ ! -z "$(git log --since="${message[0]}" --pretty="%at %aN %aE %s" master | grep -F "$message")" ]]; then
+    local message=( $(git show -s --pretty="%at %aE %s" "$branch") )
+    if [[ ! -z "$(git log --since="${message[0]}" --author="${message[1]}" --pretty="%at %aE %s" master | grep -F "$(echo ${message[@]})")" ]]; then
       echodo git branch -D "$branch"
     fi
   done
@@ -114,7 +119,7 @@ function git_purge_rebase_merged() {
 
 function git_purge_merged() {
   local merged=$(git_non_release_branch_list --merged master)
-  [ ! -z "$merged" ] && echodo git branch -d "${local_merged[@]}"
+  [ ! -z "$merged" ] && echodo git branch -d "${merged[@]}"
 }
 
 function git_purge_only_tracking() {

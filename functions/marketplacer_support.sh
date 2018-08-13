@@ -61,10 +61,10 @@ function prepare_app_with_webkit() {
 }
 
 function prepare_app() {
-  ( ports_respond 3306 6379 || docker-compose up & ) && echo ''
+  ( ports_respond 3306 6379 11211 9200 || docker-compose up -d & )
   pgrep sidekiq >/dev/null || echodo ttab -G "title Sidekiq; bundle exec sidekiq; exit"
   ( ports_respond 1080 || echodo mailcatcher & )
-  wait_for_ports 3306 1080 6379
+  wait_for_ports 3306 1080 6379 11211 9200
 }
 
 function reindex() {

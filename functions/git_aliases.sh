@@ -207,7 +207,11 @@ function gr() {
 }
 
 function grm() {
-  gr master
+  if git_has_upstream; then
+    gb master && glf upstream && gp && gbb && git_rebase_i master
+  else
+    gr master
+  fi
 }
 
 # `grc` git rebase conflicts

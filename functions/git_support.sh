@@ -346,3 +346,7 @@ function github_path () {
 function git_pr () {
   open $(github_path)/compare/$(git_current_branch)?expand=1
 }
+
+function git_has_upstream () {
+  git remote get-url upstream &>/dev/null
+}

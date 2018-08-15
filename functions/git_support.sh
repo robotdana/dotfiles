@@ -158,7 +158,7 @@ function find_sha() {
   local commits=()
   while IF= read -r line; do
     commits+=( "$line" )
-  done < <(git log --color --format='%C(Yellow)%h %Creset%s' master..HEAD | grep -E -e "\\e\\[33m$*" -e "\\e\\[m.*$*")
+  done < <(git log --color --format='%C(Yellow)%h %Creset%s' $(git_log_range master) | grep -E -e "\\e\\[33m$*" -e "\\e\\[m.*$*")
 
   if (( ${#commits[@]} > 1 )); then
     echoerr "Multiple possible commits found:"
@@ -232,7 +232,7 @@ function git_rebasable() {
 function git_rebasable_quick() {
   git_non_release_branch
   local base=${1:-master}
-  local since_base=$(git rev-list --count "$base"..HEAD)
+  local since_base=$(git rev-list --count $(git_log_range "$base"))
   local unmerged_since_base=$(git rev-list --count $(git_release_branch_list --all | sed 's/$/..HEAD/'))
   if (( $since_base > $unmerged_since_base )); then
     echoerr some commits were merged to a release branch, only merge from now on

@@ -350,3 +350,7 @@ function git_pr () {
 function git_has_upstream () {
   git remote get-url upstream &>/dev/null
 }
+
+function git_branch_tail () {
+  git log --format=%h $(git_log_range master) | tail -n 1
+}

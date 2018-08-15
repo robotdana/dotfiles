@@ -222,6 +222,10 @@ function grc() {
   GIT_EDITOR=true echodo git rebase --continue
 }
 
+function grb() {
+  git rebase --interactive --autostash --autosquash $(git_branch_tail)^
+}
+
 function gs() {
   git status
 }
@@ -242,7 +246,7 @@ function gbc() {
     echodo git bisect reset # TODO: don't do this if you're not bisecting so there's no error
     echodo git bisect start
     echodo git bisect bad
-    echodo git checkout "$(git log --format=%H master..HEAD | tail -n 1)"
+    echodo git checkout "$(git_branch_tail)"
     if echodo "$@"; then
       echodo git bisect good
       echodo git bisect run bash -cl "$@"

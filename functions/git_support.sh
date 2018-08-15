@@ -336,3 +336,13 @@ function git_undo () {
   echodo git stash save --include-untracked --quiet
   echodo git reset --hard HEAD@{1}
 }
+
+function github_path () {
+  local remote=${1:-origin}
+  local git_url=$(git remote get-url $remote)
+  echo ${git_url/git@github.com:/https://github.com/}
+}
+
+function git_pr () {
+  open $(github_path)/compare/$(git_current_branch)?expand=1
+}

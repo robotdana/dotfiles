@@ -10,7 +10,8 @@ function cc_menu_add {
 function cc_menu_remove {
   local branch="${1:-$(git_current_branch)}"
   if cc_menu_present "$branch"; then
-    cc_menu_initialize $(cc_menu_list $branch)
+
+    cc_menu_initialize $(cc_menu_list "$branch")
   fi
 }
 

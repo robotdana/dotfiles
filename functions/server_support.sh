@@ -33,8 +33,9 @@ function wait_for_port_then(){
 }
 
 function kill_port() {
-  local port=$1
-  lsof -ti :"$port" | xargs kill -9
+  for port in "$@"; do
+    lsof -ti :"$port" | xargs kill -9
+  done
 }
 
 function snginx(){

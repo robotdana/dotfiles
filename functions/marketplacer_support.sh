@@ -60,10 +60,20 @@ function prepare_app_with_webkit() {
   wait_for_ports 3808
 }
 
+function prepare_app_docker() {
+  echodo kill_port 3306 6379 11211 9200
+  echodo ttab -G "title Docker; bundle exec docker-compose up; exit"
+}
+
+function prepare_app_mailcatcher {
+  echodo kill_port 1080
+  echodo mailcatcher
+}
+
 function prepare_app() {
-  ( ports_respond 3306 6379 11211 9200 || docker-compose up -d & )
+  ports_respond 3306 6379 11211 9200 || prepare_docker
   pgrep sidekiq >/dev/null || echodo ttab -G "title Sidekiq; bundle exec sidekiq; exit"
-  ( ports_respond 1080 || echodo mailcatcher & )
+  ( ports_respond 1080 || prepare_app_mailcatcher & )
   wait_for_ports 3306 1080 6379 11211 9200
 }
 

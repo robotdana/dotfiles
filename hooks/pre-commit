@@ -7,11 +7,14 @@ git_system && exit 0
 
 exit_code=0
 
-if [[ -f .eslintrc ]]; then
+if [[ -f .eslintrc ]] || [[ -f .eslintrc.js ]]; then
   js_files=$(git_modified js jsx)
   if [[ ! -z $js_files ]]; then
     git_fake_auto_stash
-    echodo node_modules/.bin/eslint $js_files || exit_code=1
+    echodo node_modules/.bin/eslint $js_files || exit 1
+    echodo node_modules/.bin/prettier-eslint --write $js_files
+    git diff $js_files
+    [[ -z "$(git diff $js_files)" ]] || exit 1
   fi
 fi
 

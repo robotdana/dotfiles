@@ -66,6 +66,11 @@ function rt(){
   bundle exec rspec --format documentation "$@"
 }
 
+function rtr() {
+  rt "$@"
+  rtr "$@"
+}
+
 function rtn(){
   rt --next-failure "$@"
 }

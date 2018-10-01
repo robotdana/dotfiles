@@ -12,3 +12,5 @@ __git_complete glf __git_complete_remote_or_refspec
 __git_complete gp __git_complete_remote_or_refspec
 __git_complete gm __git_complete_refs
 __git_complete gr __git_complete_refs
+__git_complete cc_menu_remove __git_complete_refs
+__git_complete cc_menu_add __git_complete_refs

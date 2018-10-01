@@ -11,7 +11,7 @@ function v(){
 }
 
 function vdl() {
-  v "$@" && ( yes | echodo DISABLE_MARKETPLACER_CLI_PRODUCTION_CHECK=1 m database update $CURRENT_VERTICAL ) && bundle exec rails multitenant:db:migrate[$CURRENT_VERTICAL]
+  v "$@" && ( yes | echodo DISABLE_MARKETPLACER_CLI_PRODUCTION_CHECK=1 m database update $CURRENT_VERTICAL ) && bundle exec rails multitenant:db:migrate[$CURRENT_VERTICAL] && rm ~/.m/db/db-$CURRENT_VERTICAL-*.sql.xz
 }
 
 function vdt() {

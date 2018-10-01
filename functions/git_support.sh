@@ -92,9 +92,8 @@ function git_edit() {
 }
 
 function git_purge() {
-  if [[ "$(git_current_branch)" != "master" ]]; then
-    echoerr "must do this on master branch"
-  else
+  if git_status_clean && git_head_pushed; then
+    git checkout master
     echodo git fetch -qp origin $(git_branch_local_and_remote)
     git reset --hard --quiet origin/master
 
@@ -105,6 +104,8 @@ function git_purge() {
     case $(git_current_repo) in
       marketplacer) cc_menu_remove_purged;;
     esac
+  else
+    echoerr your branch is unclean
   fi
 }
 
@@ -154,6 +155,8 @@ function git_current_repo() {
   basename "$(git config --get remote.origin.url 2>/dev/null)" .git
 }
 
+# TODO: if it's not found just pass it through so I could e.g. use HEAD
+# or pass it to $(git rev-parse --short) and try again
 function find_sha() {
   local commits=()
   while IF= read -r line; do
@@ -304,7 +307,7 @@ function git_stash() {
 }
 
 function git_uncommit() {
-  echodo git reset --quiet HEAD^ --
+  echodo git reset --quiet HEAD^
 }
 function git_fake_auto_stash() {
   if [[ ! -z "$(git diff)$(git ls-files --others --exclude-standard)" ]]; then

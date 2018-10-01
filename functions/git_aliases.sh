@@ -68,8 +68,7 @@ function gwipp() {
 
 function gunwip() {
   if [[ "$(git log --format="%an | %s" -n 1)" == "Dana Sherson | WIP [skip ci]" ]]; then
-    git uncommit
-    git unstage
+    git uncommit && gunwip
   fi
 }
 
@@ -123,6 +122,16 @@ function glp(){
 # pull using rebase, then push the current branch to <remote> or origin
 function grp(){
   glr "$@" && gp "$@"
+}
+
+function grmp(){
+  grm && gpf
+}
+function grpf(){
+  grmp
+}
+function grmpf(){
+  grmp
 }
 
 
@@ -249,7 +258,7 @@ function gbc() {
     echodo git checkout "$(git_branch_tail)"
     if echodo "$@"; then
       echodo git bisect good
-      echodo git bisect run bash -cl "$@"
+      git bisect run bash -cl "echodo $*"
       echodo git bisect reset
     else
       echodo git bisect reset

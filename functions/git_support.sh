@@ -340,7 +340,9 @@ function git_undo () {
 function github_path () {
   local remote=${1:-origin}
   local git_url=$(git remote get-url $remote)
-  echo ${git_url/git@github.com:/https://github.com/}
+
+  git_url="${git_url/git@github.com:/https://github.com/}"
+  echo ${git_url%%.git}
 }
 
 function git_pr () {
@@ -353,4 +355,12 @@ function git_has_upstream () {
 
 function git_branch_tail () {
   git log --format=%h $(git_log_range master) | tail -n 1
+}
+
+function github_file {
+  open $(github_path)/tree/$(git_current_branch)/$1
+}
+
+function github_file_master {
+  open $(github_path)/tree/master/$1
 }

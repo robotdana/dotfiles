@@ -209,7 +209,7 @@ function gr() {
 
 function grm() {
   if git_has_upstream; then
-    gb master && glf upstream && gp && gbb && git_rebase_i master
+    git_non_release_branch && gb master && glf upstream && gp && gbb && git_rebase_i master
   else
     gr master
   fi

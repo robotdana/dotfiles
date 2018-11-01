@@ -367,3 +367,7 @@ function github_file {
 function github_file_master {
   open $(github_path)/tree/master/$1
 }
+
+function git_last_merge {
+  git show $(git log --format="%h^" master..HEAD | tail -n 1 ) --format=%cr | grep day
+}

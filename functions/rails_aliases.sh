@@ -67,8 +67,8 @@ function rt(){
 }
 
 function rtr() {
-  rt "$@"
-  rtr "$@"
+  rt --failure-exit-code 2 "$@"
+  [[ "$?" != "1" ]] && rtr "$@"
 }
 
 function rtn(){

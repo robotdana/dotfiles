@@ -172,14 +172,6 @@ function glf() {
   echodo git fetch "$remote" "$branch" && echodo git reset --hard "$remote"/"$branch"
 }
 
-# `glr [<remote>] [<branch>]` git pull rebase
-# rebase pull <branch> or the current branch from <remote> or origin
-function glr() {
-  local remote=${1:-origin}
-  local branch=${2:-$(git_current_branch)}
-  echodo git fetch "$remote" "$branch" && gr "$remote"/"$branch"
-}
-
 # `glm` git pull master
 # switch to master and pull
 function glm() {

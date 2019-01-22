@@ -1,19 +1,19 @@
 [ $CURRENT_VERTICAL ] || export CURRENT_VERTICAL=bikeexchange
-unset VERTICAL
 
-function locale_row() {
-  local vertical=${1:-$CURRENT_VERTICAL}
-  local locale=${vertical:0:2}
-  local country=${vertical:2:2}
-  sed -n -e '/def locale/,/ end$/ p' ~/M/marketplacer/app/lib/site_context.rb | grep -Fi -m 1 -e "$country-$locale'" -e ":$vertical "
+function verticals_with_databases() {
+  comm -12 <( yq -r 'keys | sort | join("\n")' ~/M/marketplacer/config/verticals.yml ) <( mysql -e "SHOW DATABASES;" --skip-column-names | sort )
+}
+
+function locale_row {
+  yq -r 'map_values(.locale | tostring | split("-") as $locale | if $locale[2] == "be" then $locale[2]+$locale[1] else $locale[2] end | tostring | ascii_downcase)' ~/M/marketplacer/config/verticals.yml | grep -F -e "\"$1\""
 }
 
 function short_vertical() {
-  locale_row "$@" | awk -F" +|:|-|'" '{ if($9=="be") { print $9 tolower($8) } else { print $9 } }'
+  locale_row "$@" | cut -d: -f 2  | tr -d '", '
 }
 
 function long_vertical() {
-  locale_row "$@" | awk -F' +|:|-' '{ print $4 }'
+  locale_row "$@" | cut -d: -f 1 | tr -d '", '
 }
 
 function vertical_prod_server() {
@@ -71,7 +71,7 @@ function prepare_app_mailcatcher {
 }
 
 function prepare_app() {
-  ports_respond 3306 6379 11211 9200 || prepare_docker
+  ports_respond 3306 6379 11211 9200 || prepare_app_docker
   pgrep sidekiq >/dev/null || echodo ttab -G "title Sidekiq; bundle exec sidekiq; exit"
   ( ports_respond 1080 || prepare_app_mailcatcher & )
   wait_for_ports 3306 1080 6379 11211 9200

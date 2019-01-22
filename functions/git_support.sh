@@ -18,7 +18,11 @@ function git_untrack_new_blank() {
 }
 
 function git_modified(){
-  eval git diff --name-only --cached --diff-filter=ACM "${@/#/\*.}"
+  git diff --name-only HEAD --diff-filter=ACM ${@/#/\*}
+}
+
+function git_modified_with_line_numbers(){
+  for file in $(git_modified $*); do git blame -fs -M -C ..HEAD $file; done | awk -F' ' '/^0+ / {print $2 ":" $3+0}'
 }
 
 function git_conflicts_with_line_numbers(){
@@ -369,5 +373,5 @@ function github_file_master {
 }
 
 function git_last_merge {
-  git show $(git log --format="%h^" master..HEAD | tail -n 1 ) --format=%cr | grep day
+  git show $(git log --format="%h^" master..HEAD | tail -n 1) --format=%cr | grep day
 }

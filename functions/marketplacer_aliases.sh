@@ -83,3 +83,8 @@ function vrts() {
 function cdm() {
   cd ~/M/marketplacer
 }
+
+function vrtc {
+  local files=$(git_modified_with_line_numbers _spec.rb)
+  [[ ! -z $files ]] && vrt $* $files
+}

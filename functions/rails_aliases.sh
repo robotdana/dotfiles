@@ -63,7 +63,7 @@ function rs(){
 
 # `rt [<test files>]` shortcut for rspec.
 function rt(){
-  bundle exec rspec --format documentation "$@"
+  echodo bundle exec rspec --format documentation "$@"
 }
 
 function rtr() {
@@ -73,4 +73,9 @@ function rtr() {
 
 function rtn(){
   rt --next-failure "$@"
+}
+
+function rtc {
+  local files=$(git_modified_with_line_numbers _spec.rb)
+  [[ ! -z $files ]] && rt $* $files
 }

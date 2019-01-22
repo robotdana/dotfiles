@@ -49,7 +49,8 @@
 		"Input/to file",
 		"app/assets/javascripts/i18n/translations",
 		"spec/examples.txt",
-		"_site"
+		"_site",
+		"doc/yard"
 	],
 	"font_face": "Inconsolata",
 	"font_size": 21,

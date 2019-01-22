@@ -27,3 +27,11 @@ if [[ -f .rubocop.yml ]]; then
     [[ -z "$(git diff $rb_files)" ]] || exit 1
   fi
 fi
+
+if [[ -f script/spell/spell ]]; then
+  git_fake_auto_stash
+  if [[ ! -z "$(git_modified)" ]]; then
+    CI_DOCKER=1 echodo script/spell/spell $(git_modified) || exit 1
+  fi
+fi
+

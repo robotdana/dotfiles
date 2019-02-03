@@ -1,17 +1,17 @@
 # source ./bash_support.sh
 
 function git_untracked(){
-  git ls-files --others --exclude-standard
+  git ls-files --others --exclude-standard | escape_spaces
 }
 
 function git_track_untracked(){
   if [[ ! -z "$(git_untracked)" ]]; then
-    echodo git add -N $(git_untracked | quote_lines)
+    echodo git add -N $(git_untracked)
   fi
 }
 
 function git_untrack_new_blank() {
-  local newblank=$(git diff --cached --numstat --no-renames --diff-filter=A | awk -F'\t' '/^0\t0\t/ { print $3 }' | quote_lines)
+  local newblank=$(git diff --cached --numstat --no-renames --diff-filter=A | awk -F'\t' '/^0\t0\t/ { print $3 }' | escape_spaces)
   if [[ ! -z "$newblank" ]]; then
     echodo git reset -- $newblank
   fi
@@ -22,11 +22,11 @@ function git_modified(){
 }
 
 function git_modified_with_line_numbers(){
-  for file in $(git_modified $*); do git blame -fs -M -C ..HEAD $file; done | awk -F' ' '/^0+ / {print $2 ":" $3+0}'
+  for file in $(git_modified $*); do git blame -fs -M -C ..HEAD "$file"; done | awk -F' ' '/^0+ / {print $2 ":" $3+0}'
 }
 
 function git_conflicts_with_line_numbers(){
-  git_status_filtered UU | xargs grep -nHoE -m 1 '^<{6}|={6}|>{6}' | cut -d: -f1-2 | quote_lines
+  git_status_filtered UU | xargs grep -nHoE -m 1 '^<{6}|={6}|>{6}' | cut -d: -f1-2 | escape_spaces
 }
 
 function git_handle_conflicts {

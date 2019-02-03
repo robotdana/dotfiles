@@ -1,0 +1,7 @@
+{
+	"extensions":
+	[
+		"git_commit_template"
+	],
+  "rulers": [49, 71]
+}

@@ -36,3 +36,5 @@
 	file = ~/.gitmailmap
 [interactive]
   diffFilter = diff-highlight
+[commit]
+  template = ~/.dotfiles/git_commit_template

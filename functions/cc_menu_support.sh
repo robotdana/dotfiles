@@ -15,7 +15,7 @@ function cc_menu_remove {
 }
 
 function cc_menu_remove_purged {
-  cc_menu_initialize $(comm -12 <( cc_menu_list | sort ) <( git_non_release_branch_list | sort ) | quote_lines)
+  cc_menu_initialize $(comm -12 <( cc_menu_list | sort ) <( git_non_release_branch_list | sort ) | quote_lines | cc_menu_branches_with_timestamps | sort -k 2 | cut -d' ' -f 1)
 }
 
 function cc_menu_add_item {
@@ -57,3 +57,10 @@ function cc_menu_list {
 function cc_menu_separator {
   echo "--------------------"
 }
+
+function cc_menu_branches_with_timestamps {
+  while read -r line; do
+    echo "$line $(git log --format="%at" master..$line | tail -n 1)"
+  done
+}
+

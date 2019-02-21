@@ -260,7 +260,11 @@ function git_system() {
 }
 
 function git_authors() {
-  echodo git shortlog -sen && echodo git shortlog -secn
+  if (( $# > 0 )); then
+    git_authors | grep -i $*
+  else
+    git shortlog -sen | cut -f2
+  fi
 }
 
 function git_status_clean() {

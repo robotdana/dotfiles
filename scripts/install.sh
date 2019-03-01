@@ -11,10 +11,6 @@ echodo ln -sf ~/.dotfiles/gitignore ~/.gitignore
 echodo ln -sf ~/.dotfiles/gemrc ~/.gemrc
 echodo ln -sf ~/.dotfiles/irbrc ~/.irbrc
 echodo ln -sf ~/.dotfiles/bundle_config ~/.bundle/config
-if [ -d ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/ ]; then
-	echodo mv ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/User/ ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/User.bak
-fi
-ln -sf ~/.dotfiles/SublimePackages ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/User
 
 if [ ! -d ~/.dotfiles/locals ]; then
 	echodo mkdir ~/.dotfiles/locals

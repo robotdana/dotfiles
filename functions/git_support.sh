@@ -85,14 +85,10 @@ function git_prepare_our_deletions() {
 }
 
 function git_open_conflicts() {
-  local active_conflicts=$(git_conflicts_with_line_numbers)
-  if [[ ! -z "$active_conflicts" ]]; then
-    git_edit $active_conflicts && git_open_conflicts
+  local active_conflicts=( $(git_conflicts_with_line_numbers) )
+  if (( ${#active_conflicts[@]} > 0 )); then
+    code -w ${active_conflicts[@]/#/-g } && git_open_conflicts
   fi
-}
-
-function git_edit() {
-  echodo $(git config core.editor) "$@"
 }
 
 function git_purge() {

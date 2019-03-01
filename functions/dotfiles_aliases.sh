@@ -2,8 +2,8 @@ function cdot() {
   echodo cd ~/.dotfiles
 }
 
-function sdot() {
-  echodo subl -n ~/.dotfiles
+function edot {
+  echodo code -n ~/.dotfiles
 }
 
 function ldot() {

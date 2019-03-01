@@ -8,8 +8,8 @@
 [core]
 	excludesfile = ~/.gitignore
 	mergeoptions = --no-edit
-	editor = subl -nw
 	hooksPath = ~/.dotfiles/hooks
+	editor = code --wait
 [help]
 	autocorrect = -1
 [push]

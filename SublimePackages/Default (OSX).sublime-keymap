@@ -1,5 +1,0 @@
-[
-  { "keys": ["super+alt+m"], "command": "advanced_new_file_move" },
-  { "keys": ["super+shift+'"], "command": "change_quotes", "context":  {"key": "selector", "operator": "not_equal", "operand": "source.ruby"} },
-  { "keys": ["super+shift+;"], "command": "toggle_symbol", "context":  {"key": "selector", "operator": "equal", "operand": "source.ruby"} }
-]

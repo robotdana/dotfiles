@@ -1,9 +1,0 @@
-// These settings override both User and Default settings for the Diff syntax
-{
-  "trim_automatic_white_space": false,
-  "trim_trailing_white_space_on_save": false,
-  "ensure_newline_at_eof_on_save": false,
-  "save_on_focus_lost": false,
-  "smart_indent": false,
-  "use_tab_stops": false
-}

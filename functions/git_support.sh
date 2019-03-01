@@ -159,7 +159,7 @@ function git_current_repo() {
 # or pass it to $(git rev-parse --short) and try again
 function find_sha() {
   local commits=()
-  while IF= read -r line; do
+  while IFS= read -r line; do
     commits+=( "$line" )
   done < <(git log --color --format='%C(Yellow)%h %Creset%s' $(git_log_range master) | grep -E -e "\\e\\[33m$*" -e "\\e\\[m.*$*")
 
@@ -257,7 +257,7 @@ function git_system() {
 
 function git_authors() {
   if (( $# > 0 )); then
-    git_authors | grep -i $*
+    git_authors | grep -i "$@"
   else
     git shortlog -sen | cut -f2
   fi

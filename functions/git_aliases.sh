@@ -258,3 +258,13 @@ function gbc() {
     fi
   fi
 }
+
+function gd {
+  git diff $*
+}
+function gdm {
+  gd master
+}
+function gdpf {
+  gd origin/$(git_current_branch)..HEAD
+}

@@ -145,8 +145,8 @@ function git_prompt_current_branch() {
   local branch
   branch=$(git_current_branch)
   if [[ $branch == 'HEAD' ]]; then
-    branch=$(git branch --format='%(refname:short)' --contains HEAD | grep -Evx "($(git_release_branch_match)|\\(HEAD detached at.*)")
-    branch="$branch[$(git rev-parse --short HEAD)]"
+    branch=$(git branch --format='%(refname:short)' --contains HEAD 2>/dev/null | grep -Evx "($(git_release_branch_match)|\\(HEAD detached at.*)")
+    branch="$branch[$(git rev-parse --short HEAD 2>/dev/null)]"
   fi
   [[ ! -z $branch ]] && echo "$1$branch"
 }

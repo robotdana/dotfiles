@@ -1,3 +1,5 @@
 ---
 BUNDLE_GEM__COC: "false"
 BUNDLE_BUILD__LIBXML-RUBY: "--with-xml2-config=/usr/local/opt/libxml2/bin/xml2-config --with-xml2-dir=/usr/local/opt/libxml2 --with-xml2-lib=/usr/local/opt/libxml2/lib --with-xml2-include=/usr/local/opt/libxml2/include"
+BUNDLE_GEM__TEST: "rspec"
+BUNDLE_GEM__MIT: "true"

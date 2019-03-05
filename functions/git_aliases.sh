@@ -223,15 +223,16 @@ function grc() {
   GIT_EDITOR=true echodo git rebase --continue
 }
 
+# git rebase branch
 function grb() {
   git rebase --interactive --autostash --autosquash $(git_branch_tail)^
 }
-
-function gs() {
-  git status
+function gbr() {
+  grb $*
 }
 
-function gt() {
+function gs() {
+  [[ -e .git/MERGE_HEAD ]] && git merge --abort
   git_untrack_new_blank && git stash -u "$@"
 }
 

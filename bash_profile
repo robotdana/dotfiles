@@ -38,7 +38,7 @@ source ~/.dotfiles/functions/jekyll_aliases.sh
 source ~/.dotfiles/functions/webpack_aliases.sh
 source ~/.dotfiles/functions/marketplacer_aliases.sh
 
-PROMPT_COMMAND="update_terminal_cwd; resource_if_modified_since $(last_bash_profile_modification)"
+PROMPT_COMMAND="maybe_update_terminal_cwd; resource_if_modified_since $(last_bash_profile_modification)"
 
 export PS1="\[$C_BLUE\]\w\[\$(git_status_color)\]\$(git_prompt_current_branch :)\[$C_BLUE\]» \[$C_RESET\]"
 

@@ -44,6 +44,11 @@ function last_bash_profile_modification(){
   stat -f %m ~/.dotfiles/{bash_profile,functions/*.sh,locals/git-completion.bash} | sort -rn | head -n 1 || 0
 }
 
+function maybe_update_terminal_cwd {
+  # Terminal.app has this function: no-one else does
+  type -t update_terminal_cwd >/dev/null && update_terminal_cwd
+}
+
 function escape_spaces() {
   sed -E 's/([^\]) /\1\\ /g'
 }

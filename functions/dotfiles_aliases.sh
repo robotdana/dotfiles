@@ -2,8 +2,12 @@ function cdot() {
   echodo cd ~/.dotfiles
 }
 
+# not whitespace files friendly
 function edot {
-  echodo code -n ~/.dotfiles
+  if (( $# > 0 )); then
+    files=( $(grep -rn "${@/#/-e }" ~/.dotfiles | cut -f1,2 -d:) )
+  fi
+  echodo code ${files[@]/#/-g } -n ~/.dotfiles
 }
 
 function ldot() {

@@ -48,7 +48,7 @@ function vrc() {
 function vrs() {
   local vertical="$1"
 
-  prepare_app_with_webkit
+  prepare_app_with_yarn
   rs 0 "$(long_vertical "$vertical" | tr _ -)"
 }
 function vrsf() {
@@ -57,12 +57,16 @@ function vrsf() {
 }
 
 function vrt() {
-  if [[ "$*" == *"/features/"* ]] || [[ "$*" == *"/controllers/"* ]]; then
-    prepare_app_with_webkit
+  if [[ "$*" == *"/features/"* ]]; then
+    prepare_app_with_yarn
   else
     prepare_app
   fi
   JAVASCRIPT_DRIVER=selenium rt "$@"
+  if [[ $* == *"/features/"* ]]; then
+    pgrep -q Google\ Chrome && echodo killall Google\ Chrome
+    pgrep -q chromedriver && echodo killall chromedriver
+  fi
 }
 
 function vrtn() {

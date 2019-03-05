@@ -54,7 +54,7 @@ function vertical_remote_console() {
   fi
 }
 
-function prepare_app_with_webkit() {
+function prepare_app_with_yarn() {
   ports_respond 3808 || ys
   prepare_app
   wait_for_ports 3808

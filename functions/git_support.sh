@@ -161,7 +161,7 @@ function find_sha() {
   local commits=()
   while IFS= read -r line; do
     commits+=( "$line" )
-  done < <(git log --color --format='%C(Yellow)%h %Creset%s' $(git_log_range master) | grep -E -e "\\e\\[33m$*" -e "\\e\\[m.*$*")
+  done < <(git_log_oneline $(git_log_range master) 2>/dev/null | grep -E -e "\\e\\[1;3[26]m$*" -e "\\e\\[0m[^\[]*$*")
 
   if (( ${#commits[@]} > 1 )); then
     echoerr "Multiple possible commits found:"
@@ -171,7 +171,7 @@ function find_sha() {
     return ${#commits[@]}
   elif (( ${#commits[@]} == 0 )); then
     echoerr "Commit not found:"
-    gbl >&2
+    gbl >&2 2>/dev/null
     return 1
   else
     echo "${commits[0]}" | cut -d' ' -f1 | strip_color
@@ -190,6 +190,33 @@ function git_reword() {
       return 1
     fi
   fi
+}
+
+function git_log_oneline {
+  ( echo_grey git log --oneline $(quote_array "$@") )>&2
+  git log --format="%b;%D;%h;%s" $* | awk -F';' '{
+    if ($0 ~ "^$") {
+      # do nothing
+    } else if ($1 != "" ) {
+      body = body " " $1
+    } else {
+      if($2 ~ "origin/" || was_origin==1) {
+        was_origin = 1
+        printf "\033\[1;36m" # aqua
+      } else {
+        printf "\033\[1;32m" # green
+      }
+      printf $3 " \033\[0m" substr($4, 0, 50); if (substr($4, 50, 1) != "") { printf "…" }
+
+      if (body != "") {
+        printf "\033\[0;90m" substr(body, 0, 70); if (substr(body, 70, 1) != "") { printf "…" }
+      }
+
+      body=""
+
+      print "\033\[0m"
+    }
+  }'
 }
 
 function git_rebase_noninteractively {

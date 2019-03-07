@@ -43,7 +43,7 @@ function gbm() {
 # list commits added to this branch since forked from <base branch> or master.
 function gbl() {
   local base_branch=${1:-master}
-  echodo git log --oneline $(git_log_range "$base_branch")
+  git_log_oneline $(git_log_range "$base_branch")
 }
 
 # `gbf <filename> [<base branch>]` git branch file

@@ -178,6 +178,26 @@ function find_sha() {
   fi
 }
 
+function git_reword() {
+  if [[ -z "$1" ]]; then
+    git_rebasable_quick HEAD^ && echodo git commit --amend
+  else
+    local commit
+    commit=$(find_sha $*)
+    if (( $? < 1 )); then
+      git_rebasable_quick "$commit^" && git_rebase_noninteractively reword $commit
+    else
+      return 1
+    fi
+  fi
+}
+
+function git_rebase_noninteractively {
+  local new_task=$1
+  local sha=$2
+  GIT_SEQUENCE_EDITOR="sed -i '' s/^pick\ $sha\ /$new_task\ $sha\ /" git rebase --interactive --autosquash --autostash "$sha^" >/dev/null 2>/dev/null
+}
+
 function git_log_range() {
   local from=$1
   local to=${2:-HEAD}

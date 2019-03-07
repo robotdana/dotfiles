@@ -72,6 +72,10 @@ function gunwip() {
   fi
 }
 
+function gcr {
+  git_reword $*
+}
+
 # `gcf [<commit>]` git commit fix
 # fixups <commit> or the last commit & rebases
 function gcf() {

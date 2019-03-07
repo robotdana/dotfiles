@@ -31,14 +31,18 @@ function setup() {
   bad_rb > bar.rb
   git add .
   run git commit -m "fail rubocop"
-  assert_cleaned_output "bundle exec rubocop --parallel --force-exclusion --color bar.rb foo.rb
+  assert_cleaned_output "bundle exec rubocop -a --force-exclusion --color --fail-level=C --display-only-fail-level-offenses bar.rb foo.rb
 Inspecting 2 files
-CC
+WW
 
 Offenses:
 
-bar.rb:4:1: C: Layout/EmptyLinesAroundMethodBody: Extra empty line detected at method body beginning.
-foo.rb:4:1: C: Layout/EmptyLinesAroundMethodBody: Extra empty line detected at method body beginning.
+bar.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true } to make sure that the block will be associated with the str method call.
+  puts str { true }
+  ^^^^^^^^^^^^^^^^^
+foo.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true } to make sure that the block will be associated with the str method call.
+  puts str { true }
+  ^^^^^^^^^^^^^^^^^
 
 2 files inspected, 2 offenses detected"
   run git diff --cached --name-only
@@ -75,13 +79,15 @@ foo.rb:4:1: C: Layout/EmptyLinesAroundMethodBody: Extra empty line detected at m
   git add bar.rb
   run git commit -m "fail rubocop"
   assert_cleaned_output "git stash save --include-untracked --quiet 'fake autostash'
-bundle exec rubocop --parallel --force-exclusion --color bar.rb
+bundle exec rubocop -a --force-exclusion --color --fail-level=C --display-only-fail-level-offenses bar.rb
 Inspecting 1 file
-C
+W
 
 Offenses:
 
-bar.rb:4:1: C: Layout/EmptyLinesAroundMethodBody: Extra empty line detected at method body beginning.
+bar.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true } to make sure that the block will be associated with the str method call.
+  puts str { true }
+  ^^^^^^^^^^^^^^^^^
 
 1 file inspected, 1 offense detected"
   run git diff --cached --name-only
@@ -116,13 +122,15 @@ $(bad_rb)"
   good_rb >> foo.rb
   run git commit -m "fail rubocop"
   assert_cleaned_output "git stash save --include-untracked --quiet 'fake autostash'
-bundle exec rubocop --parallel --force-exclusion --color foo.rb
+bundle exec rubocop -a --force-exclusion --color --fail-level=C --display-only-fail-level-offenses foo.rb
 Inspecting 1 file
-C
+W
 
 Offenses:
 
-foo.rb:4:1: C: Layout/EmptyLinesAroundMethodBody: Extra empty line detected at method body beginning.
+foo.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true } to make sure that the block will be associated with the str method call.
+  puts str { true }
+  ^^^^^^^^^^^^^^^^^
 
 1 file inspected, 1 offense detected"
   good_rb > foo.rb
@@ -139,13 +147,15 @@ $(good_rb)"
   echo "CONFLICT = false" >> foo.rb
   run git commit -m "fail rubocop"
   assert_cleaned_output "git stash save --include-untracked --quiet 'fake autostash'
-bundle exec rubocop --parallel --force-exclusion --color foo.rb
+bundle exec rubocop -a --force-exclusion --color --fail-level=C --display-only-fail-level-offenses foo.rb
 Inspecting 1 file
-C
+W
 
 Offenses:
 
-foo.rb:4:1: C: Layout/EmptyLinesAroundMethodBody: Extra empty line detected at method body beginning.
+foo.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true } to make sure that the block will be associated with the str method call.
+  puts str { true }
+  ^^^^^^^^^^^^^^^^^
 
 1 file inspected, 1 offense detected"
   good_rb > foo.rb

@@ -59,7 +59,7 @@ function good_rb() {
   echo "# frozen_string_literal: true
 
 def foo
-  true
+  puts true
 end"
 }
 
@@ -67,7 +67,6 @@ function bad_rb(){
   echo "# frozen_string_literal: true
 
 def bar
-
-  true
+  puts str { true }
 end"
 }

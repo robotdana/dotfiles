@@ -119,8 +119,9 @@ function git_purge_rebase_merged() {
 }
 
 function git_purge_merged() {
-  local merged=$(git_non_release_branch_list --merged master)
-  [ ! -z "$merged" ] && echodo git branch -d "${merged[@]}"
+  for branch in $(git_non_release_branch_list --merged master); do
+    echodo git branch -d "$branch"
+  done
 }
 
 function git_purge_only_tracking() {

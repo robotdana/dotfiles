@@ -90,3 +90,13 @@ function buildkite_failures() {
 function buildkite {
   [[ -f bin/build-urls ]] && open -g $(bin/build-urls)
 }
+
+function reset_raptor {
+  git_autostash reset_raptor_clean
+}
+
+function reset_raptor_clean {
+  echodo git checkout release/test-raptor
+  echodo git reset --hard origin/master
+  echodo git push --force --no-verify origin release/test-raptor
+}

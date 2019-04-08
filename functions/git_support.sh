@@ -91,22 +91,22 @@ function git_open_conflicts() {
   fi
 }
 
-function git_purge() {
-  if git_status_clean && git_head_pushed; then
-    git checkout master
-    echodo git fetch -qp origin $(git_branch_local_and_remote)
-    git reset --hard --quiet origin/master
+function git_purge {
+  git_autostash git_purge_on_master
+}
 
-    git_purge_merged
-    git_purge_rebase_merged
-    git_purge_only_tracking
+function git_purge_on_master {
+  git checkout master
+  echodo git fetch -qp origin $(git_branch_local_and_remote)
+  git reset --hard --quiet origin/master
 
-    case $(git_current_repo) in
-      marketplacer) cc_menu_remove_purged;;
-    esac
-  else
-    echoerr your branch is unclean
-  fi
+  git_purge_merged
+  git_purge_rebase_merged
+  git_purge_only_tracking
+
+  case $(git_current_repo) in
+    marketplacer) cc_menu_remove_purged;;
+  esac
 }
 
 function git_purge_rebase_merged() {
@@ -355,6 +355,22 @@ function git_unstage() {
 
 function git_stash() {
   git_untrack_new_blank && echodo git stash -u "$@"
+}
+
+function git_autostash {
+  local current_branch="$(git_current_branch)"
+  if ! git_status_clean; then
+    git_untrack_new_blank
+    echodo git stash save --include-untracked --quiet "fake autostash"
+    local did_stash="1"
+  fi
+
+  echodo "$@"
+
+  echodo git checkout $current_branch
+  if [[ $did_stash == "1" ]]; then
+    echodo git stash pop --quiet
+  fi
 }
 
 function git_uncommit() {

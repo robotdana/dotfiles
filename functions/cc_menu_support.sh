@@ -63,3 +63,12 @@ function cc_menu_branches_with_timestamps {
   done
 }
 
+function ci {
+  local branch=${1:-$(git_current_branch)}
+  open "https://buildkite.com/marketplacer/marketplacer/builds?branch=$branch"
+}
+
+function deploys {
+  local branch=${1:-$(git_current_branch)}
+  open "https://buildkite.com/marketplacer/deploys/builds?branch=$branch"
+}

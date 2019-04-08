@@ -290,7 +290,7 @@ function git_rebasable_quick() {
 }
 
 function git_rebase_i() {
-  GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash "$@"
+  GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash "$@" || grc
 }
 
 function git_system() {

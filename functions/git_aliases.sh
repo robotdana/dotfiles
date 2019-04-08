@@ -224,15 +224,15 @@ function grm() {
 # TODO: only allow to run during a rebase
 function grc() {
   git_handle_conflicts
-  GIT_EDITOR=true echodo git rebase --continue
+  GIT_EDITOR=true echodo git rebase --continue || grc
 }
 
 # git rebase branch
 function grb() {
-  git rebase --interactive --autostash --autosquash $(git_branch_tail)^
+  git rebase --interactive --autostash --autosquash $(git_branch_tail)^ || grc
 }
 function gbr() {
-  grb $*
+  grb "$@"
 }
 
 function gs() {

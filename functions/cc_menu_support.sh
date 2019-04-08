@@ -40,7 +40,6 @@ function cc_menu_present {
 function cc_menu_initialize {
   killall CCMenu
   defaults write net.sourceforge.cruisecontrol.CCMenu Projects '()'
-  cc_menu_add_item deploys deploys "https://cc.buildkite.com/marketplacer/deploys.xml?access_token=$CC_BUILDKITE_TOKEN"
   cc_menu_add_item master
   cc_menu_add_item 3rd-party "third party services" "https://cc.buildkite.com/marketplacer/third-party-services.xml?access_token=$CC_BUILDKITE_TOKEN"
   cc_menu_add_item "$(cc_menu_separator)" "$(cc_menu_separator)" "$(cc_menu_separator)"

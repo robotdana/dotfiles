@@ -30,6 +30,7 @@
 	unstage = ! bash -lc git_unstage
 	purge = ! bash -lc git_purge
 	uncommit = ! bash -lc git_uncommit
+	reword = "!f() { bash -lc \"git_reword $1\"; }; f"
 [log]
 	mailmap = true
 [mailmap]
@@ -38,3 +39,4 @@
   diffFilter = diff-highlight
 [commit]
   template = ~/.dotfiles/git_commit_template
+	verbose = true

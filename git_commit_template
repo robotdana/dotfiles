@@ -9,4 +9,5 @@
 # fixes:
 # resolves:
 
+# > git_authors "name" to find the correct details
 # Co-authored-by: name <name@example.com>

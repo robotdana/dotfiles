@@ -206,10 +206,10 @@ function git_log_oneline {
       } else {
         printf "\033\[1;32m" # green
       }
-      printf $3 " \033\[0m" substr($4, 0, 50); if (substr($4, 50, 1) != "") { printf "…" }
+      printf $3 " \033\[0m" substr($4, 0, 50); if (substr($4, 51, 1) != "") { printf "…" }
 
       if (body != "") {
-        printf "\033\[0;90m" substr(body, 0, 70); if (substr(body, 70, 1) != "") { printf "…" }
+        printf "\033\[0;90m" substr(body, 0, 70); if (substr(body, 71, 1) != "") { printf "…" }
       }
 
       body=""

@@ -201,6 +201,11 @@ function git_reword() {
   fi
 }
 
+function git_fetch_and_checkout() {
+  git fetch origin "$1"
+  git checkout "$1"
+}
+
 function git_log_oneline {
   ( echo_grey git log --oneline $(git_log_range "$1") )>&2
   if [[ "$1" != "$(git_current_branch)" ]]; then

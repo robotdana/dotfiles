@@ -378,11 +378,13 @@ function git_autostash {
   fi
 
   echodo "$@"
+  local outcome=$?
 
   echodo git checkout $current_branch
   if [[ $did_stash == "1" ]]; then
     echodo git stash pop --quiet
   fi
+  return $outcome
 }
 
 function git_uncommit() {

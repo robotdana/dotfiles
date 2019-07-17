@@ -10,6 +10,7 @@ export PATH=/Users/dana/.pyenv/shims:/usr/local/heroku/bin:/usr/local/bin:/usr/l
 export EDITOR='/usr/local/bin/code --wait'
 export GUI_EDITOR=$EDITOR
 export JAVA_HOME="/Library/Internet\\ Plug-Ins/JavaAppletPlugin.plugin/Contents/Home"
+export GPG_TTY=$(tty)
 
 source /usr/local/opt/chruby/share/chruby/chruby.sh
 source /usr/local/opt/chruby/share/chruby/auto.sh

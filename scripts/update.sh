@@ -33,7 +33,10 @@ if [[ $(wc -l ~/.dotfiles/locals/diff-highlight/Makefile | awk -F' ' '{print $1}
   exit 1
 fi
 
+
 ( cd ~/.dotfiles/locals/diff-highlight && make -f Makefile & )
 ln -sf ~/.dotfiles/locals/diff-highlight/diff-highlight /usr/local/bin/diff-highlight
+
+echodo curl "https://gist.githubusercontent.com/ellsclytn/a1f243de19b206cf3dedfd30c9f26651/raw/89964fadec43b7d9155ba838a3b96fc1c0a11892/gpg-setup.sh" > ~/.dotfiles/locals/gpg-setup.sh
 
 resource

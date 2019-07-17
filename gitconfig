@@ -1,6 +1,7 @@
 [user]
 	name = Dana Sherson
 	email = robot@dana.sh
+	signingkey = 64712102493341CB
 [color]
 	ui = true
 [credential]
@@ -40,3 +41,4 @@
 [commit]
   template = ~/.dotfiles/git_commit_template
 	verbose = true
+	gpgsign = true

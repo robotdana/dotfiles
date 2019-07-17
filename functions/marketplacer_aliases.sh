@@ -64,8 +64,7 @@ function vrt() {
   fi
   JAVASCRIPT_DRIVER=selenium rt "$@"
   if [[ $* == *"/features/"* ]]; then
-    pgrep -q Google\ Chrome && echodo killall Google\ Chrome
-    pgrep -q chromedriver && echodo killall chromedriver
+    killchrome
   fi
 }
 
@@ -91,4 +90,9 @@ function cdm() {
 function vrtc {
   local files=$(git_modified_with_line_numbers _spec.rb)
   [[ ! -z $files ]] && vrt $* $files
+}
+
+function killchrome {
+  pgrep -q Google\ Chrome && echodo killall Google\ Chrome
+  pgrep -q chromedriver && echodo killall chromedriver
 }

@@ -139,7 +139,11 @@ function git_non_release_branch() {
 
 # `git_current_branch [optional_prefix]` the current branch name possibly with a prefix
 function git_current_branch() {
-  git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>/dev/null
+  git_branch_name HEAD
+}
+
+function git_branch_name() {
+  git rev-parse --symbolic-full-name --abbrev-ref "$1" 2>/dev/null
 }
 
 function git_prompt_current_branch() {
@@ -162,7 +166,7 @@ function find_sha() {
   local commits=()
   while IFS= read -r line; do
     commits+=( "$line" )
-  done < <(git_log_oneline $(git_log_range master) 2>/dev/null | grep -E -e "\\e\\[1;3[26]m$*" -e "\\e\\[0m[^\[]*$*")
+  done < <(git_log_oneline master 2>/dev/null | grep -E -e "\\e\\[1;3[26]m$*" -e "\\e\\[0m[^\[]*$*")
 
   if (( ${#commits[@]} > 1 )); then
     echoerr "Multiple possible commits found:"
@@ -194,23 +198,29 @@ function git_reword() {
 }
 
 function git_log_oneline {
-  ( echo_grey git log --oneline $(quote_array "$@") )>&2
-  git log --format="%b;%D;%h;%s" $* | awk -F';' '{
+  ( echo_grey git log --oneline $(git_log_range "$1") )>&2
+  if [[ "$1" != "$(git_current_branch)" ]]; then
+    local commits_in_origin=$(echo -e $(git log --format="%h" $(git_log_range "$1" HEAD origin/)))
+    local commit_in_origin_condition='index("'$commits_in_origin'", $2) > 0'
+  else
+    local commit_in_origin_condition="1==1"
+  fi
+
+  git log --format="%b§%h§%s" $(git_log_range "$1") | awk -F'§' '{
     if ($0 ~ "^$") {
       # do nothing
     } else if ($1 != "" ) {
       body = body " " $1
     } else {
-      if($2 ~ "origin/" || was_origin==1) {
-        was_origin = 1
-        printf "\033\[1;36m" # aqua
+      if('"$commit_in_origin_condition"') {
+        printf "%s", "\033\[1;36m" # aqua
       } else {
-        printf "\033\[1;32m" # green
+        printf "%s", "\033\[1;32m" # green
       }
-      printf $3 " \033\[0m" substr($4, 0, 50); if (substr($4, 51, 1) != "") { printf "…" }
+      printf "%s%s%s", $2, " \033\[0m", substr($3, 0, 50); if (substr($3, 51, 1) != "") { printf "%s", "…" }
 
       if (body != "") {
-        printf "\033\[0;90m" substr(body, 0, 70); if (substr(body, 71, 1) != "") { printf "…" }
+        printf "%s%s", "\033\[0;90m",  substr(body, 0, 70); if (substr(body, 71, 1) != "") { printf "%s", "…" }
       }
 
       body=""
@@ -227,9 +237,10 @@ function git_rebase_noninteractively {
 }
 
 function git_log_range() {
-  local from=$1
-  local to=${2:-HEAD}
-  [[ "$from" != "$(git_current_branch)" ]] && echo "$from".."$to"
+  local from="$(git_branch_name "$1")"
+  local to="$(git_branch_name ${2:-HEAD})"
+  local prefix="$3"
+  [[ "$from" != "$(git_current_branch)" ]] && echo "$prefix$from".."$prefix$to"
 }
 
 function git_branch_list() {

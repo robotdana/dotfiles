@@ -137,6 +137,10 @@ function git_non_release_branch() {
   fi
 }
 
+function git_no_tracking {
+  comm -23 <( git_non_release_branch_list ) <( git_non_release_branch_list -r  | sed 's/origin\///')
+}
+
 # `git_current_branch [optional_prefix]` the current branch name possibly with a prefix
 function git_current_branch() {
   git_branch_name HEAD

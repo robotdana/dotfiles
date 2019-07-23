@@ -7,11 +7,17 @@ source ~/.dotfiles/functions/git_support.sh
 git_system && exit 0
 
 function handle_error {
+  # detect if we're currently amending (https://stackoverflow.com/questions/19387073/how-to-detect-commit-amend-by-pre-commit-hook)
+  if [[ ! -z "$(ps -ocommand= -p $PPID | grep -e '--amend')" ]]; then
+    amend_option="--amend"
+  fi
+
   echoerr "$@"
   # setting GIT_EDITOR because -m overwrites GIT_EDITOR to be `:`
-  GIT_EDITOR=$(git config core.editor) git commit --edit --file=$(git rev-parse --show-toplevel)/.git/COMMIT_EDITMSG
+  GIT_EDITOR=$(git config core.editor) echodo git commit $amend_option --edit --file=$(git rev-parse --show-toplevel)/.git/COMMIT_EDITMSG
   exit 1
 }
+
 
 non_comment_line_number=0
 while read -r line; do

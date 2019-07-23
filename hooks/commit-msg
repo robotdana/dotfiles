@@ -1,39 +1,58 @@
 #!/bin/bash
 
-# TODO: retry after commit message fixed
-# TODO: handle -m messages
-
-
 source ~/.dotfiles/functions/bash_support.sh
 source ~/.dotfiles/functions/git_support.sh
 
+
 git_system && exit 0
 
-# while ((i++)); read -r line; do
-#   case $i in
-#     1) max=50;;
-#     2) max=0;;
-#     *) max=72;;
-#   esac
-#   if [[ "${line:0:1}" == "#" ]]; then # don't police commented lines or the lines following them
-#     break
-#   elif (( ${#line[0]} > max )); then
-#     echoerr "Commit message line $i is too long ($max characters max)"
-#     $(git var GIT_EDITOR) $1
-#     exit 1
-#   fi
-# done < $1
+function handle_error {
+  echoerr "$@"
+  # setting GIT_EDITOR because -m overwrites GIT_EDITOR to be `:`
+  GIT_EDITOR=$(git config core.editor) git commit --edit --file=$(git rev-parse --show-toplevel)/.git/COMMIT_EDITMSG
+  exit 1
+}
 
-# # if [[ -z $(head -c 1 $1 | tr -d 'a-z') ]]; then
-# #   echoerr "Commit message subject starts with a lowercase character"
-# #   $(git var GIT_EDITOR) $1
-# #   exit 1
-# # fi
+non_comment_line_number=0
+while read -r line; do
+  if [[ "$line" == "# ------------------------ >8 ------------------------" ]]; then
+    break
+  elif [[ "${line:0:1}" != "#" ]]; then
+    if (( $non_comment_line_number == 0 )); then
+      # git generated messages (or WIP or Temp)
+      if [[ "$line" =~ ^(WIP|'Revert '|'Merge '|'Fixup '|Temp) ]]; then
+        exit 0
+      fi
 
-# if [[ $(head -n 1 $1 | tail -c 2) == "." ]]; then
-#   echoerr "Commit message subject ends with a \`.\` character"
-#   $(git var GIT_EDITOR) $1
-#   exit 1
-# fi
+      if [[ "${line:0:1}" == [a-z] ]]; then
+        handle_error "Commit message subject starts with a lowercase character"
+      fi
+
+      if [[ "${line: -1}" == "." ]]; then
+        handle_error "Commit message subject ends with a '.' character"
+      fi
+      if [[ "$(git_current_repo)" == "marketplacer" ]]; then
+        if ! [[ "$line" =~ ^(Feat|Fix|Refactor|Docs|Chore)(\(.*\))?:' ' ]]; then
+          handle_error "Commit message doesn't match conventional commits"
+        fi
+      fi
+
+      if (( ${#line[0]} > 50 )); then
+        handle_error "Commit message subject is too long (50 characters max)"
+      fi
+
+    elif (( $non_comment_line_number == 1 )); then
+      if (( ${#line[0]} > 0 )); then
+        handle_error "Commit message must have an empty line between subject and description"
+      fi
+    else
+      # body lines must be less than 72 chars, allow long lines for urls etc
+      if (( ${#line[0]} > 72 )) && [[ "$line" == *' '* ]]; then
+        handle_error "Commit message description line ($line) is too long (72 characters max)"
+      fi
+    fi
+    (( non_comment_line_number++ ))
+  fi
+done < $1
 
 exit 0

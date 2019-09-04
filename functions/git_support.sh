@@ -244,6 +244,9 @@ function git_rebase_noninteractively {
   local sha=$2
   GIT_SEQUENCE_EDITOR="sed -i '' s/^pick\ $sha\ /$new_task\ $sha\ /" git rebase --interactive --autosquash --autostash "$sha^" >/dev/null 2>/dev/null
 }
+function git_squash_branch {
+  GIT_EDITOR=: GIT_SEQUENCE_EDITOR="sed -i '' 1\ \!\ \ s/^pick\ /squash\ /" git rebase --interactive --autosquash --autostash master
+}
 
 function git_log_range() {
   local from="$(git_branch_name "$1")"

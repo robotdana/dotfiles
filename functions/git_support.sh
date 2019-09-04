@@ -450,7 +450,7 @@ function git_has_upstream () {
 }
 
 function git_branch_tail () {
-  git log --format=%h $(git_log_range master) | tail -n 1
+  git merge-base --fork-point HEAD
 }
 
 function github_file {

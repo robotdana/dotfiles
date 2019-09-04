@@ -57,7 +57,7 @@ function gbf() {
 # `gwip` git wip
 # commit everything carelessly with the message `wip`
 function gwip(){
-  git_non_release_branch && echodo git add . && echodo git commit --no-verify -m "WIP [skip ci]"
+  git_non_release_branch && echodo git add . && echodo git commit --no-verify -m "WIP"
 }
 
 # `gwipp` git wip
@@ -67,7 +67,7 @@ function gwipp() {
 }
 
 function gunwip() {
-  if [[ "$(git log --format="%an | %s" -n 1)" == "Dana Sherson | WIP [skip ci]" ]]; then
+  if [[ "$(git log --format="%an | %s" -n 1)" == "Dana Sherson | WIP"* ]]; then
     git uncommit && gunwip
   fi
 }

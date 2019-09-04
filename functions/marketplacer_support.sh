@@ -61,8 +61,14 @@ function prepare_app_with_yarn() {
 }
 
 function prepare_app_docker() {
-  echodo kill_port 3306 6379 11211 9200
-  echodo ttab -G "title Docker; bundle exec docker-compose up; exit" 2>/dev/null
+  echodo docker-compose stop db worker search cache
+  echodo ttab -G "title MySQL; bundle exec docker-compose up db; exit" 2>/dev/null
+  sleep 0.1s
+  echodo ttab -G "title Redis; bundle exec docker-compose up worker; exit" 2>/dev/null
+  sleep 0.1s
+  echodo ttab -G "title Elasticsearch; bundle exec docker-compose up search; exit" 2>/dev/null
+  sleep 0.1s
+  echodo ttab -G "title Memcached; bundle exec docker-compose up cache; exit" 2>/dev/null
 }
 
 function prepare_app_mailcatcher {

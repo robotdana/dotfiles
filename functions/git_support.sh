@@ -209,7 +209,7 @@ function git_fetch_and_checkout() {
 function git_log_oneline {
   ( echo_grey git log --oneline $(git_log_range "$1") )>&2
   if [[ "$1" != "$(git_current_branch)" ]]; then
-    local commits_in_origin=$(echo -e $(git log --format="%h" $(git_log_range "$1" HEAD origin/)))
+    local commits_in_origin=$(echo -e $(git log --format="%h" $(git_log_range "$1" HEAD origin/) 2>/dev/null))
     local commit_in_origin_condition='index("'$commits_in_origin'", $2) > 0'
   else
     local commit_in_origin_condition="1==1"

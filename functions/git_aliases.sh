@@ -160,6 +160,10 @@ function gpf(){
   git_non_release_branch && gp "$remote" --force-with-lease
 }
 
+function gpr(){
+  gp && git_pr
+}
+
 # `gl [<remote>] [<branch>]` git pull
 # pull <branch> or the current branch from <remote> or origin
 function gl(){

@@ -426,8 +426,8 @@ function git_fake_auto_stash_pop() {
 }
 
 function git_undo () {
-  echodo git stash save --include-untracked --quiet
-  echodo git reset --hard HEAD@{1}
+  local revision=${1:-1}
+  git_autostash echodo git reset --hard HEAD@{$revision}
 }
 
 function github_path () {

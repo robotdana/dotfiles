@@ -28,7 +28,7 @@ if [[ -f .rubocop.yml ]]; then
   fi
 fi
 
-if [[ -f script/spell/spell ]]; then
+if [[ -f script/spell/spell ]] && which -s scspell; then
   git_fake_auto_stash
   if [[ ! -z "$(git_modified)" ]]; then
     CI_DOCKER=1 echodo script/spell/spell $(git_modified) || exit 1

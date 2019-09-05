@@ -41,7 +41,7 @@ function resource_if_modified_since(){
 }
 
 function last_bash_profile_modification(){
-  stat -f %m ~/.dotfiles/{bash_profile,functions/*.sh,locals/git-completion.bash} | sort -rn | head -n 1 || 0
+  stat -f %m ~/.dotfiles/{bash_profile,functions/*.sh,locals/*} | sort -rn | head -n 1 || 0
 }
 
 function maybe_update_terminal_cwd {

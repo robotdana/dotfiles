@@ -76,6 +76,7 @@ function rtn(){
 }
 
 function rtc {
+  git_track_untracked
   local files=$(git_modified_with_line_numbers _spec.rb)
   [[ ! -z $files ]] && rt $* $files
 }

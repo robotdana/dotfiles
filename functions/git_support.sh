@@ -358,7 +358,7 @@ function git_status_color() {
       echo -en "$C_GREEN"
     fi
   else
-    echo -en "$C_RED"
+    echo -en "$C_YELLOW"
   fi
 }
 

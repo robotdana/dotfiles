@@ -61,26 +61,13 @@ function prepare_app_with_yarn() {
 }
 
 function prepare_app_docker() {
-  echodo docker-compose stop db worker search cache
-  echodo ttab -G "title MySQL; bundle exec docker-compose up db; exit" 2>/dev/null
-  sleep 0.1s
-  echodo ttab -G "title Redis; bundle exec docker-compose up worker; exit" 2>/dev/null
-  sleep 0.1s
-  echodo ttab -G "title Elasticsearch; bundle exec docker-compose up search; exit" 2>/dev/null
-  sleep 0.1s
-  echodo ttab -G "title Memcached; bundle exec docker-compose up cache; exit" 2>/dev/null
-}
-
-function prepare_app_mailcatcher {
-  echodo kill_port 1080
-  echodo mailcatcher
+  echodo docker-compose stop redis search cache mailhog db
+  echodo docker-compose up -d redis search cache mailhog db
 }
 
 function prepare_app() {
-  ports_respond 3306 6379 11211 9200 || prepare_app_docker
-  pgrep sidekiq >/dev/null || echodo ttab -G "title Sidekiq; bundle exec sidekiq; exit" 2>/dev/null
-  ( ports_respond 1080 || prepare_app_mailcatcher & )
-  wait_for_ports 3306 1080 6379 11211 9200
+  ports_respond 3306 6379 11211 9200 1025 || prepare_app_docker
+  pgrep sidekiq >/dev/null || echodo bundle exec sidekiq -d
 }
 
 function reindex() {

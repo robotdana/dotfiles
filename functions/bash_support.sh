@@ -1,10 +1,10 @@
-C_RED=$'\033[1;31m'
-C_GREEN=$'\033[1;32m'
-C_YELLOW=$'\033[0;33m'
+C_RED=$'\033[38;5;125m'
+C_GREEN=$'\033[38;5;48m'
+C_YELLOW=$'\033[38;5;227m'
 C_BLUE=$'\033[1;34m'
 C_AQUA=$'\033[1;36m'
 C_GREY=$'\033[0;90m'
-
+C_PINK=$'\033[38;5;199m'
 C_RESET=$'\033[0m'
 
 function echo_red(){
@@ -27,6 +27,9 @@ function echo_grey(){
 }
 function echo_reset(){
   echo -e "$C_RESET$@$C_RESET"
+}
+function echo_pink(){
+  echo -e "$C_PINK$@$C_RESET"
 }
 
 # `resource` reload bash profile
@@ -61,6 +64,14 @@ function quote_lines() {
   while read -r line; do
     echo -e $(quote "$line")
   done
+}
+
+function last_command_style() {
+  if (( $? == 0 )); then
+    echo -en "\033[1m"
+  else
+    echo -en "\033[2m"
+  fi
 }
 
 function quote_array() {

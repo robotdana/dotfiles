@@ -118,7 +118,7 @@ function strip_color() {
   if (( $# == 0 )); then
     sed -E "/^[[:cntrl:]]\\[1;90m.*[[:cntrl:]]\\[0m$/d;s/([[:cntrl:]]\\[[0-9]{1,3}(;[0-9]{1,3})*m)//g"
   else
-    echo -e "$@" | sed -E "/^[[:cntrl:]]\\[1;90m.*[[:cntrl:]]\\[0m$/d;s/([[:cntrl:]]\\[[0-9]{1,3}(;[0-9]{1,3})*m)//g"
+    echo -e "$@" | strip_color
   fi
 }
 

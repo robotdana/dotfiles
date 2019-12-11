@@ -61,20 +61,13 @@ function prepare_app_with_yarn() {
 }
 
 function prepare_app_docker() {
-  echodo kill_port 3306 6379 11211 9200
-  echodo ttab -G "title Docker; bundle exec docker-compose up; exit" 2>/dev/null
-}
-
-function prepare_app_mailcatcher {
-  echodo kill_port 1080
-  echodo mailcatcher
+  echodo docker-compose stop redis search cache mailhog db
+  echodo docker-compose up -d redis search cache mailhog db
 }
 
 function prepare_app() {
-  ports_respond 3306 6379 11211 9200 || prepare_app_docker
-  pgrep sidekiq >/dev/null || echodo ttab -G "title Sidekiq; bundle exec sidekiq; exit" 2>/dev/null
-  ( ports_respond 1080 || prepare_app_mailcatcher & )
-  wait_for_ports 3306 1080 6379 11211 9200
+  ports_respond 3306 6379 11211 9200 1025 || prepare_app_docker
+  pgrep sidekiq >/dev/null || echodo bundle exec sidekiq -d
 }
 
 function reindex() {

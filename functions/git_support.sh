@@ -222,14 +222,14 @@ function git_log_oneline {
       body = body " " $1
     } else {
       if('"$commit_in_origin_condition"') {
-        printf "%s", "\033\[1;36m" # aqua
+        printf "%s", "'$C_AQUA'"
       } else {
-        printf "%s", "\033\[1;32m" # green
+        printf "%s", "'$C_GREEN'"
       }
-      printf "%s%s%s", $2, " \033\[0m", substr($3, 0, 50); if (substr($3, 51, 1) != "") { printf "%s", "…" }
+      printf "%s%s%s", $2, " '$C_RESET'", substr($3, 0, 50); if (substr($3, 51, 1) != "") { printf "%s", "…" }
 
       if (body != "") {
-        printf "%s%s", "\033\[0;90m",  substr(body, 0, 70); if (substr(body, 71, 1) != "") { printf "%s", "…" }
+        printf "%s%s", "'$C_GREY'",  substr(body, 0, 70); if (substr(body, 71, 1) != "") { printf "%s", "…" }
       }
 
       body=""
@@ -358,7 +358,7 @@ function git_status_color() {
       echo -en "$C_GREEN"
     fi
   else
-    echo -en "$C_RED"
+    echo -en "$C_YELLOW"
   fi
 }
 

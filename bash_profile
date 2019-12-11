@@ -41,7 +41,18 @@ source ~/.dotfiles/functions/marketplacer_aliases.sh
 
 PROMPT_COMMAND="maybe_update_terminal_cwd; resource_if_modified_since $(last_bash_profile_modification)"
 
-export PS2="\[$C_BLUE\]» \[$C_RESET\]"
-export PS1="\[$C_BLUE\]\w\[\$(git_status_color)\]\$(git_prompt_current_branch :)$PS2"
-
 export PATH="$HOME/.cargo/bin:$PATH"
+
+# direnv hook bash. idk what it's doing but i'm sure it's fine
+_direnv_hook() {
+  local previous_exit_status=$?;
+  eval "$("/usr/local/bin/direnv" export bash)";
+  return $previous_exit_status;
+};
+
+if ! [[ "${PROMPT_COMMAND:-}" =~ _direnv_hook ]]; then
+  PROMPT_COMMAND="_direnv_hook${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
+fi
+
+export PS2="\[$C_PINK\]» \[$C_RESET\]"
+export PS1="\[\$(last_command_style)\]\[$C_PINK\]\w\[\$(git_status_color)\]\$(git_prompt_current_branch :)$PS2"

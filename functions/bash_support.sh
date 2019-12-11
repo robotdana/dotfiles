@@ -121,3 +121,7 @@ function bt() {
 }
 
 alias default_latest_ruby="ls ~/.rubies | grep ruby- | sort -t- -k2,2 -n | tail -1 | cut -d '/' -f 1 > ~/.ruby-version"
+
+function clear_all {
+  printf '\33c\e[3J'
+}

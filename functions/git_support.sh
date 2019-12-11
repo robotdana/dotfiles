@@ -209,7 +209,7 @@ function git_fetch_and_checkout() {
 function git_log_oneline {
   ( echo_grey git log --oneline $(git_log_range "$1") )>&2
   if [[ "$1" != "$(git_current_branch)" ]]; then
-    local commits_in_origin=$(echo -e $(git log --format="%h" $(git_log_range "$1" HEAD origin/)))
+    local commits_in_origin=$(echo -e $(git log --format="%h" $(git_log_range "$1" HEAD origin/) 2>/dev/null))
     local commit_in_origin_condition='index("'$commits_in_origin'", $2) > 0'
   else
     local commit_in_origin_condition="1==1"
@@ -243,6 +243,9 @@ function git_rebase_noninteractively {
   local new_task=$1
   local sha=$2
   GIT_SEQUENCE_EDITOR="sed -i '' s/^pick\ $sha\ /$new_task\ $sha\ /" git rebase --interactive --autosquash --autostash "$sha^" >/dev/null 2>/dev/null
+}
+function git_squash_branch {
+  GIT_EDITOR=: GIT_SEQUENCE_EDITOR="sed -i '' 1\ \!\ \ s/^pick\ /squash\ /" git rebase --interactive --autosquash --autostash master
 }
 
 function git_log_range() {
@@ -426,8 +429,8 @@ function git_fake_auto_stash_pop() {
 }
 
 function git_undo () {
-  echodo git stash save --include-untracked --quiet
-  echodo git reset --hard HEAD@{1}
+  local revision=${1:-1}
+  git_autostash echodo git reset --hard HEAD@{$revision}
 }
 
 function github_path () {
@@ -446,8 +449,8 @@ function git_has_upstream () {
   git remote get-url upstream &>/dev/null
 }
 
-function git_branch_tail () {
-  git log --format=%h $(git_log_range master) | tail -n 1
+function git_branch_fork_point () {
+  git merge-base --fork-point master
 }
 
 function github_file {
@@ -458,6 +461,6 @@ function github_file_master {
   open $(github_path)/tree/master/$1
 }
 
-function git_last_merge {
-  git show $(git log --format="%h^" master..HEAD | tail -n 1) --format=%cr | grep day
+function git_last_rebase {
+  git log -n 1 $(git merge-base master HEAD) --format=%cr
 }

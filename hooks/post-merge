@@ -4,7 +4,14 @@ source ~/.dotfiles/functions/git_support.sh
 source ~/.dotfiles/functions/server_support.sh
 source ~/.dotfiles/functions/rails_support.sh
 
+#!/bin/sh
+
 git_system && exit 0
+
+if [[ -f .gitattributes ]] && grep -Fq =lfs .gitattributes; then
+  command -v git-lfs >/dev/null 2>&1 || { echo >&2 "\nThis repository is configured for Git LFS but 'git-lfs' was not found on your path. If you no longer wish to use Git LFS, remove this hook by deleting .git/hooks/post-merge.\n"; exit 2; }
+  git lfs post-merge "$@"
+fi
 
 git_file_changed "package.json" && echodo kill_port 3308 && echodo yarn install
 git_file_changed "Gemfile(.lock)?" && echodo bundle install

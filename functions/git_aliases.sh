@@ -57,7 +57,7 @@ function gbf() {
 # `gwip` git wip
 # commit everything carelessly with the message `wip`
 function gwip(){
-  git_non_release_branch && echodo git add . && echodo git commit --no-verify -m "WIP [skip ci]"
+  git_non_release_branch && echodo git add . && echodo git commit --no-verify -m "WIP"
 }
 
 # `gwipp` git wip
@@ -67,7 +67,7 @@ function gwipp() {
 }
 
 function gunwip() {
-  if [[ "$(git log --format="%an | %s" -n 1)" == "Dana Sherson | WIP [skip ci]" ]]; then
+  if [[ "$(git log --format="%an | %s" -n 1)" == "Dana Sherson | WIP"* ]]; then
     git uncommit && gunwip
   fi
 }
@@ -160,6 +160,10 @@ function gpf(){
   git_non_release_branch && gp "$remote" --force-with-lease
 }
 
+function gpr(){
+  gp && git_pr
+}
+
 # `gl [<remote>] [<branch>]` git pull
 # pull <branch> or the current branch from <remote> or origin
 function gl(){
@@ -229,7 +233,7 @@ function grc() {
 
 # git rebase branch
 function grb() {
-  git rebase --interactive --autostash --autosquash $(git_branch_tail)^ || grc
+  git rebase --interactive --autostash --autosquash $(git_branch_fork_point) || grc
 }
 function gbr() {
   grb "$@"

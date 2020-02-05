@@ -6,7 +6,7 @@ bind '"\e[B":history-search-forward'
 set +H
 
 export PYENV_SHELL=bash
-export PATH=/Users/dana/.pyenv/shims:/usr/local/heroku/bin:/usr/local/bin:/usr/local/sbin:/usr/local/lib/node:$PATH
+export PATH=/Users/dana/.cargo/bin:/Users/dana/.pyenv/shims:/usr/local/heroku/bin:/usr/local/bin:/usr/local/sbin:/usr/local/lib/node:$PATH
 export EDITOR='/usr/local/bin/code --wait'
 export GUI_EDITOR=$EDITOR
 export JAVA_HOME="/Library/Internet\\ Plug-Ins/JavaAppletPlugin.plugin/Contents/Home"
@@ -14,6 +14,7 @@ export GPG_TTY=$(tty)
 
 source /usr/local/opt/chruby/share/chruby/chruby.sh
 source /usr/local/opt/chruby/share/chruby/auto.sh
+source /Users/dana/.cargo/env
 
 if [[ "$(ruby -v)" == "$(chruby system && ruby -v)" ]]; then
   chruby $(chruby | grep -vF 'preview' | tail -n1 | colrm 1 3)
@@ -54,3 +55,5 @@ fi
 export PS2="\[$C_PINK\]» \[$C_RESET\]"
 export PS1="\[\$(last_command_style)\]\[$C_PINK\]\w\[\$(git_status_color)\]\$(git_prompt_current_branch :)$PS2"
 
+
+export PATH="$HOME/.cargo/bin:$PATH"

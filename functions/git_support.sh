@@ -464,3 +464,11 @@ function github_file_master {
 function git_last_rebase {
   git log -n 1 $(git merge-base master HEAD) --format=%cr
 }
+
+function git_reset_branch {
+  echodo git fetch origin release/test-$1 master
+  echodo git checkout release/test-$1
+  echodo git reset --hard origin/master
+  echodo git push --force origin release/test-$1
+  echodo git checkout -
+}

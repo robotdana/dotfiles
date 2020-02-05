@@ -233,7 +233,7 @@ function grc() {
 
 # git rebase branch
 function grb() {
-  git rebase --interactive --autostash --autosquash $(git_branch_tail)^ || grc
+  git rebase --interactive --autostash --autosquash $(git_fork_point) || grc
 }
 function gbr() {
   grb "$@"
@@ -256,7 +256,7 @@ function gbc() {
     echodo git bisect reset # TODO: don't do this if you're not bisecting so there's no error
     echodo git bisect start
     echodo git bisect bad
-    echodo git checkout "$(git_branch_tail)"
+    echodo git checkout "$(git_fork_point)"
     if echodo "$@"; then
       echodo git bisect good
       git bisect run bash -cl "echodo $*"

@@ -449,8 +449,8 @@ function git_has_upstream () {
   git remote get-url upstream &>/dev/null
 }
 
-function git_branch_tail () {
-  git merge-base --fork-point HEAD
+function git_fork_point () {
+  git merge-base --fork-point master
 }
 
 function github_file {

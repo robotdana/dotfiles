@@ -170,7 +170,7 @@ function find_sha() {
   local commits=()
   while IFS= read -r line; do
     commits+=( "$line" )
-  done < <(git_log_oneline master 2>/dev/null | grep -E -e "\\e\\[1;3[26]m$*" -e "\\e\\[0m[^\[]*$*")
+  done < <(git_log_oneline master 2>/dev/null | grep -E -e '^\e\[(\d;?)+m'"$*" -e "\\e\\[0m[^\[]*$*")
 
   if (( ${#commits[@]} > 1 )); then
     echoerr "Multiple possible commits found:"

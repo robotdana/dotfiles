@@ -4,6 +4,7 @@ set -e
 
 source ~/.dotfiles/functions/bash_support.sh
 
+echodo ln -sf ~/.dotfiles/bashrc ~/.bashrc
 echodo ln -sf ~/.dotfiles/bash_profile ~/.bash_profile
 echodo ln -sf ~/.dotfiles/gemrc ~/.gemrc
 echodo ln -sf ~/.dotfiles/gitconfig ~/.gitconfig

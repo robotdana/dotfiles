@@ -153,7 +153,10 @@ function git_branch_name() {
 function git_prompt_current_ref() {
   if ! git describe --all --exact-match HEAD >/dev/null 2>&1; then
     ref=$(git branch --format='%(refname:short)' --sort=-committerdate --contains HEAD 2>/dev/null | head -n 1)
-    ref="$ref[$(git rev-parse --short HEAD 2>/dev/null)]"
+    subref="$(git rev-parse --short HEAD 2>/dev/null)"
+    if [[ ! -z $subref ]]; then
+      ref = "$ref[$subref]"
+    fi
   else
     ref=$(git describe --all --abbrev --exact-match HEAD | cut -f2- -d/)
   fi

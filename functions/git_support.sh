@@ -18,7 +18,7 @@ function git_untrack_new_blank() {
 }
 
 function git_modified(){
-  git diff --name-only HEAD --diff-filter=ACM ${@/#/\*}
+  git diff --name-only HEAD --diff-filter=ACM -- "${@/#/*}"
 }
 
 function git_modified_with_line_numbers(){

@@ -2,6 +2,8 @@
 
 source ~/.dotfiles/functions/bash_support.sh
 
+brew bundle
+
 function git_version_number {
   /usr/bin/git --version | pcregrep -o "(?<= )[0-9\.]+(?= )"
 }
@@ -39,5 +41,11 @@ ln -sf ~/.dotfiles/locals/diff-highlight/diff-highlight /usr/local/bin/diff-high
 
 echodo curl "https://gist.githubusercontent.com/ellsclytn/a1f243de19b206cf3dedfd30c9f26651/raw/89964fadec43b7d9155ba838a3b96fc1c0a11892/gpg-setup.sh" > ~/.dotfiles/locals/gpg-setup.sh
 chmod +x ~/.dotfiles/locals/gpg-setup.sh
+
+ruby-install 2.3
+ruby-install 2.4
+ruby-install 2.5
+ruby-install 2.6
+ruby-install 2.7
 
 resource

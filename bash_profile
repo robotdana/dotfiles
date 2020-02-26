@@ -56,6 +56,6 @@ if ! [[ "${PROMPT_COMMAND:-}" =~ _direnv_hook ]]; then
 fi
 
 export PS2="\[$C_PINK\]» \[$C_RESET\]"
-export PS1="\[\$(last_command_style)\]\[$C_PINK\]\w\[\$(git_status_color)\]\$(git_prompt_current_branch :)$PS2"
+export PS1="\[\$(last_command_style)\]\[$C_PINK\]\w\[\$(git_status_color)\]\$(git_prompt_current_ref :)$PS2"
 
 export PATH="$HOME/.cargo/bin:$PATH"

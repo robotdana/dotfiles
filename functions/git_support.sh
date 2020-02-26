@@ -150,14 +150,14 @@ function git_branch_name() {
   git rev-parse --symbolic-full-name --abbrev-ref "$1" 2>/dev/null
 }
 
-function git_prompt_current_branch() {
-  local branch
-  branch=$(git_current_branch)
-  if [[ $branch == 'HEAD' ]]; then
-    branch=$(git branch --format='%(refname:short)' --contains HEAD 2>/dev/null | grep -Evx "($(git_release_branch_match)|\\(HEAD detached at.*)")
-    branch="$branch[$(git rev-parse --short HEAD 2>/dev/null)]"
+function git_prompt_current_ref() {
+  if ! git describe --all --exact-match HEAD >/dev/null 2>&1; then
+    ref=$(git branch --format='%(refname:short)' --sort=-committerdate --contains HEAD 2>/dev/null | head -n 1)
+    ref="$ref[$(git rev-parse --short HEAD 2>/dev/null)]"
+  else
+    ref=$(git describe --all --abbrev --exact-match HEAD | cut -f2- -d/)
   fi
-  [[ ! -z $branch ]] && echo "$1$branch"
+  [[ ! -z $ref ]] && echo "$1$ref"
 }
 
 function git_current_repo() {

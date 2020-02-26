@@ -6,6 +6,7 @@ C_AQUA=$'\033[1;36m'
 C_GREY=$'\033[0;90m'
 C_PINK=$'\033[38;5;199m'
 C_RESET=$'\033[0m'
+C_LIGHT_PINK=$'\033[38;5;205m'
 
 function echo_red(){
   echo -e "$C_RED$@$C_RESET"
@@ -129,6 +130,12 @@ function bt() {
     ( cd ~/.dotfiles/test && command bats ${@/%/.bats} )
   fi
   cd $PWD
+}
+
+function ruby_version_prompt {
+  if [ -f Gemfile ]; then
+    echo "{r$(ruby --version | cut -d' ' -f 2 | cut -d. -f 1,2)}"
+  fi
 }
 
 alias default_latest_ruby="ls ~/.rubies | grep ruby- | sort -t- -k2,2 -n | tail -1 | cut -d '/' -f 1 > ~/.ruby-version"

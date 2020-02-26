@@ -1,0 +1,12 @@
+User dana
+IdentityFile ~/.ssh/id_rsa
+Include ~/M/marketplacer/.ssh-config
+
+ControlMaster auto
+ControlPath /tmp/%r@%h:%p
+ControlPersist yes
+
+Host *
+  ServerAliveInterval 600
+  TCPKeepAlive yes
+  IPQoS=throughput

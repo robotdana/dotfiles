@@ -12,12 +12,16 @@ export GUI_EDITOR=$EDITOR
 export JAVA_HOME="/Library/Internet\\ Plug-Ins/JavaAppletPlugin.plugin/Contents/Home"
 export GPG_TTY=$(tty)
 
-source /usr/local/opt/chruby/share/chruby/chruby.sh
-source /usr/local/opt/chruby/share/chruby/auto.sh
-source /Users/dana/.cargo/env
+if [[ -f /usr/local/opt/chruby/share/chruby/chruby.sh ]]; then
+  source /usr/local/opt/chruby/share/chruby/chruby.sh
+  source /usr/local/opt/chruby/share/chruby/auto.sh
 
-if [[ "$(ruby -v)" == "$(chruby system && ruby -v)" ]]; then
-  chruby $(chruby | grep -vF 'preview' | tail -n1 | colrm 1 3)
+  if [[ "$(ruby -v)" == "$(chruby system && ruby -v)" ]]; then
+    chruby $(chruby | grep -vF 'preview' | tail -n1 | colrm 1 3)
+  fi
+fi
+if [ -f ~/.cargo/env ]; then
+  source /Users/dana/.cargo/env
 fi
 
 source ~/.dotfiles/locals/secrets
@@ -44,18 +48,20 @@ PROMPT_COMMAND="maybe_update_terminal_cwd; resource_if_modified_since $(last_bas
 
 export PATH="$HOME/.cargo/bin:$PATH"
 
-# direnv hook bash. idk what it's doing but i'm sure it's fine
-_direnv_hook() {
-  local previous_exit_status=$?;
-  eval "$("/usr/local/bin/direnv" export bash)";
-  return $previous_exit_status;
-};
+if [ -f /usr/local/bin/direnv ]; then
+  # direnv hook bash. idk what it's doing but i'm sure it's fine
+  _direnv_hook() {
+    local previous_exit_status=$?;
+    eval "$("/usr/local/bin/direnv" export bash)";
+    return $previous_exit_status;
+  };
 
-if ! [[ "${PROMPT_COMMAND:-}" =~ _direnv_hook ]]; then
-  PROMPT_COMMAND="_direnv_hook${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
+  if ! [[ "${PROMPT_COMMAND:-}" =~ _direnv_hook ]]; then
+    PROMPT_COMMAND="_direnv_hook${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
+  fi
 fi
 
 export PS2="\[$C_PINK\]» \[$C_RESET\]"
-export PS1="\[\$(last_command_style)\]\[$C_PINK\]\w\[\$(git_status_color)\]\$(git_prompt_current_ref :)$PS2"
+export PS1="\[\$(last_command_style)\]\[$C_PINK\]\w\[$C_LIGHT_PINK\]\$(ruby_version_prompt)\[\$(git_status_color)\]\$(git_prompt_current_ref :)$PS2"
 
 export PATH="$HOME/.cargo/bin:$PATH"

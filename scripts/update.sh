@@ -45,4 +45,10 @@ ruby-install ruby 2.5
 ruby-install ruby 2.6
 ruby-install ruby 2.7
 
+ruby-install 2.3
+ruby-install 2.4
+ruby-install 2.5
+ruby-install 2.6
+ruby-install 2.7
+
 resource

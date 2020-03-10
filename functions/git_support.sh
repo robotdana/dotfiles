@@ -151,15 +151,17 @@ function git_branch_name() {
 }
 
 function git_prompt_current_ref() {
-  if ! git describe --all --exact-match HEAD >/dev/null 2>&1; then
+  local ref
+  ref=$(git_current_branch)
+  if [[ $ref == 'HEAD' ]]; then
     ref=$(git branch --format='%(refname:short)' --sort=-committerdate --contains HEAD 2>/dev/null | head -n 1)
-    subref="$(git rev-parse --short HEAD 2>/dev/null)"
+    local subref="$(git rev-parse --short HEAD 2>/dev/null)"
+
     if [[ ! -z $subref ]]; then
-      ref = "$ref[$subref]"
+      ref="$ref[$subref]"
     fi
-  else
-    ref=$(git describe --all --abbrev --exact-match HEAD | cut -f2- -d/)
   fi
+
   [[ ! -z $ref ]] && echo "$1$ref"
 }
 
@@ -204,7 +206,7 @@ function git_reword() {
   fi
 }
 
-function git_fetch_and_checkout() {
+function git_get() {
   git fetch origin "$1"
   git checkout "$1"
 }

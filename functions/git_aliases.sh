@@ -72,6 +72,10 @@ function gunwip() {
   fi
 }
 
+function gg() {
+  git_get $1
+}
+
 function gcr {
   git_reword $*
 }

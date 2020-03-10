@@ -32,6 +32,7 @@
 	unstage = ! bash -lc git_unstage
 	purge = ! bash -lc git_purge
 	uncommit = ! bash -lc git_uncommit
+	get = "!f() { bash -lc \"git_get $1\"; }; f"
 	reword = "!f() { bash -lc \"git_reword $1\"; }; f"
 [log]
 	mailmap = true

@@ -14,11 +14,8 @@ export GPG_TTY=$(tty)
 if [[ -f /usr/local/opt/chruby/share/chruby/chruby.sh ]]; then
   source /usr/local/opt/chruby/share/chruby/chruby.sh
   source /usr/local/opt/chruby/share/chruby/auto.sh
-
-  if [[ "$(ruby -v)" == "$(chruby system && ruby -v)" ]]; then
-    chruby $(chruby | grep -vF 'preview' | tail -n1 | colrm 1 3)
-  fi
 fi
+
 if [ -f ~/.cargo/env ]; then
   source /Users/dana/.cargo/env
 fi

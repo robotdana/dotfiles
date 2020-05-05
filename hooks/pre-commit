@@ -5,9 +5,16 @@ source ~/.dotfiles/functions/git_support.sh
 
 git_system && exit 0
 
+if [[ -z $(git_modified) ]]; then
+  exit 0
+fi
+
 exit_code=0
-if [[ -f .eslintrc ]] || [[ -f .eslintrc.js ]] || [[ -f .rubocop.yml ]] || [[ .spellr.yml ]]; then
+
+if [[ -f .eslintrc ]] || [[ -f .eslintrc.js ]] || [[ -f .rubocop.yml ]] || [[ -f .spellr.yml ]]; then
   git_fake_auto_stash
+else
+  exit 0
 fi
 
 if [[ -f .eslintrc ]] || [[ -f .eslintrc.js ]]; then
@@ -29,9 +36,7 @@ if [[ -f .rubocop.yml ]]; then
 fi
 
 if [[ -f .spellr.yml ]]; then
-  if [[ ! -z "$(git_modified)" ]]; then
-    CI_DOCKER=1 echodo spellr $(git_modified) || exit_code=1
-  fi
+  echodo bundle exec spellr $(git_modified) || exit_code=1
 fi
 
 exit $exit_code

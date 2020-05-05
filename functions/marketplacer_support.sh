@@ -1,59 +1,3 @@
-[ $CURRENT_VERTICAL ] || export CURRENT_VERTICAL=bikeexchange
-
-function verticals_with_databases() {
-  comm -12 <( yq -r 'keys | sort | join("\n")' ~/M/marketplacer/config/verticals.yml ) <( mysql -e "SHOW DATABASES;" --skip-column-names | sort )
-}
-
-function locale_row {
-  yq -r 'map_values(.locale | tostring | split("-") as $locale | if $locale[2] == "be" then $locale[2]+$locale[1] else $locale[2] end | tostring | ascii_downcase)' ~/M/marketplacer/config/verticals.yml | grep -F -e "\"$1\""
-}
-
-function short_vertical() {
-  locale_row "$@" | cut -d: -f 2  | tr -d '", '
-}
-
-function long_vertical() {
-  locale_row "$@" | cut -d: -f 1 | tr -d '", '
-}
-
-function vertical_prod_server() {
-  vertical_server 'primary' "$@"
-}
-
-function vertical_staging_server() {
-  vertical_server 'staging' "$@"
-}
-
-function vertical_standby_server() {
-  vertical_server 'standby' "$@"
-}
-
-function vertical_server() {
-  local vertical=${2:-$CURRENT_VERTICAL}
-  local server=$1
-  basename -s '.teg.io.json' $(grep "\"$vertical\":" -l ~/M/operations/chef/nodes/*$server*.json)
-}
-
-function vertical_remote_console() {
-  local server=$1
-
-  case $server in
-    "prod") local host="$(vertical_prod_server)";;
-    "staging") local host="$(vertical_staging_server)";;
-    "office") local host="office-mt.private";;
-    "cabal") local host="test-cabal.private";;
-    "heart") local host="test-heart.private";;
-    "rocket") local host="test-rocket.private";;
-    *) local host=$server;;
-  esac
-
-  if [[ -z "$host" ]]; then
-    echoerr "No $server server set up for $CURRENT_VERTICAL"
-  else
-    title "Console $server" && echodo script/console $host marketplacer
-  fi
-}
-
 function prepare_app_with_yarn() {
   ports_respond 3808 || ys
   prepare_app
@@ -74,16 +18,3 @@ function reindex() {
   echodo rails multitenant:reindex
 }
 
-function buildkite_failures() {
-  local failures=$(m build failures)
-  echo "$failures" | head -n 2 >/dev/tty
-  echo "$failures" | awk -F'[\033 ]' '/^\033\[31mrspec / { print $3 }' | tr -d "'" > .buildkite-failures
-}
-
-function buildkite {
-  [[ -f bin/build-urls ]] && open -g $(bin/build-urls)
-}
-
-function reset_raptor {
-  git_autostash git_reset_branch release/test-raptor
-}

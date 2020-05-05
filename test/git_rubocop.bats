@@ -7,8 +7,14 @@ source ~/.dotfiles/functions/git_support.sh
 function setup() {
   if [[ "$BATS_TEST_NUMBER" -eq "1" ]]; then
     setup_git
-    echo 'gem "rubocop"' > Gemfile
-    echo '#' > .rubocop.yml
+    echo "
+      source 'https://rubygems.org'
+      gem 'rubocop'
+    " > Gemfile
+    echo "
+      AllCops:
+        NewCops: enable
+    " > .rubocop.yml
     bundle --quiet
     git add .
     git commit --no-verify -m "Initial commit"

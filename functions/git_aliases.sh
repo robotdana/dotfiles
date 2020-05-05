@@ -245,7 +245,7 @@ function gbr() {
 
 function gs() {
   [[ -e .git/MERGE_HEAD ]] && git merge --abort
-  git_untrack_new_blank && git stash -u "$@"
+  git_untrack_new_unstaged && git stash -u "$@"
 }
 
 function gbt() {

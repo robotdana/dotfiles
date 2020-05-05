@@ -10,8 +10,8 @@ function git_track_untracked(){
   fi
 }
 
-function git_untrack_new_blank() {
-  local newblank=$(git diff --cached --numstat --no-renames --diff-filter=A | awk -F'\t' '/^0\t0\t/ { print $3 }' | escape_spaces)
+function git_untrack_new_unstaged() {
+  local newblank=$(git diff --numstat --no-renames --diff-filter=A | awk -F'\t' '/^[0-9]+\t0\t/ { print $3 }' | escape_spaces)
   if [[ ! -z "$newblank" ]]; then
     echodo git reset -- $newblank
   fi
@@ -46,7 +46,7 @@ function git_handle_conflicts {
   git add -p
 
   # clean up un-added
-  git_untrack_new_blank
+  git_untrack_new_unstaged
 
   git stash save --keep-index --include-untracked --quiet
   comm -12 <(git_status_filtered ?? | sort) <(git_status_filtered 'D ' | sort) | xargs rm
@@ -384,13 +384,13 @@ function git_unstage() {
 }
 
 function git_stash() {
-  git_untrack_new_blank && echodo git stash -u "$@"
+  git_untrack_new_unstaged && echodo git stash -u "$@"
 }
 
 function git_autostash {
   local current_branch="$(git_current_branch)"
   if ! git_status_clean; then
-    git_untrack_new_blank
+    git_untrack_new_unstaged
     echodo git stash save --include-untracked --quiet "fake autostash"
     local did_stash="1"
   fi
@@ -412,7 +412,7 @@ function git_fake_auto_stash() {
   if [[ ! -z "$(git diff)$(git ls-files --others --exclude-standard)" ]]; then
     if [[ ! -z "$(git diff --cached)" ]]; then
       git commit --no-verify --quiet --message "Temp (fake autostash index)"
-      git_untrack_new_blank
+      git_untrack_new_unstaged
       echodo git stash save --include-untracked --quiet "fake autostash"
       git reset --soft HEAD^ --quiet
     else

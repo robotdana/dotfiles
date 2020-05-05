@@ -66,6 +66,7 @@ function gwipp() {
   gwip && gp
 }
 
+# TODO: test
 function gunwip() {
   if [[ "$(git log --format="%an | %s" -n 1)" == "Dana Sherson | WIP"* ]]; then
     git uncommit && gunwip
@@ -82,6 +83,7 @@ function gcr {
 
 # `gcf [<commit>]` git commit fix
 # fixups <commit> or the last commit & rebases
+# TODO: test
 function gcf() {
   if [[ -z "$1" ]]; then
     # TODO: bail if there's nothing to commit.
@@ -205,6 +207,7 @@ function gmm() {
 # `gmc` git merge conflicts
 # load the merge conflicts into the editor, then once the issues are resolved, commit the merge.
 # TODO: only allow to run during a merge
+# TODO: more tests
 function gmc() {
   git_handle_conflicts
   echodo git commit --no-verify --no-edit
@@ -230,6 +233,7 @@ function grm() {
 # `grc` git rebase conflicts
 # load the rebase conflicts into an editor, then once issues are resolved, continue the rebase.
 # TODO: only allow to run during a rebase
+# TODO: more tests
 function grc() {
   git_handle_conflicts
   GIT_EDITOR=true echodo git rebase --continue || grc
@@ -252,6 +256,7 @@ function gbt() {
   gbc bundle exec rspec --format documentation --fail-fast "$@"
 }
 
+# TODO: test
 function gbc() {
   if echodo "$@"; then
     echo_green HEAD passes

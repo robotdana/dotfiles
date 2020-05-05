@@ -53,14 +53,17 @@ function maybe_update_terminal_cwd {
   type -t update_terminal_cwd >/dev/null && update_terminal_cwd
 }
 
+# TODO: Test
 function escape_spaces() {
   sed -E 's/([^\]) /\1\\ /g'
 }
 
+# TODO: Test
 function escape_brackets() {
   sed -E 's/([^\])([()])/\1\\\2/g'
 }
 
+# Tested
 function quote_lines() {
   while read -r line; do
     echo -e $(quote "$line")
@@ -75,6 +78,7 @@ function last_command_style() {
   fi
 }
 
+# Tested
 function quote_array() {
   local space=""
   for string in "$@"; do
@@ -85,6 +89,7 @@ function quote_array() {
   echo ""
 }
 
+# Tested
 function quote() {
   if (( $# > 0 )); then
     local string=$*
@@ -101,6 +106,7 @@ function quote() {
 }
 
 # TODO: make this work with xargs
+# TODO: Test
 function echodo(){
   ( echo_grey $(quote_array "$@") )>&2
   eval $(quote_array "$@")
@@ -115,6 +121,7 @@ function alias_frequency() {
   history | sed -E "s/ *[0-9]+\*? *[0-9 :-]+ *//" | sort | uniq -c | sort -rn | head -50
 }
 
+# TODO: test
 function strip_color() {
   if (( $# == 0 )); then
     sed -E "/^[[:cntrl:]]\\[1;90m.*[[:cntrl:]]\\[0m$/d;s/([[:cntrl:]]\\[[0-9]{1,3}(;[0-9]{1,3})*m)//g"

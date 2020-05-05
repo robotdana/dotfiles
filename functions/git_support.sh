@@ -10,6 +10,7 @@ function git_track_untracked(){
   fi
 }
 
+# TODO: more tests
 function git_untrack_new_unstaged() {
   local newblank=$(git diff --numstat --no-renames --diff-filter=A | awk -F'\t' '/^[0-9]+\t0\t/ { print $3 }' | escape_spaces)
   if [[ ! -z "$newblank" ]]; then
@@ -62,11 +63,13 @@ function git_status_filtered() {
   git status --porcelain | grep -F "$* " | colrm 1 3 | quote_lines
 }
 
+# TODO: test
 function git_prepare_content_conflicts() {
   git_open_conflicts
   git_status_filtered UU | xargs git add
 }
 
+# Tested
 function git_prepare_their_deletions() {
   local conflicted=$(git_status_filtered UD | quote_lines)
   if [[ ! -z "$conflicted" ]]; then
@@ -75,6 +78,7 @@ function git_prepare_their_deletions() {
   fi
 }
 
+# Tested
 function git_prepare_our_deletions() {
   local conflicted=$(git_status_filtered DU | quote_lines)
   if [[ ! -z "$conflicted" ]]; then
@@ -91,10 +95,12 @@ function git_open_conflicts() {
   fi
 }
 
+# TODO: test
 function git_purge {
   git_autostash git_purge_on_master
 }
 
+# TODO: test
 function git_purge_on_master {
   git checkout master
   echodo git fetch -qp origin $(git_branch_local_and_remote)
@@ -109,6 +115,7 @@ function git_purge_on_master {
   esac
 }
 
+# TODO: test
 function git_purge_rebase_merged() {
   for branch in $(git_non_release_branch_list); do
     local message=( $(git show -s --pretty="%at %aE %s" "$branch") )
@@ -118,18 +125,21 @@ function git_purge_rebase_merged() {
   done
 }
 
+# TODO: test
 function git_purge_merged() {
   for branch in $(git_non_release_branch_list --merged master); do
     echodo git branch -d "$branch"
   done
 }
 
+# TODO: test
 function git_purge_only_tracking() {
   local only_tracking=$(comm -13 <( git_non_release_branch_list | sed 's/^/origin\//' ) <( git_non_release_branch_list -r ))
   if [[ ! -z $only_tracking ]]; then
     echodo git branch -rD $only_tracking
   fi
 }
+
 
 function git_non_release_branch() {
   if (git_current_branch | grep -qEx $(git_release_branch_match)); then
@@ -150,6 +160,7 @@ function git_branch_name() {
   git rev-parse --symbolic-full-name --abbrev-ref "$1" 2>/dev/null
 }
 
+# TODO: test
 function git_prompt_current_ref() {
   local ref
   ref=$(git_current_branch)
@@ -171,6 +182,7 @@ function git_current_repo() {
 
 # TODO: if it's not found just pass it through so I could e.g. use HEAD
 # or pass it to $(git rev-parse --short) and try again
+# TODO: test
 function find_sha() {
   local commits=()
   while IFS= read -r line; do
@@ -192,6 +204,7 @@ function find_sha() {
   fi
 }
 
+# Tested
 function git_reword() {
   if [[ -z "$1" ]]; then
     git_rebasable_quick HEAD^ && echodo git commit --amend
@@ -211,6 +224,7 @@ function git_get() {
   git checkout "$1"
 }
 
+# TODO: test
 function git_log_oneline {
   ( echo_grey git log --oneline $(git_log_range "$1") )>&2
   if [[ "$1" != "$(git_current_branch)" ]]; then

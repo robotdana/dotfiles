@@ -1,0 +1,4 @@
+language: bash
+os: linux
+before_script:
+script: test/travis.sh

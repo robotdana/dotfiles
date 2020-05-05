@@ -22,10 +22,12 @@ function setup() {
   git checkout -b branch
   echo a > a
   git add .
-  git commit -m "commit message to be changed"
-  GIT_EDITOR="sed -i '' s/to\ be\ changed/was\ changed/" \
+  git commit -m "Commit message to be changed"
+  run find_sha to be changed
+  assert_output $(git rev-parse --short HEAD)
+  GIT_EDITOR="sed -i.~ s/to\ be\ changed/was\ changed/" \
     run git_reword "to be changed"
   assert_output ""
   run git show -s --format=%s
-  assert_output "commit message was changed"
+  assert_output "Commit message was changed"
 }

@@ -175,7 +175,7 @@ function find_sha() {
   local commits=()
   while IFS= read -r line; do
     commits+=( "$line" )
-  done < <(git_log_oneline master 2>/dev/null | grep -E -e '^\e\[(\d;?)+m'"$*" -e "\\e\\[0m[^\[]*$*")
+  done < <(git_log_oneline master 2>/dev/null | grep -E -e '^(\e\[(\d;?)+m)?'"$*" -e ' .*'"$*")
 
   if (( ${#commits[@]} > 1 )); then
     echoerr "Multiple possible commits found:"
@@ -231,15 +231,16 @@ function git_log_oneline {
       } else {
         printf "%s", "'$C_GREEN'"
       }
-      printf "%s%s%s", $2, " '$C_RESET'", substr($3, 0, 50); if (substr($3, 51, 1) != "") { printf "%s", "…" }
+      printf "%s%s%s", $2, " '$C_RESET'", $3
 
       if (body != "") {
-        printf "%s%s", "'$C_GREY'",  substr(body, 0, 70); if (substr(body, 71, 1) != "") { printf "%s", "…" }
+        gsub("\r", "", body)
+        printf "%s%s", "'$C_GREY'", body
       }
 
       body=""
 
-      print "\033\[0m"
+      print "\033[0m"
     }
   }'
 }
@@ -247,10 +248,10 @@ function git_log_oneline {
 function git_rebase_noninteractively {
   local new_task=$1
   local sha=$2
-  GIT_SEQUENCE_EDITOR="sed -i '' s/^pick\ $sha\ /$new_task\ $sha\ /" git rebase --interactive --autosquash --autostash "$sha^" >/dev/null 2>/dev/null
+  GIT_SEQUENCE_EDITOR="sed -i.~ s/^pick\ $sha\ /$new_task\ $sha\ /" git rebase --interactive --autosquash --autostash "$sha^" >/dev/null 2>/dev/null
 }
 function git_squash_branch {
-  GIT_EDITOR=: GIT_SEQUENCE_EDITOR="sed -i '' 1\ \!\ \ s/^pick\ /squash\ /" git rebase --interactive --autosquash --autostash master
+  GIT_EDITOR=: GIT_SEQUENCE_EDITOR="sed -i.~ 1\ \!\ \ s/^pick\ /squash\ /" git rebase --interactive --autosquash --autostash master
 }
 
 function git_log_range() {

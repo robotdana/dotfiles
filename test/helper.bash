@@ -1,11 +1,12 @@
-#!/usr/bin/env bats
-
 source ~/.dotfiles/functions/bash_support.sh
 
-TEST_BREW_PREFIX="$(brew --prefix)"
-source "${TEST_BREW_PREFIX}/lib/bats-support/load.bash"
-source "${TEST_BREW_PREFIX}/lib/bats-assert/load.bash"
-source "${TEST_BREW_PREFIX}/lib/bats-file/load.bash"
+if [[ -z $BATS_PLUGINS_DIR ]]; then
+  BATS_PLUGINS_DIR="$(brew --prefix)/lib"
+fi
+
+source "${BATS_PLUGINS_DIR}/bats-support/load.bash"
+source "${BATS_PLUGINS_DIR}/bats-assert/load.bash"
+source "${BATS_PLUGINS_DIR}/bats-file/load.bash"
 
 function setup_git() {
   rm -rf ~/.git-test-repo
@@ -20,7 +21,9 @@ function reset_to_first_commit() {
   run git merge --abort
   run git rebase --abort
   git checkout --quiet  master --
-  git branch --list | grep -Fv '* master' | xargs git branch -D
+  if [[ ! -z "$(git branch --list | grep -Fv '* master')" ]]; then
+    git branch -D $(git branch --list | grep -Fv '* master')
+  fi
   git reset --hard "$(git log --reverse --format="%H" | head -n 1)" --
   git clean -fd
   git stash clear
@@ -35,8 +38,7 @@ nothing to commit, working tree clean"
   run git log --format="%s"
   assert_output "initial commit"
 
-  assert_equal "$(ls -1A)" ".git
-$(git show --pretty="" --name-only HEAD)"
+  assert_equal "$(ls -1A | grep -Fv .git)" "$(git show --pretty="" --name-only HEAD | sort)"
 }
 
 function assert_git_status_clean {

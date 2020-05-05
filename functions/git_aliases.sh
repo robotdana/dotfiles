@@ -252,7 +252,6 @@ function gbt() {
   gbc bundle exec rspec --format documentation --fail-fast "$@"
 }
 
-# TODO: do in bash -c land so i have my aliases.
 function gbc() {
   if echodo "$@"; then
     echo_green HEAD passes

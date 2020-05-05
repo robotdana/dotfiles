@@ -10,7 +10,7 @@ function setup() {
     setup_git
     echo "#TODO" > readme.txt
     git add readme.txt
-    git commit --no-verify -m "initial commit"
+    git commit --no-verify -m "Initial commit"
   else
     reset_to_first_commit
   fi
@@ -21,7 +21,7 @@ function setup() {
   run git commit -m "nothing"
   assert_failure
   run git log --format=%s
-  assert_output "initial commit"
+  assert_output "Initial commit"
   assert_equal "$(cat a)" "a"
 }
 
@@ -63,22 +63,22 @@ b"
   assert_git_stash_empty
   run git log --format=%s
   assert_output "Amended commit with b
-initial commit"
+Initial commit"
 }
 
 @test "resolve merge conflict: theirs deleted: keep ours" {
   echo 'text' > file1
   git add file1
-  git commit -m "commit1"
+  git commit -m "Commit 1"
   git checkout -b "branch2"
   rm file1
   echo 'something' > file2
   git add file1 file2
-  git commit -m "commit2"
+  git commit -m "Commit 2"
   git checkout master
   echo 'amended text' > file1
   git add file1
-  git commit -m "commit3"
+  git commit -m "Commit 3"
   run git merge branch2
   assert_output "CONFLICT (modify/delete): file1 deleted in branch2 and modified in HEAD. Version HEAD of file1 left in tree.
 Automatic merge failed; fix conflicts and then commit the result."
@@ -94,15 +94,15 @@ Automatic merge failed; fix conflicts and then commit the result."
 @test "resolve merge conflict: ours deleted: delete ours" {
   echo 'text' > file1
   git add file1
-  git commit -m "commit1"
+  git commit -m "Commit 1"
   git checkout -b "branch2"
   echo 'amended text' > file1
   echo 'something' > file2
   git add file1 file2
-  git commit -am "commit2"
+  git commit -am "Commit 2"
   git checkout master
   rm file1
-  git commit -am "commit3"
+  git commit -am "Commit 3"
   run git merge branch2
   assert_output "CONFLICT (modify/delete): file1 deleted in HEAD and modified in branch2. Version branch2 of file1 left in tree.
 Automatic merge failed; fix conflicts and then commit the result."
@@ -115,16 +115,16 @@ Automatic merge failed; fix conflicts and then commit the result."
 @test "resolve merge conflict: ours deleted: keep theirs" {
   echo 'text' > file1
   git add file1
-  git commit -m "commit1"
+  git commit -m "Commit 1"
   git checkout -b "branch2"
   echo 'amended text' > file1
   git add file1
-  git commit -m "commit2"
+  git commit -m "Commit 2"
   git checkout master
   rm file1
   echo 'something' > file2
   git add file1 file2
-  git commit -m "commit3"
+  git commit -m "Commit 3"
   run git merge branch2
   assert_output "CONFLICT (modify/delete): file1 deleted in HEAD and modified in branch2. Version branch2 of file1 left in tree.
 Automatic merge failed; fix conflicts and then commit the result."
@@ -140,14 +140,14 @@ Automatic merge failed; fix conflicts and then commit the result."
 @test "resolve merge conflict: theirs deleted: delete ours" {
   echo 'text' > file1
   git add file1
-  git commit -m "commit1"
+  git commit -m "Commit 1"
   git checkout -b "branch2"
   rm file1
-  git commit -am "commit2"
+  git commit -am "Commit 2"
   git checkout master
   echo 'amended text' > file1
   git add file1
-  git commit -m "commit3"
+  git commit -m "Commit 3"
   run git merge branch2
   assert_output "CONFLICT (modify/delete): file1 deleted in branch2 and modified in HEAD. Version HEAD of file1 left in tree.
 Automatic merge failed; fix conflicts and then commit the result."

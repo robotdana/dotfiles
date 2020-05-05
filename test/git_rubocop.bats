@@ -11,7 +11,7 @@ function setup() {
     echo '#' > .rubocop.yml
     bundle --quiet
     git add .
-    git commit --no-verify -m "initial commit"
+    git commit --no-verify -m "Initial commit"
   else
     reset_to_first_commit
   fi
@@ -21,7 +21,7 @@ function setup() {
   good_rb > foo.rb
   good_rb > bar.rb
   git add .
-  git commit -m "pass rubocop"
+  git commit -m "Pass rubocop"
   assert_git_status_clean
   assert_git_stash_empty
 }
@@ -30,7 +30,7 @@ function setup() {
   bad_rb > foo.rb
   bad_rb > bar.rb
   git add .
-  run git commit -m "fail rubocop"
+  run git commit -m "Fail rubocop"
   assert_cleaned_output "bundle exec rubocop -a --force-exclusion --color --fail-level=C --display-only-fail-level-offenses bar.rb foo.rb
 Inspecting 2 files
 WW
@@ -55,7 +55,7 @@ foo.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true
 
   git add .
 
-  git commit -m "pass rubocop"
+  git commit -m "Pass rubocop"
 
   assert_git_status_clean
   assert_git_stash_empty
@@ -65,7 +65,7 @@ foo.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true
   good_rb > foo.rb
   bad_rb > bar.rb
   git add foo.rb
-  git commit -m "pass rubocop"
+  git commit -m "Pass rubocop"
   run git_untracked
   assert_output "bar.rb"
   assert_git_stash_empty
@@ -77,7 +77,7 @@ foo.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true
   good_rb > foo.rb
   bad_rb > bar.rb
   git add bar.rb
-  run git commit -m "fail rubocop"
+  run git commit -m "Fail rubocop"
   assert_cleaned_output "git stash save --include-untracked --quiet 'fake autostash'
 bundle exec rubocop -a --force-exclusion --color --fail-level=C --display-only-fail-level-offenses bar.rb
 Inspecting 1 file
@@ -97,7 +97,7 @@ bar.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true
   good_rb > bar.rb
 
   git add bar.rb
-  git commit -m "pass rubocop"
+  git commit -m "Pass rubocop"
 
   run git_untracked
   assert_output "foo.rb"
@@ -111,7 +111,7 @@ bar.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true
   assert_output "foo.rb"
   run git diff --name-only
   assert_output "foo.rb"
-  git commit -m "pass rubocop"
+  git commit -m "Pass rubocop"
   assert_equal "$(cat foo.rb)" "$(good_rb)
 $(bad_rb)"
 }
@@ -120,7 +120,7 @@ $(bad_rb)"
   bad_rb > foo.rb
   git add foo.rb
   good_rb >> foo.rb
-  run git commit -m "fail rubocop"
+  run git commit -m "Fail rubocop"
   assert_cleaned_output "git stash save --include-untracked --quiet 'fake autostash'
 bundle exec rubocop -a --force-exclusion --color --fail-level=C --display-only-fail-level-offenses foo.rb
 Inspecting 1 file
@@ -135,7 +135,7 @@ foo.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true
 1 file inspected, 1 offense detected"
   good_rb > foo.rb
   git add foo.rb
-  git commit -m "pass rubocop"
+  git commit -m "Pass rubocop"
   assert_equal "$(cat foo.rb)" "$(good_rb)
 $(good_rb)"
 }
@@ -145,7 +145,7 @@ $(good_rb)"
   git add foo.rb
   good_rb > foo.rb
   echo "CONFLICT = false" >> foo.rb
-  run git commit -m "fail rubocop"
+  run git commit -m "Fail rubocop"
   assert_cleaned_output "git stash save --include-untracked --quiet 'fake autostash'
 bundle exec rubocop -a --force-exclusion --color --fail-level=C --display-only-fail-level-offenses foo.rb
 Inspecting 1 file
@@ -161,11 +161,11 @@ foo.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true
   good_rb > foo.rb
   echo "CONFLICTED = true" >> foo.rb
   git add foo.rb
-  git commit -m "pass rubocop"
+  git commit -m "Pass rubocop"
 
   run git log --format="%s"
-  assert_output "pass rubocop
-initial commit"
+  assert_output "Pass rubocop
+Initial commit"
   assert_git_stash_empty
   assert_equal "$(cat foo.rb)" "$(good_rb)
 CONFLICT = false"

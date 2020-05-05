@@ -36,7 +36,7 @@ nothing to commit, working tree clean"
   assert_output ""
 
   run git log --format="%s"
-  assert_output "initial commit"
+  assert_output "Initial commit"
 
   assert_equal "$(ls -1A | grep -Fv .git)" "$(git show --pretty="" --name-only HEAD | sort)"
 }

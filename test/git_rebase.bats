@@ -11,7 +11,7 @@ function setup() {
     setup_git
     echo "#TODO" > readme.txt
     git add readme.txt
-    git commit --no-verify -m "initial commit"
+    git commit --no-verify -m "Initial commit"
   else
     reset_to_first_commit
   fi

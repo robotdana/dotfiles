@@ -43,7 +43,7 @@ function gbm() {
 # list commits added to this branch since forked from <base branch> or master.
 function gbl() {
   local base_branch=${1:-master}
-  git_log_oneline "$base_branch"
+  git_log_oneline "$base_branch" | more -eRSF
 }
 
 # `gbf <filename> [<base branch>]` git branch file

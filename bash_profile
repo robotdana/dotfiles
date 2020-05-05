@@ -43,7 +43,7 @@ source ~/.dotfiles/functions/jekyll_aliases.sh
 source ~/.dotfiles/functions/webpack_aliases.sh
 source ~/.dotfiles/functions/marketplacer_aliases.sh
 
-PROMPT_COMMAND="maybe_update_terminal_cwd; resource_if_modified_since $(last_bash_profile_modification)"
+PROMPT_COMMAND="maybe_update_terminal_cwd; resource_if_modified_since $(last_bash_profile_modification); check_untested_bash_profile"
 
 export PATH="$HOME/.cargo/bin:$PATH"
 

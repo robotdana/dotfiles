@@ -126,11 +126,25 @@ function strip_color() {
 function bt() {
   if (( $# == 0 )); then
     ( cd ~/.dotfiles/test && command bats *.bats )
+    if (( $? == 0 )); then
+      echo $(last_test_modification) > ~/.dotfiles/test/.last_successful_test
+    fi
   else
     ( cd ~/.dotfiles/test && command bats ${@/%/.bats} )
   fi
   cd $PWD
 }
+
+function last_test_modification {
+  stat -f %m ~/.dotfiles/{functions/bash_support.sh,functions/git_*.sh,test/*.bats,test/helper.bash} | sort -rn | head -n 1 || 0
+}
+
+function check_untested_bash_profile {
+  if (( $(cat ~/.dotfiles/test/.last_successful_test) < $(last_test_modification) )); then
+    echoerr "Don't forget to run bash tests (bt)"
+  fi
+}
+
 
 function ruby_version_prompt {
   if [ -f Gemfile ]; then

@@ -18,3 +18,8 @@ function reindex() {
   echodo rails multitenant:reindex
 }
 
+function localeapp_pull {
+  script/localeapp_pull.sh
+  rake translations:cache:warm_up translations:generate_js_files
+  echo_green "Now empty the browser cache if there are js translations ⌥⌘E"
+}

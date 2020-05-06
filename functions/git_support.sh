@@ -486,9 +486,9 @@ function git_last_rebase {
 }
 
 function git_reset_branch {
-  echodo git fetch origin release/test-$1 master
-  echodo git checkout release/test-$1
-  echodo git reset --hard origin/master
-  echodo git push --force origin release/test-$1
+  echodo git fetch origin release/test-$1 master && \
+  echodo git checkout release/test-$1 && \
+  echodo git reset --hard origin/master && \
+  echodo git push --force origin release/test-$1 && \
   echodo git checkout -
 }

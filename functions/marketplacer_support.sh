@@ -11,7 +11,7 @@ function prepare_app_docker() {
 
 function prepare_app() {
   ports_respond 3306 6379 11211 9200 1025 || prepare_app_docker
-  pgrep sidekiq >/dev/null || echodo bundle exec sidekiq -d
+  pgrep sidekiq >/dev/null || ttab bundle exec sidekiq
 }
 
 function reindex() {

@@ -492,3 +492,12 @@ function git_reset_branch {
   echodo git push --force origin release/test-$1 && \
   echodo git checkout -
 }
+
+
+function git_pickaxe {
+  git --no-pager log -p -S"$1" ':!:*.rbi' ':!:*.txt' ':!:*.yml' ':!:*.json' ':!:*/schema*.rb' ':!:db/migrate/*'
+}
+
+function git_pickaxe_b {
+  git --no-pager log -p --pickaxe-regex -S'\b'"$1"'\b' ':!:*.rbi' ':!:*.txt' ':!:*.yml' ':!:*.json' ':!:*/schema*.rb' ':!:db/migrate/*'
+}

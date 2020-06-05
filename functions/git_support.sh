@@ -499,9 +499,9 @@ function git_reset_branch {
 
 
 function git_pickaxe {
-  git --no-pager log -p -S"$1" ':!:*.rbi' ':!:*.txt' ':!:*.yml' ':!:*.json' ':!:*/schema*.rb' ':!:db/migrate/*'
+  git --no-pager log -p -S"$1" ':!:*.scss' ':!:*.coffee' ':!:*.js' ':!:*.jsx' ':!:*.ts' ':!:*.tsx'  ':!:*.rbi' ':!:*.txt' ':!:*.yml' ':!:*.json' ':!:*/schema*.rb' ':!:db/migrate/*'
 }
 
 function git_pickaxe_b {
-  git --no-pager log -p --pickaxe-regex -S'\b'"$1"'\b' ':!:*.rbi' ':!:*.txt' ':!:*.yml' ':!:*.json' ':!:*/schema*.rb' ':!:db/migrate/*'
+  git --no-pager log -p --pickaxe-regex -S'\b'"$1"'\b' ':!:*.scss' ':!:*.coffee' ':!:*.js' ':!:*.jsx' ':!:*.ts' ':!:*.tsx' ':!:*.rbi' ':!:*.txt' ':!:*.yml' ':!:*.json' ':!:*/schema*.rb' ':!:db/migrate/*'
 }

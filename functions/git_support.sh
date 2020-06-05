@@ -474,11 +474,15 @@ function git_branch_fork_point () {
 }
 
 function github_file {
-  open $(github_path)/tree/$(git_current_branch)/$1
+  open "$(github_path)/tree/$(git_current_branch)/$1"
 }
 
 function github_file_master {
-  open $(github_path)/tree/master/$1
+  open "$(github_path)/tree/master/$1"
+}
+
+function github_commit {
+  open "$(github_path)/commit/$1"
 }
 
 function git_last_rebase {

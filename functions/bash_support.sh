@@ -147,8 +147,12 @@ function last_test_modification {
 }
 
 function check_untested_bash_profile {
-  if ( cd ~/.dotfiles && git_head_pushed ); then
-    echoerr "Unpushed ~/.dotfiles"
+  if ( cd ~/.dotfiles && ! ( git_status_clean && git_head_pushed ) ); then
+    if (( $(cat ~/.dotfiles/test/.last_successful_test) < $(last_test_modification) )); then
+      echoerr "Don't forget to run bash tests (bt)"
+    else
+      echoerr "Don't forget to push ~/.dotfiles (gdot)"
+    fi
   fi
 }
 

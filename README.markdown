@@ -1,5 +1,8 @@
 # dana's dotfiles
 
+[![Build Status](https://travis-ci.com/robotdana/dotfiles.svg?branch=master)](https://travis-ci.com/robotdana/dotfiles)
+
+
 ```
 xcode-select --install
 git clone git@github.com:robotdana/dotfiles.git ~/.dotfiles

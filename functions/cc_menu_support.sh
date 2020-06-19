@@ -40,7 +40,7 @@ function cc_menu_present {
 function cc_menu_initialize {
   killall CCMenu
   defaults write net.sourceforge.cruisecontrol.CCMenu Projects '()'
-  cc_menu_add_item master
+  cc_menu_add_item "$(git_main_branch)"
   cc_menu_add_item 3rd-party "third party services" "https://cc.buildkite.com/marketplacer/third-party-services.xml?access_token=$CC_BUILDKITE_TOKEN"
   cc_menu_add_item "$(cc_menu_separator)" "$(cc_menu_separator)" "$(cc_menu_separator)"
   for branch in "$@"; do
@@ -50,7 +50,7 @@ function cc_menu_initialize {
 }
 
 function cc_menu_list {
-  defaults read net.sourceforge.cruisecontrol.CCMenu Projects | grep displayName | tr -d '",;' | colrm 1 22 | grep -vF -e master -e deploys -e "$(cc_menu_separator)" -e "3rd-party" $(echo "${@/#/-e }")
+  defaults read net.sourceforge.cruisecontrol.CCMenu Projects | grep displayName | tr -d '",;' | colrm 1 22 | grep -vF -e "$(git_main_branch)" -e deploys -e "$(cc_menu_separator)" -e "3rd-party" $(echo "${@/#/-e }")
 }
 
 function cc_menu_separator {
@@ -59,7 +59,7 @@ function cc_menu_separator {
 
 function cc_menu_branches_with_timestamps {
   while read -r line; do
-    echo "$line $(git log --format="%at" master..$line | tail -n 1)"
+    echo "$line $(git log --format="%at" "$(git_main_branch)"..$line | tail -n 1)"
   done
 }
 

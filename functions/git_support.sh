@@ -97,14 +97,14 @@ function git_open_conflicts() {
 
 # TODO: test
 function git_purge {
-  git_autostash git_purge_on_master
+  git_autostash git_purge_on_main
 }
 
 # TODO: test
-function git_purge_on_master {
-  git checkout master
+function git_purge_on_main {
+  git checkout "$(git_main_branch)"
   echodo git fetch -qp origin $(git_branch_local_and_remote)
-  git reset --hard --quiet origin/master
+  git reset --hard --quiet origin/"$(git_main_branch)"
 
   git_purge_merged
   git_purge_rebase_merged
@@ -119,7 +119,7 @@ function git_purge_on_master {
 function git_purge_rebase_merged() {
   for branch in $(git_non_release_branch_list); do
     local message=( $(git show -s --pretty="%at %aE %s" "$branch") )
-    if [[ ! -z "$(git log --since="${message[0]}" --author="${message[1]}" --pretty="%at %aE %s" master | grep -F "$(echo ${message[@]})")" ]]; then
+    if [[ ! -z "$(git log --since="${message[0]}" --author="${message[1]}" --pretty="%at %aE %s" "$(git_main_branch)" | grep -F "$(echo ${message[@]})")" ]]; then
       echodo git branch -D "$branch"
     fi
   done
@@ -127,7 +127,7 @@ function git_purge_rebase_merged() {
 
 # TODO: test
 function git_purge_merged() {
-  for branch in $(git_non_release_branch_list --merged master); do
+  for branch in $(git_non_release_branch_list --merged "$(git_main_branch)"); do
     echodo git branch -d "$branch"
   done
 }
@@ -187,7 +187,7 @@ function find_sha() {
   local commits=()
   while IFS= read -r line; do
     commits+=( "$line" )
-  done < <(git_log_oneline master 2>/dev/null | grep -E -e '^(\e\[(\d;?)+m)?'"$*" -e ' .*'"$*")
+  done < <(git_log_oneline "$(git_main_branch)" 2>/dev/null | grep -E -e '^(\e\[(\d;?)+m)?'"$*" -e ' .*'"$*")
 
   if (( ${#commits[@]} > 1 )); then
     echoerr "Multiple possible commits found:"
@@ -265,7 +265,7 @@ function git_rebase_noninteractively {
   GIT_SEQUENCE_EDITOR="sed -i.~ s/^pick\ $sha\ /$new_task\ $sha\ /" git rebase --interactive --autosquash --autostash "$sha^" >/dev/null 2>/dev/null
 }
 function git_squash_branch {
-  GIT_EDITOR=: GIT_SEQUENCE_EDITOR="sed -i.~ 1\ \!\ \ s/^pick\ /squash\ /" git rebase --interactive --autosquash --autostash master
+  GIT_EDITOR=: GIT_SEQUENCE_EDITOR="sed -i.~ 1\ \!\ \ s/^pick\ /squash\ /" git rebase --interactive --autosquash --autostash "$(git_main_branch)"
 }
 
 function git_log_range() {
@@ -309,13 +309,13 @@ function git_force_pull_release_branches() {
 
 function git_release_branch_match() {
   case $(git_current_repo) in
-    marketplacer) echo '(origin/)?(master$|release/.*)';;
-    dotfiles)     echo 'origin/master';;
-    *)            echo '(origin/)?master';;
+    marketplacer) echo '(origin/)?((master|main|trunk|primary)$|release/.*)';;
+    dotfiles)     echo 'origin/(master|main|trunk|primary)';;
+    *)            echo '(origin/)?(master|main|trunk|primary)';;
   esac
 }
 
-# `git_rebasable` checks that no commits added since this was branched from master have been merged into release/*
+# `git_rebasable` checks that no commits added since this was branched from the main branch have been merged into release/*
 # `git_rebasable commit-ish` checks that no commits added since `commit-ish` have been merged into something release-ish
 function git_rebasable() {
   git_non_release_branch
@@ -325,7 +325,7 @@ function git_rebasable() {
 
 function git_rebasable_quick() {
   git_non_release_branch
-  local base=${1:-master}
+  local base=${1:-"$(git_main_branch)"}
   local since_base=$(git rev-list --count $(git_log_range "$base"))
   local unmerged_since_base=$(git rev-list --count $(git_release_branch_list --all | sed 's/$/..HEAD/'))
   if (( $since_base > $unmerged_since_base )); then
@@ -352,6 +352,10 @@ function git_authors() {
   else
     git shortlog -sen | cut -f2
   fi
+}
+
+function git_main_branch() {
+  git branch --format='%(refname:short)' | grep -F -e master -e main -e trunk -e primary
 }
 
 function git_status_clean() {
@@ -470,15 +474,15 @@ function git_has_upstream () {
 }
 
 function git_branch_fork_point () {
-  git merge-base --fork-point master
+  git merge-base --fork-point "$(git_main_branch)"
 }
 
 function github_file {
   open "$(github_path)/tree/$(git_current_branch)/$1"
 }
 
-function github_file_master {
-  open "$(github_path)/tree/master/$1"
+function github_file_main {
+  open "$(github_path)/tree/$(git_main_branch)/$1"
 }
 
 function github_commit {
@@ -486,13 +490,13 @@ function github_commit {
 }
 
 function git_last_rebase {
-  git log -n 1 $(git merge-base master HEAD) --format=%cr
+  git log -n 1 $(git merge-base "$(git_main_branch)" HEAD) --format=%cr
 }
 
 function git_reset_branch {
-  echodo git fetch origin release/test-$1 master && \
+  echodo git fetch origin release/test-$1 "$(git_main_branch)" && \
   echodo git checkout release/test-$1 && \
-  echodo git reset --hard origin/master && \
+  echodo git reset --hard origin/"$(git_main_branch)" && \
   echodo git push --force origin release/test-$1 && \
   echodo git checkout -
 }

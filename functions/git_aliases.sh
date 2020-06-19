@@ -9,7 +9,7 @@ function ga() {
 }
 
 # `gbn <new branch name>` git branch new
-# creates a branch named <new branch name> based on latest master
+# creates a branch named <new branch name> based on latest main branch
 # and switches to it.
 function gbn() {
   if [[ "$*" == "dana/"* ]]; then
@@ -18,7 +18,7 @@ function gbn() {
     local new_branch_name=dana/$*
   fi
   glm
-  echodo git checkout -b "$new_branch_name" master
+  echodo git checkout -b "$new_branch_name" "$(git_main_branch)"
 }
 
 # `gb <branch>` git branch
@@ -33,24 +33,24 @@ function gbb() {
   gb -
 }
 
-# `gbm` git branch master
-# switches to master
+# `gbm` git branch main
+# switches to main branch
 function gbm() {
-  gb master
+  gb "$(git_main_branch)"
 }
 
 # `gbl [<base branch>]` git branch log
-# list commits added to this branch since forked from <base branch> or master.
+# list commits added to this branch since forked from <base branch> or main branch.
 function gbl() {
-  local base_branch=${1:-master}
+  local base_branch=${1:-"$(git_main_branch)"}
   git_log_oneline "$base_branch" | more -eRSF
 }
 
 # `gbf <filename> [<base branch>]` git branch file
-# shows commits modifying <filename> since this branch forked from <base_branch> or master.
+# shows commits modifying <filename> since this branch forked from <base_branch> or main branch.
 function gbf() {
   local filename=$1
-  local base_branch=${2:-master}
+  local base_branch=${2:-"$(git_main_branch)"}
   echodo git log --oneline --follow --patch $(git_log_range "$base_branch") -- "$filename"
 }
 
@@ -186,22 +186,22 @@ function glf() {
   echodo git fetch "$remote" "$branch" && echodo git reset --hard "$remote"/"$branch"
 }
 
-# `glm` git pull master
-# switch to master and pull
+# `glm` git pull main
+# switch to main branch and pull
 function glm() {
-  gb master && gl
+  gb "$(git_main_branch)" && gl
 }
 
 # `gm <branch>` git merge
-# merge the latest of <branch> or master into the current branch
+# merge the latest of <branch> or main branch into the current branch
 # TODO: allow merging directly from any origin
 function gm() {
-  local branch=${1:-master}
+  local branch=${1:-"$(git_main_branch)"}
   echodo git fetch origin "$branch" && echodo git merge origin/"$branch" --no-edit
 }
 
 function gmm() {
-  gm master
+  gm "$(git_main_branch)"
 }
 
 # `gmc` git merge conflicts
@@ -214,19 +214,19 @@ function gmc() {
 }
 
 # `gr [<branch or commit>]` git rebase
-# rebase the current branch against <branch or commit> or latest master
+# rebase the current branch against <branch or commit> or latest main branch
 # TODO: if it's a commit, don't checkout the latest
 # TODO: don't switch branches if you don't have to
 function gr() {
-  local base=${1:-master}
+  local base=${1:-"$(git_main_branch)"}
   gb "$base" && gl && gbb && git_rebase_i "$base"
 }
 
 function grm() {
   if git_has_upstream; then
-    git_non_release_branch && gb master && glf upstream && gp && gbb && git_rebase_i master
+    git_non_release_branch && gb "$(git_main_branch)" && glf upstream && gp && gbb && git_rebase_i "$(git_main_branch)"
   else
-    gr master
+    gr "$(git_main_branch)"
   fi
 }
 
@@ -280,7 +280,7 @@ function gd {
   git diff $*
 }
 function gdm {
-  gd master
+  gd "$(git_main_branch)"
 }
 function gdpf {
   gd origin/$(git_current_branch)..HEAD

@@ -1,5 +1,5 @@
 function cc_menu_initialize {
-  cc_menu_replace 'marketplacer:master' 'spellr:master' 'leftovers:master' 'fast_ignore:master' 'tty_string:master' 'dotfiles:master'
+  cc_menu_replace 'marketplacer:master' 'spellr:master' 'leftovers:master' 'fast_ignore:master' 'tty_string:master' 'dotfiles:main'
 }
 function cc_menu_item_project_name {
   local repo=${1:-"$(git_current_repo)"}

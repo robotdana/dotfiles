@@ -1,6 +1,6 @@
 # dana's dotfiles
 
-[![Build Status](https://travis-ci.com/robotdana/dotfiles.svg?branch=master)](https://travis-ci.com/robotdana/dotfiles)
+[![Build Status](https://travis-ci.com/robotdana/dotfiles.svg?branch=main)](https://travis-ci.com/robotdana/dotfiles)
 
 
 ```

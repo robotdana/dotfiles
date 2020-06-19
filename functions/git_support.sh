@@ -110,9 +110,7 @@ function git_purge_on_main {
   git_purge_rebase_merged
   git_purge_only_tracking
 
-  case $(git_current_repo) in
-    marketplacer) cc_menu_remove_purged;;
-  esac
+  cc_menu_remove_purged
 }
 
 # TODO: test
@@ -355,7 +353,7 @@ function git_authors() {
 }
 
 function git_main_branch() {
-  git branch --format='%(refname:short)' | grep -F -e master -e main -e trunk -e primary
+  git_branch_list | grep -F -e master -e main -e trunk -e primary
 }
 
 function git_status_clean() {

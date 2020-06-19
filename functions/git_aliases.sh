@@ -153,9 +153,9 @@ function gp(){
   local options=${@:2}
   echodo git push $options "$remote" "$branch"
 
-  case $(git_current_repo) in
-    marketplacer) cc_menu_add;;
-  esac
+  if [[ ! -z "$(cc_menu_item_server_url)" ]]; then
+    cc_menu_add
+  fi
 }
 
 

@@ -1,8 +1,30 @@
+function cc_menu_initialize {
+  cc_menu_replace 'marketplacer:master' 'spellr:master' 'leftovers:master' 'fast_ignore:master' 'tty_string:master' 'dotfiles:master'
+}
+function cc_menu_item_project_name {
+  local repo=${1:-"$(git_current_repo)"}
+  local branch=${2:-"$(git_current_branch)"}
+  case $repo in
+    marketplacer) echo "Marketplacer ($branch)";;
+    spellr | dotfiles | fast_ignore | tty_string | leftovers) echo "robotdana/$repo";;
+  esac
+}
+
+function cc_menu_item_server_url {
+  local repo=${1:-"$(git_current_repo)"}
+  local branch=${2:-"$(git_current_branch)"}
+
+  case $repo in
+    marketplacer) echo "https://cc.buildkite.com/marketplacer/marketplacer.xml?access_token=$CC_BUILDKITE_TOKEN&branch=$branch";;
+    spellr | dotfiles | fast_ignore | tty_string | leftovers) echo "https://api.travis-ci.com/repos/robotdana/$repo/cc.xml?branch=$branch";;
+  esac
+}
+
 function cc_menu_add {
   local branch="${1:-$(git_current_branch)}"
   if ! cc_menu_present "$branch"; then
-    killall CCMenu
-    cc_menu_add_item "$branch"
+    killall CCMenu 2>/dev/null
+    cc_menu_add_item "$(git_current_repo)" "$branch"
     open -g /Applications/CCMenu.app
   fi
 }
@@ -10,65 +32,63 @@ function cc_menu_add {
 function cc_menu_remove {
   local branch="${1:-$(git_current_branch)}"
   if cc_menu_present "$branch"; then
-    cc_menu_initialize $(cc_menu_list "$branch" | quote_lines)
+    killall CCMenu 2>/dev/null
+    cc_menu_remove_item "$(git_current_repo)" "$branch"
+    open -g /Applications/CCMenu.app
   fi
 }
 
 function cc_menu_remove_purged {
-  cc_menu_initialize $(comm -12 <( cc_menu_list | sort ) <( git_non_release_branch_list | sort ) | quote_lines | cc_menu_branches_with_timestamps | sort -k 2 | cut -d' ' -f 1)
+  cc_menu_remove_list $(comm -23 <(cc_menu_list | sort) <(git branch --format="$(git_current_repo) : %(refname:short)" | sort) | grep -F "$(git_current_repo) :" | tr -d ' ')
 }
 
 function cc_menu_add_item {
-  local branch="$1"
-  local project_name=${2:-Marketplacer ($branch)}
-  local server_url=${3:-https://cc.buildkite.com/marketplacer/marketplacer.xml?access_token=$CC_BUILDKITE_TOKEN&branch=$branch}
+  local repo="${1:-"$(git_current_repo)"}"
+  local branch="${2:-"$(git_current_branch)"}"
 
   defaults write net.sourceforge.cruisecontrol.CCMenu Projects -array-add "
     {
-      displayName = \"$branch\";
-      projectName = \"$project_name\";
-      serverUrl = \"$server_url\";
+      displayName = \"$repo : $branch\";
+      projectName = \"$(cc_menu_item_project_name "$repo" "$branch")\";
+      serverUrl = \"$(cc_menu_item_server_url "$repo" "$branch")\";
+
     }
   "
 }
 
-function cc_menu_present {
-  local branch="$1"
-  defaults read net.sourceforge.cruisecontrol.CCMenu Projects | grep -qF "Marketplacer ($branch)"
+function cc_menu_remove_item {
+  local repo="${1:-"$(git_current_repo)"}"
+  local branch="${2:-"$(git_current_branch)"}"
+
+  cc_menu_replace $(cc_menu_list | grep -vF "$repo : $branch" | tr -d ' ')
 }
 
-function cc_menu_initialize {
-  killall CCMenu
+function cc_menu_present {
+  local branch="${1:-"$(git_current_branch)"}"
+  defaults read net.sourceforge.cruisecontrol.CCMenu Projects | grep -qF "displayName = \"$(git_current_repo) : $branch\";"
+}
+
+function cc_menu_replace {
+  killall CCMenu 2>/dev/null
   defaults write net.sourceforge.cruisecontrol.CCMenu Projects '()'
-  cc_menu_add_item "$(git_main_branch)"
-  cc_menu_add_item 3rd-party "third party services" "https://cc.buildkite.com/marketplacer/third-party-services.xml?access_token=$CC_BUILDKITE_TOKEN"
-  cc_menu_add_item "$(cc_menu_separator)" "$(cc_menu_separator)" "$(cc_menu_separator)"
-  for branch in "$@"; do
-    cc_menu_add_item "$branch"
+  for repo_branch in "$@"; do
+    repo=${repo_branch%:*}
+    branch=${repo_branch#*:}
+    cc_menu_add_item "$repo" "$branch"
+  done
+  open -g /Applications/CCMenu.app
+}
+
+function cc_menu_remove_list {
+  killall CCMenu 2>/dev/null
+  for repo_branch in "$@"; do
+    repo=${repo_branch%:*}
+    branch=${repo_branch#*:}
+    cc_menu_remove_item "$repo" "$branch"
   done
   open -g /Applications/CCMenu.app
 }
 
 function cc_menu_list {
-  defaults read net.sourceforge.cruisecontrol.CCMenu Projects | grep displayName | tr -d '",;' | colrm 1 22 | grep -vF -e "$(git_main_branch)" -e deploys -e "$(cc_menu_separator)" -e "3rd-party" $(echo "${@/#/-e }")
-}
-
-function cc_menu_separator {
-  echo "--------------------"
-}
-
-function cc_menu_branches_with_timestamps {
-  while read -r line; do
-    echo "$line $(git log --format="%at" "$(git_main_branch)"..$line | tail -n 1)"
-  done
-}
-
-function ci {
-  local branch=${1:-$(git_current_branch)}
-  open "https://buildkite.com/marketplacer/marketplacer/builds?branch=$branch"
-}
-
-function deploys {
-  local branch=${1:-$(git_current_branch)}
-  open "https://buildkite.com/marketplacer/deploys/builds?branch=$branch"
+  defaults read net.sourceforge.cruisecontrol.CCMenu Projects | grep -F "displayName = " | cut -f 2 -d\"
 }

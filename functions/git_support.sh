@@ -307,8 +307,8 @@ function git_force_pull_release_branches() {
 
 function git_release_branch_match() {
   case $(git_current_repo) in
-    marketplacer) echo '(origin/)?((master|main|trunk|primary)$|release/.*)';;
-    dotfiles)     echo 'origin/(master|main|trunk|primary)';;
+    marketplacer) echo '(origin/)?(master$|release/.*)';;
+    dotfiles)     echo 'origin/main';;
     *)            echo '(origin/)?(master|main|trunk|primary)';;
   esac
 }

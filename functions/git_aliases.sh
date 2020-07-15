@@ -226,7 +226,7 @@ function grm() {
   if git_has_upstream; then
     git_non_release_branch && gb "$(git_main_branch)" && glf upstream && gp && gbb && git_rebase_i "$(git_main_branch)"
   else
-    gr "$(git_main_branch)"
+    gr
   fi
 }
 

@@ -10,7 +10,8 @@ for url in "$@"; do
   if [[ $? == 0 ]]; then
     echo "Already blocking $url"
   else
-    echo "127.0.0.1 $url www.$url" | sudo tee -a /etc/hosts &>/dev/null
+    echo "127.0.0.1 $url" | sudo tee -a /etc/hosts &>/dev/null
+    echo "127.0.0.1 www.$url" | sudo tee -a /etc/hosts &>/dev/null
   fi
 done
 dscacheutil -flushcache

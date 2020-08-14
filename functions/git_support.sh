@@ -441,7 +441,7 @@ function git_fake_auto_stash_pop() {
   while [[ "$(git stash list -n 1)" = "stash@{0}: On $(git_current_branch): fake autostash" ]]; do
     echodo git add .
     echodo git stash apply --index --quiet
-    local conflicts=$(git grep -lE '^<{6}|>{6}' | quote_lines)
+    local conflicts=$(git grep -lE '^<{7}|>{7}' | quote_lines)
     if [[ ! -z "$conflicts" ]]; then
       echodo git checkout --theirs $conflicts
     fi

@@ -39,7 +39,7 @@ while read -r line; do
         handle_error "Commit message subject ends with a '.' character"
       fi
       if [[ "$(git_current_repo)" == "marketplacer" ]]; then
-        if ! [[ "$line" =~ ^(Feat|Fix|Refactor|Docs|Chore|Perf)(\(.*\))?:' ' ]]; then
+        if ! [[ "$line" =~ ^(Feat|Fix|Refactor|Docs|Chore|Perf|CI|Test|Build)(\(.*\))?:' ' ]]; then
           handle_error "Commit message doesn't match conventional commits"
         fi
       fi

@@ -151,7 +151,10 @@ function gp(){
   local remote=${1:-origin}
   local branch=$(git_current_branch)
   local options=${@:2}
-  echodo git push $options "$remote" "$branch"
+  if [[ "$branch" == "$(git_current_branch)" && "$remote" == "origin" ]]; then
+    local set_upstream="--set-upstream"
+  fi
+  echodo git push $options $set_upstream "$remote" "$branch"
 
   if [[ ! -z "$(cc_menu_item_server_url)" ]]; then
     cc_menu_add

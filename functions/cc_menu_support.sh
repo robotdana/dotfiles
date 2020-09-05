@@ -1,12 +1,12 @@
 function cc_menu_initialize {
-  cc_menu_replace 'marketplacer:main' 'spellr:main' 'leftovers:main' 'fast_ignore:main' 'tty_string:main' 'dotfiles:main'
+  cc_menu_replace 'marketplacer:main' 'spellr:main' 'leftovers:main' 'fast_ignore:main' 'tty_string:main' 'dotfiles:main' 'git_ls:main'
 }
 function cc_menu_item_project_name {
   local repo=${1:-"$(git_current_repo)"}
   local branch=${2:-"$(git_current_branch)"}
   case $repo in
     marketplacer) echo "Marketplacer ($branch)";;
-    spellr | dotfiles | fast_ignore | tty_string | leftovers) echo "robotdana/$repo";;
+    spellr | dotfiles | fast_ignore | tty_string | leftovers | git_ls) echo "robotdana/$repo";;
   esac
 }
 

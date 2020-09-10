@@ -45,4 +45,5 @@ function vrtc {
 function killchrome {
   pgrep -q Google\ Chrome && echodo killall Google\ Chrome
   pgrep -q chromedriver && echodo killall chromedriver
+  echodo docker-compose -f docker-compose.chrome.yml restart
 }

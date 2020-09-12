@@ -16,7 +16,7 @@ function cc_menu_item_server_url {
 
   case $repo in
     marketplacer) echo "https://cc.buildkite.com/marketplacer/marketplacer.xml?access_token=$CC_BUILDKITE_TOKEN&branch=$branch";;
-    spellr | dotfiles | fast_ignore | tty_string | leftovers) echo "https://api.travis-ci.com/repos/robotdana/$repo/cc.xml?branch=$branch";;
+    spellr | dotfiles | fast_ignore | tty_string | leftovers | git_ls) echo "https://api.travis-ci.com/repos/robotdana/$repo/cc.xml?branch=$branch";;
   esac
 }
 

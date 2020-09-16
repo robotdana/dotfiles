@@ -1,8 +1,3 @@
-require 'wirb'
-Wirb.start
-
-require 'irb/completion'
-
 IRB.conf[:PROMPT][:CUSTOM] = {
   :PROMPT_I => " \e[90m%3n ⎸\e[0m",
   :PROMPT_S => "\e[31m%l\e[90m%3n ⎸\e[0m",

@@ -1,9 +1,7 @@
 if defined?(Vertical) && Vertical.respond_to?(:set)
   def v(vertical = nil)
     ActiveRecord::Base.logger.silence do
-      vertical ||= Vertical.verticals.keys.find { |vt| vt == ENV['CURRENT_VERTICAL'] }
-      vertical ||= Vertical.verticals.keys.first
-      Vertical.set(vertical) if vertical
+      Vertical.set(vertical || :marketplacer)
     end
   end
 

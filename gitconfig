@@ -36,8 +36,6 @@
 	reword = "!f() { bash -lc \"git_reword $1\"; }; f"
 [log]
 	mailmap = true
-[mailmap]
-	file = ~/.gitmailmap
 [interactive]
   diffFilter = diff-highlight
 [commit]

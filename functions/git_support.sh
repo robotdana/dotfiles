@@ -277,6 +277,12 @@ function git_branch_list() {
   git branch --list --format="%(refname:short)" $*
 }
 
+function git_branch_D {
+  echodo git branch -D $1
+  echodo git branch -Dr origin/$1 upstream/$1
+  cc_menu_remove_purged
+}
+
 function git_branch_local_only() {
   comm -23 <( git_branch_list ) <( git_remote_branch_list )
 }

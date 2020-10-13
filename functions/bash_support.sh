@@ -168,3 +168,7 @@ alias default_latest_ruby="ls ~/.rubies | grep ruby- | sort -t- -k2,2 -n | tail 
 function clear_all {
   printf '\33c\e[3J'
 }
+
+function cdp {
+  cd ~/Projects/"$1"
+}

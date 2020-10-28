@@ -39,6 +39,8 @@ function test_do_the_thing() {
   assert_equal "$(quote 'whatever]')" "'whatever]'"
   assert_equal "$(quote 'what)ever]')" "'what)ever]'"
   assert_equal "$(quote 'what) ever')" "'what) ever'"
+  assert_equal "$(quote 'what<ever')" "'what<ever'"
+  assert_equal "$(quote 'what>ever')" "'what>ever'"
 
   assert_equal "$(quote '$dance')" "'\$dance'"
   assert_equal "$(quote '"$dance"')" "'\"\$dance\"'"

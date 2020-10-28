@@ -97,7 +97,7 @@ function quote() {
       echo -en '""'
     elif [[ "$string" = *"'"* ]]; then
       echo -en \""$(echo -en "$string" | sed -E 's/(["$])/\\\1/g')\""
-    elif [[ "$string" =~ \ |\(|\)|\[|\]|\$ ]]; then
+    elif [[ "$string" =~ \ |\(|\)|\[|\]|\$|\<|\> ]]; then
       echo -en "'$string'"
     else
       echo -en "$string"

@@ -21,6 +21,7 @@
 	noprefix = true
 [merge]
 	verbosity = 1
+	conflictstyle = diff3
 [interactive]
 	singleKey = true
 [status]

@@ -19,6 +19,16 @@ function handle_error {
   exit 1
 }
 
+if [[ "$(git_current_repo)" == "marketplacer" ]]; then
+  commitlint < $1
+  if (( "$?" > 0 )); then
+    handle_error "commitlint found errors"
+    exit 1
+  else
+    exit 0
+  fi
+fi
+
 
 non_comment_line_number=0
 while read -r line; do
@@ -35,14 +45,9 @@ while read -r line; do
         handle_error "Commit message subject ends with a '.' character"
       fi
 
-      if [[ "$(git_current_repo)" == "marketplacer" ]]; then
-        if ! [[ "$line" =~ ^(feat|fix|refactor|docs|chore|perf|ci|test|build|style)(\(.*\))?:' ' ]]; then
-          handle_error "Commit message doesn't match conventional commits"
-        fi
-      else
-        if [[ "${line:0:1}" == [a-z] ]] && [[ "${line:0:1}" != [A-Z] ]]; then # for some reason travis doesn't know what case is
-          handle_error "Commit message subject starts with a lowercase character"
-        fi
+
+      if [[ "${line:0:1}" == [a-z] ]] && [[ "${line:0:1}" != [A-Z] ]]; then # for some reason travis doesn't know what case is
+        handle_error "Commit message subject starts with a lowercase character"
       fi
 
       if (( ${#line[0]} > 50 )); then

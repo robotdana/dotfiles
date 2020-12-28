@@ -232,7 +232,7 @@ function git_log_oneline {
     local commit_in_origin_condition="1==1"
   fi
 
-  git log --format="%b§%h§%s" $(git_log_range "$1") | awk -F'§' '{
+  git log --format="%b%n§%h§%s" $(git_log_range "$1") | awk -F'§' '{
     if ($0 ~ "^$") {
       # do nothing
     } else if ($1 != "" ) {

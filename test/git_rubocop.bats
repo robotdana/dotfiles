@@ -3,13 +3,16 @@
 load helper
 
 source ~/.dotfiles/functions/git_support.sh
+source /usr/local/opt/chruby/share/chruby/chruby.sh
 
 function setup() {
   if [[ "$BATS_TEST_NUMBER" -eq "1" ]]; then
     setup_git
+    chruby 2.7.0
+
     echo "
       source 'https://rubygems.org'
-      gem 'rubocop'
+      gem 'rubocop', '1.0.0'
     " > Gemfile
     echo "
       AllCops:

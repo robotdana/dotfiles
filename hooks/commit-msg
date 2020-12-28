@@ -15,7 +15,7 @@ function handle_error {
 
   echoerr "$@"
   # setting GIT_EDITOR because -m overwrites GIT_EDITOR to be `:`
-  GIT_EDITOR=$(git config core.editor) echodo git commit $amend_option --edit --file=$(git rev-parse --show-toplevel)/.git/COMMIT_EDITMSG
+  GIT_EDITOR=$(git config core.editor) echodo git commit $amend_option --edit --file=$(git rev-parse --show-toplevel)/.git/COMMIT_EDITMSG --no-verify
   exit 1
 }
 

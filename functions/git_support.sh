@@ -95,6 +95,18 @@ function git_open_conflicts() {
   fi
 }
 
+function git_branch_rm {
+  local branch=${1:-$(git_current_branch)}
+  if [[ "$1" == "$(git_current_branch)" ]]; then
+    git stash -u
+    git checkout "$(git_main_branch)"
+  fi
+
+  git branch -D "$branch"
+  git branch -Dr origin/"$branch"
+  cc_menu_remove "$branch"
+}
+
 # TODO: test
 function git_purge {
   git_autostash git_purge_on_main

@@ -40,7 +40,11 @@ if [[ -f .rubocop.yml ]]; then
 fi
 
 if [[ -f .spellr.yml ]]; then
-  echodo bundle exec spellr $(git_modified) || exit_code=1
+  if grep -qs -e spellr Gemfile.lock; then
+    echodo bundle exec spellr $(git_modified) || exit_code=1
+  else
+    echodo spellr $(git_modified) || exit_code=1
+  fi
 fi
 
 exit $exit_code

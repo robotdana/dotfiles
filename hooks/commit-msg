@@ -19,7 +19,7 @@ function handle_error {
   exit 1
 }
 
-if [[ "$(git_current_repo)" == "marketplacer" ]]; then
+if [[ -f commitlint.config.js ]]; then
   cat <(
     while read -r line; do
       if [[ "$line" == "# ------------------------ >8 ------------------------" ]]; then

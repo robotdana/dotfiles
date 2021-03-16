@@ -29,7 +29,7 @@ fi
 if [[ -f .stylelintrc ]]; then
   style_files=$(git_modified .ts .tsx)
   if [[ ! -z $style_files ]]; then
-    echodo node_modules/.bin/stylelint --fix $style_files
+    echodo node_modules/.bin/stylelint $style_files
     git --no-pager diff $style_files
     [[ -z "$(git diff) $style_files" ]] || exit_code=1
   fi

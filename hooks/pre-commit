@@ -17,12 +17,39 @@ else
   exit 0
 fi
 
-if [[ -f .eslintrc ]] || [[ -f .eslintrc.js ]]; then
+if [[ -f .prettierrc ]]; then
   js_files=$(git_modified .js .jsx .ts .tsx)
   if [[ ! -z $js_files ]]; then
-    echodo node_modules/.bin/eslint --fix $js_files
+    echodo node_modules/.bin/prettier --write $js_files
     git --no-pager diff $js_files
     [[ -z "$(git diff $js_files)" ]] || exit_code=1
+  fi
+fi
+
+if [[ -f .stylelintrc ]]; then
+  style_files=$(git_modified .ts .tsx)
+  if [[ ! -z $style_files ]]; then
+    echodo node_modules/.bin/stylelint --fix $style_files
+    git --no-pager diff $style_files
+    [[ -z "$(git diff) $style_files" ]] || exit_code=1
+  fi
+fi
+
+if [[ -f .eslintrc ]] || [[ -f .eslintrc.js ]]; then
+  if [[ "$(git_current_repo)" == "marketfacer" ]]; then
+    ts_files=$(git_modified .ts .tsx)
+    if [[ ! -z $ts_files ]]; then
+      echodo node_modules/.bin/eslint --ignore-path .gitignore --ignore-pattern 'components/**/__generated__/*' --fix $ts_files
+      git --no-pager diff $ts_files
+      [[ -z "$(git diff $ts_files)" ]] || exit_code=1
+    fi
+  else
+    js_files=$(git_modified .js .jsx .ts .tsx)
+    if [[ ! -z $js_files ]]; then
+      echodo node_modules/.bin/eslint --fix $js_files
+      git --no-pager diff $js_files
+      [[ -z "$(git diff $js_files)" ]] || exit_code=1
+    fi
   fi
 fi
 

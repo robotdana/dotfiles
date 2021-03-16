@@ -6,6 +6,7 @@ function cc_menu_item_project_name {
   local branch=${2:-"$(git_current_branch)"}
   case $repo in
     marketplacer) echo "Marketplacer ($branch)";;
+    marketfacer) echo "Marketfacer ($branch)";;
     spellr | dotfiles | fast_ignore | tty_string | leftovers | git_ls) echo "robotdana/$repo";;
   esac
 }
@@ -15,7 +16,7 @@ function cc_menu_item_server_url {
   local branch=${2:-"$(git_current_branch)"}
 
   case $repo in
-    marketplacer) echo "https://cc.buildkite.com/marketplacer/marketplacer.xml?access_token=$CC_BUILDKITE_TOKEN&branch=$branch";;
+    marketplacer | marketfacer) echo "https://cc.buildkite.com/marketplacer/$repo.xml?access_token=$CC_BUILDKITE_TOKEN&branch=$branch";;
     spellr | dotfiles | fast_ignore | tty_string | leftovers | git_ls) echo "https://api.travis-ci.com/repos/robotdana/$repo/cc.xml?branch=$branch";;
   esac
 }

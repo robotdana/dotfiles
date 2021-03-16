@@ -31,7 +31,7 @@ if [[ -f .stylelintrc ]]; then
   if [[ ! -z $style_files ]]; then
     echodo node_modules/.bin/stylelint $style_files
     git --no-pager diff $style_files
-    [[ -z "$(git diff) $style_files" ]] || exit_code=1
+    [[ -z "$(git diff $style_files)" ]] || exit_code=1
   fi
 fi
 

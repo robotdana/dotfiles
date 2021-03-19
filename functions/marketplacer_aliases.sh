@@ -30,11 +30,19 @@ function vrtn() {
 }
 
 function cdm() {
-  cd ~/M/marketplacer
+  cd ~/M/placer
+}
+
+function cdf() {
+  cd ~/M/facer
 }
 
 function em {
-  code ~/M/marketplacer
+  code ~/M/placer
+}
+
+function ef {
+  codef ~/M/facer
 }
 
 function vrtc {

@@ -30,19 +30,19 @@ function vrtn() {
 }
 
 function cdm() {
-  cd ~/M/placer
+  echodo cd ~/M/placer
 }
 
 function cdf() {
-  cd ~/M/facer
+  echodo cd ~/M/facer
 }
 
 function em {
-  code ~/M/placer
+  echodo code ~/M/placer
 }
 
 function ef {
-  codef ~/M/facer
+  echodo code ~/M/facer
 }
 
 function vrtc {
@@ -54,4 +54,9 @@ function killchrome {
   pgrep -q Google\ Chrome && echodo killall Google\ Chrome
   pgrep -q chromedriver && echodo killall chromedriver
   echodo docker-compose -f docker-compose.chrome.yml restart
+}
+
+function update_graphql {
+  cdm && echodo rake 'app:graphql:update_schema['$1']' && echodo ttab 'cdm && rails s'
+  cdf && echodo yarn run graphql:schema:update http://marketplacer.lvh.me:3000/graphql && echodo yarn run graphql:types:build
 }

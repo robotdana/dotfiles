@@ -57,6 +57,11 @@ function killchrome {
 }
 
 function update_graphql {
-  cdm && echodo rake 'app:graphql:update_schema['$1']' && echodo ttab 'cdm && rails s'
-  cdf && echodo yarn run graphql:schema:update http://marketplacer.lvh.me:3000/graphql && echodo yarn run graphql:types:build
+  cdm && echodo rake 'app:graphql:update_schema['$1']'
+  if ports_respond 3000; then
+    echo -e "\033[36mRails server is running\033[0m"
+  else
+    echodo ttab 'cdm && rails s'
+  fi
+  wait_for_port_then 'cdf && echodo yarn run graphql:schema:update http://marketplacer.lvh.me:3000/graphql && echodo yarn run graphql:types:build' 3000
 }

@@ -11,6 +11,10 @@ module.exports = {
     {
       match: /^https?:\/\/support\.marketplacer\.com\/.*$/,
       browser: "Google Chrome"
+    },
+    {
+      match: /^https?:\/\/marketplacer\.zendesk\.com\/.*$/,
+      browser :"Google Chrome"
     }
   ]
 }

@@ -11,7 +11,7 @@ fi
 
 exit_code=0
 
-if [[ -f .eslintrc ]] || [[ -f .eslintrc.js ]] || [[ -f .rubocop.yml ]] || [[ -f .spellr.yml ]]; then
+if [[ -f .eslintrc ]] || [[ -f .eslintrc.js ]] || [[ -f .stylelintrc ]] || [[ -f .prettierrc ]] || [[ -f .rubocop.yml ]] || [[ -f .spellr.yml ]]; then
   git_fake_auto_stash
 else
   exit 0

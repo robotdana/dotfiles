@@ -95,18 +95,6 @@ function git_open_conflicts() {
   fi
 }
 
-function git_branch_rm {
-  local branch=${1:-$(git_current_branch)}
-  if [[ "$1" == "$(git_current_branch)" ]]; then
-    git stash -u
-    git checkout "$(git_main_branch)"
-  fi
-
-  git branch -D "$branch"
-  git branch -Dr origin/"$branch"
-  cc_menu_remove "$branch"
-}
-
 # TODO: test
 function git_purge {
   git_autostash git_purge_on_main
@@ -289,10 +277,19 @@ function git_branch_list() {
   git branch --list --format="%(refname:short)" $*
 }
 
+function git_branch_rm {
+  local branch=${1:-$(git_current_branch)}
+  if [[ "$1" == "$(git_current_branch)" ]]; then
+    echodo git stash -u
+    echodo git checkout "$(git_main_branch)"
+  fi
+
+  echodo git branch -D "$branch"
+  echodo git branch -Dr origin/"$branch" upstream/"$branch"
+  cc_menu_remove "$branch"
+}
 function git_branch_D {
-  echodo git branch -D $1
-  echodo git branch -Dr origin/$1 upstream/$1
-  cc_menu_remove_purged
+  git_branch_rm "$@"
 }
 
 function git_branch_local_only() {

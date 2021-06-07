@@ -159,7 +159,7 @@ function check_untested_bash_profile {
 
 function ruby_version_prompt {
   if [ -f Gemfile ]; then
-    echo "{r$(ruby --version | cut -d' ' -f 2 | cut -d. -f 1,2)}"
+    echo "{r$(ruby --version | cut -d' ' -f 2 | cut -dp -f1 )}"
   fi
 }
 

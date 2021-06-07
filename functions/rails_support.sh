@@ -1,6 +1,5 @@
 function rails_migrate_all {
   case $(git_current_repo) in
-    marketplacer) local task_name='multitenant:db:migrate';;
     *)            local task_name='db:migrate';;
   esac
   echodo bundle exec rails $task_name

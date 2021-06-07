@@ -1,14 +1,3 @@
-if defined?(Vertical) && Vertical.respond_to?(:set)
-  def v(vertical = nil)
-    ActiveRecord::Base.logger.silence do
-      Vertical.set(vertical || :marketplacer)
-    end
-  end
-
-  v unless Vertical.set?
-end
-
-
 Pry.config.pager = false
 
 prompts = [

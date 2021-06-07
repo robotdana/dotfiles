@@ -325,7 +325,6 @@ function git_force_pull_release_branches() {
 
 function git_release_branch_match() {
   case $(git_current_repo) in
-    marketplacer) echo '(origin/)?(main$|release/.*)';;
     dotfiles)     echo 'origin/main';;
     *)            echo '(origin/)?(master|main|trunk|primary)';;
   esac
@@ -519,9 +518,9 @@ function git_reset_branch {
 
 
 function git_pickaxe {
-  git --no-pager log -p -S"$1" ':!:*.scss' ':!:*.coffee' ':!:*.js' ':!:*.jsx' ':!:*.ts' ':!:*.tsx'  ':!:*.rbi' ':!:*.txt' ':!:*.yml' ':!:*.json' ':!:*/schema*.rb' ':!:db/migrate/*'
+  git --no-pager log -p -S"$1" "${@:2}"
 }
 
 function git_pickaxe_b {
-  git --no-pager log -p --pickaxe-regex -S'\b'"$1"'\b' ':!:*.scss' ':!:*.coffee' ':!:*.js' ':!:*.jsx' ':!:*.ts' ':!:*.tsx' ':!:*.rbi' ':!:*.txt' ':!:*.yml' ':!:*.json' ':!:*/schema*.rb' ':!:db/migrate/*'
+  git --no-pager log -p --pickaxe-regex -S'\b'"$1"'\b' "${@:2}"
 }

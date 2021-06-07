@@ -32,7 +32,6 @@ source ~/.dotfiles/functions/git_support.sh
 source ~/.dotfiles/functions/hosts_support.sh
 source ~/.dotfiles/functions/prompt_support.sh
 source ~/.dotfiles/functions/server_support.sh
-source ~/.dotfiles/functions/marketplacer_support.sh
 source ~/.dotfiles/functions/cc_menu_support.sh
 source ~/.dotfiles/functions/rails_support.sh
 source ~/.dotfiles/functions/less_support.sh
@@ -43,7 +42,6 @@ source ~/.dotfiles/functions/dotfiles_aliases.sh
 source ~/.dotfiles/functions/rails_aliases.sh
 source ~/.dotfiles/functions/jekyll_aliases.sh
 source ~/.dotfiles/functions/webpack_aliases.sh
-source ~/.dotfiles/functions/marketplacer_aliases.sh
 
 PROMPT_COMMAND="maybe_update_terminal_cwd; resource_if_modified_since $(last_bash_profile_modification); check_untested_bash_profile"
 

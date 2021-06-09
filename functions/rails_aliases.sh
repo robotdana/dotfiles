@@ -1,23 +1,3 @@
-# `rd` rails database
-function rd() {
-  title 'Migrating'
-
-  rails_migrate_all
-  title
-}
-
-# `rds` rails database soft
-# migrate the database, but skip the schema dump
-function rds(){
-  rails_migrate_all_soft
-}
-
-# `rdt` rails database test
-# migrate the test database, and skip the schema dump
-function rdt(){
-  RAILS_ENV=test rails_migrate_soft
-}
-
 # `rc` rails console
 function rc(){
   title 'Console'
@@ -37,7 +17,7 @@ function rgm(){
   if [[ ! -z $filename ]]; then
     echodo code -w "$filename"
     if [[ -s $filename ]]; then
-      rd
+      echodo rails db:migrate
     else
       echodo rm "$filename"
     fi

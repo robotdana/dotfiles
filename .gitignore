@@ -15,3 +15,4 @@
 /SublimePackages/oscrypto-ca-bundle.crt
 
 .last_successful_test
+Brewfile.lock.json

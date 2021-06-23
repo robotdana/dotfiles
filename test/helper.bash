@@ -20,16 +20,16 @@ function reset_to_first_commit() {
 
   run git merge --abort
   run git rebase --abort
-  git checkout --quiet  master --
-  if [[ ! -z "$(git branch --list | grep -Fv '* master')" ]]; then
-    git branch -D $(git branch --list | grep -Fv '* master')
+  git checkout --quiet  main --
+  if [[ ! -z "$(git branch --list | grep -Fv '* main')" ]]; then
+    git branch -D $(git branch --list | grep -Fv '* main')
   fi
   git reset --hard "$(git log --reverse --format="%H" | head -n 1)" --
   git clean -fd
   git stash clear
 
   run git status
-  assert_output "On branch master
+  assert_output "On branch main
 nothing to commit, working tree clean"
 
   run git stash list
@@ -43,7 +43,7 @@ nothing to commit, working tree clean"
 
 function assert_git_status_clean {
   run git status
-  assert_output "On branch master
+  assert_output "On branch main
 nothing to commit, working tree clean"
 }
 

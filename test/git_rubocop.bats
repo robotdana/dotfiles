@@ -10,6 +10,10 @@ function setup() {
     setup_git
     chruby 2.7.0
 
+    run ruby -v
+    assert_output --partial "ruby 2.7.0"
+    gem install bundler
+
     echo "
       source 'https://rubygems.org'
       gem 'rubocop', '1.0.0'
@@ -23,6 +27,7 @@ function setup() {
     git commit --no-verify -m "Initial commit"
   else
     reset_to_first_commit
+    chruby 2.7.0
   fi
 }
 

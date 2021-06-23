@@ -33,7 +33,7 @@ function setup() {
   assert_file_not_exist b
   assert_git_status_clean
   run git stash list
-  assert_output "stash@{0}: On master: fake autostash"
+  assert_output "stash@{0}: On main: fake autostash"
 }
 
 @test "git_fake_auto_stash_pop" {
@@ -75,7 +75,7 @@ Initial commit"
   echo 'something' > file2
   git add file1 file2
   git commit -m "Commit 2"
-  git checkout master
+  git checkout main
   echo 'amended text' > file1
   git add file1
   git commit -m "Commit 3"
@@ -100,7 +100,7 @@ Automatic merge failed; fix conflicts and then commit the result."
   echo 'something' > file2
   git add file1 file2
   git commit -am "Commit 2"
-  git checkout master
+  git checkout main
   rm file1
   git commit -am "Commit 3"
   run git merge branch2
@@ -120,7 +120,7 @@ Automatic merge failed; fix conflicts and then commit the result."
   echo 'amended text' > file1
   git add file1
   git commit -m "Commit 2"
-  git checkout master
+  git checkout main
   rm file1
   echo 'something' > file2
   git add file1 file2
@@ -144,7 +144,7 @@ Automatic merge failed; fix conflicts and then commit the result."
   git checkout -b "branch2"
   rm file1
   git commit -am "Commit 2"
-  git checkout master
+  git checkout main
   echo 'amended text' > file1
   git add file1
   git commit -m "Commit 3"

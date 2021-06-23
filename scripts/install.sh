@@ -27,3 +27,5 @@ brew tap homebrew/cask-fonts
 brew install mas
 
 ~/.dotfiles/scripts/update.sh
+
+ruby-install ruby-2.7.0 # the ruby used by bash tests

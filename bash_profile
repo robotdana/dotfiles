@@ -27,7 +27,7 @@ if [ -f ~/.cargo/env ]; then
   source /Users/dana/.cargo/env
 fi
 
-source ~/.dotfiles/locals/secrets
+source ~/.dotfiles/locals/secrets.sh
 
 source ~/.dotfiles/functions/bash_support.sh
 source ~/.dotfiles/functions/git_support.sh

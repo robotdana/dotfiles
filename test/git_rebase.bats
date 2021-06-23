@@ -23,11 +23,16 @@ function setup() {
   echo a > a
   git add .
   git commit -m "Commit message to be changed"
-  run find_sha to be changed
-  assert_output $(git rev-parse --short HEAD)
+  echo b > b
+  git add .
+  git commit -m "Commit message to remain"
+  run git_find_sha to be changed
+  assert_output $(git rev-parse --short HEAD^)
   GIT_EDITOR="sed -i.~ s/to\ be\ changed/was\ changed/" \
     run git_reword "to be changed"
   assert_output ""
-  run git show -s --format=%s
-  assert_output "Commit message was changed"
+  run git log -s --format=%s
+  assert_output "Commit message to remain
+Commit message was changed
+Initial commit"
 }

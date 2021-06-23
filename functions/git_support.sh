@@ -175,17 +175,30 @@ function git_prompt_current_ref() {
 }
 
 function git_current_repo() {
-  basename "$(git config --get remote.origin.url 2>/dev/null)" .git
+  local remote=${1:-origin}
+  basename "$(git config --get remote.$remote.url 2>/dev/null)" .git
 }
 
-# TODO: if it's not found just pass it through so I could e.g. use HEAD
-# or pass it to $(git rev-parse --short) and try again
+function git_current_repo_org {
+  local remote=${1:-origin}
+  basename "$(dirname "$(git config --get remote.$remote.url)")" | cut -d: -f2
+}
+function git_current_repo_with_org {
+  local remote=${1:-origin}
+  echo "$(git_current_repo_org $remote)/$(git_current_repo $remote)"
+}
+
 # TODO: test
-function find_sha() {
+function git_find_sha() {
+  local val="${*:-HEAD}"
+  if git rev-parse --verify --quiet "$val" 1>/dev/null; then
+    val=$(git rev-parse --short "$val")
+  fi
+
   local commits=()
   while IFS= read -r line; do
     commits+=( "$line" )
-  done < <(git_log_oneline "$(git_main_branch)" 2>/dev/null | grep -E -e '^(\e\[(\d;?)+m)?'"$*" -e ' .*'"$*")
+  done < <(git_log_oneline "$(git_main_branch)" 2>/dev/null | grep -E -e '^(\e\[(\d;?)+m)?'"$val" -e ' .*'"$val")
 
   if (( ${#commits[@]} > 1 )); then
     echoerr "Multiple possible commits found:"
@@ -194,7 +207,7 @@ function find_sha() {
     done
     return ${#commits[@]}
   elif (( ${#commits[@]} == 0 )); then
-    echoerr "Commit not found:"
+    echoerr "Commit not found in branch:"
     gbl >&2 2>/dev/null
     return 1
   else
@@ -204,16 +217,18 @@ function find_sha() {
 
 # Tested
 function git_reword() {
-  if [[ -z "$1" ]]; then
-    git_rebasable_quick HEAD^ && echodo git commit --amend
-  else
-    local commit
-    commit=$(find_sha $*)
-    if (( $? < 1 )); then
-      git_rebasable_quick "$commit^" && git_rebase_noninteractively reword $commit
-    else
-      return 1
+  local commit
+  commit=$(git_find_sha $*)
+  if (( $? < 1 )); then
+    if git_rebasable_quick "$commit^"; then
+      if [[ "$commit" == "$(git rev-parse --short HEAD)" ]]; then
+        git commit --amend
+      else
+        git_rebase_noninteractively reword $commit
+      fi
     fi
+  else
+    return 1
   fi
 }
 
@@ -503,14 +518,6 @@ function github_commit {
 
 function git_last_rebase {
   git log -n 1 $(git merge-base "$(git_main_branch)" HEAD) --format=%cr
-}
-
-function git_reset_branch {
-  echodo git fetch origin release/test-$1 "$(git_main_branch)" && \
-  echodo git checkout release/test-$1 && \
-  echodo git reset --hard origin/"$(git_main_branch)" && \
-  echodo git push --force origin release/test-$1 && \
-  echodo git checkout -
 }
 
 

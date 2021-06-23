@@ -54,6 +54,10 @@ function gbf() {
   echodo git log --oneline --follow --patch $(git_log_range "$base_branch") -- "$filename"
 }
 
+function gbs {
+  git show $(find_sha "$*")
+}
+
 # `gwip` git wip
 # commit everything carelessly with the message `wip`
 function gwip(){
@@ -85,17 +89,18 @@ function gcr {
 # fixups <commit> or the last commit & rebases
 # TODO: test
 function gcf() {
-  if [[ -z "$1" ]]; then
-    # TODO: bail if there's nothing to commit.
-    git_rebasable_quick HEAD^ && ga && echodo git commit --amend --no-edit
-  else
-    local commit
-    commit=$(find_sha $*)
-    if (( $? < 1 )); then
-      git_rebasable_quick "$commit^" && ga && echodo git commit --fixup "$commit" && git_rebase_i "$commit^"
-    else
-      return 1
+  local commit
+  commit=$(git_find_sha $*)
+  if (( $? < 1 )); then
+    if git_rebasable_quick "$commit^" && ga; then
+      if [[ "$commit" == "$(git rev-parse --short HEAD)" ]]; then
+        echodo git commit --amend --no-edit
+      else
+        echodo git commit --fixup "$commit" && git_rebase_i "$commit^"
+      fi
     fi
+  else
+    return 1
   fi
 }
 

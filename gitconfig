@@ -10,7 +10,7 @@
 	excludesfile = ~/.gitignore
 	mergeoptions = --no-edit
 	hooksPath = ~/.dotfiles/hooks
-	editor = code --wait
+	editor = mate --wait
 [help]
 	autocorrect = -1
 [push]

@@ -16,7 +16,6 @@ brew "git-lfs"
 brew "gnupg"
 brew "gzip"
 brew "jq"
-brew "mas"
 brew "pinentry-mac"
 brew "pkg-config"
 brew "rbspy"
@@ -34,7 +33,5 @@ cask "font-inconsolata"
 cask "google-chrome"
 cask "istat-menus"
 cask "visual-studio-code"
-mas "CCMenu", id: 603117688
-mas "ColorSnapper2", id: 969418666
-mas "Slack", id: 803453959
-mas "Xcode", id: 497799835
+cask "ccmenu"
+cask "slack"

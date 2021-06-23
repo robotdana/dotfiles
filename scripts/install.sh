@@ -19,6 +19,7 @@ echodo mkdir -p ~/.bundle
 echodo ln -sf ~/.dotfiles/bundle_config ~/.bundle/config
 echodo ln -sf ~/.dotfiles/mycnf ~/.my.cnf
 echodo mkdir -p ~/.dotfiles/locals
+echodo touch ~/.dotfiles/locals/secrets
 
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 brew tap homebrew/cask

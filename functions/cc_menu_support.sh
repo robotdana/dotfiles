@@ -73,7 +73,13 @@ function cc_menu_remove_item {
   local repo="$(git_current_repo)"
   local branch="${1:-"$(git_current_branch)"}"
 
-  cc_menu_replace $(cc_menu_list | grep -vF "$repo : $branch" | tr -d ' ')
+  defaults write net.sourceforge.cruisecontrol.CCMenu Projects "$(ruby --disable-all -e 'puts ARGF.read.sub(/
+    \{\n
+    \s*displayName\s=\s"#{Regexp.escape("'"$repo"'")}\s:\s#{Regexp.escape("'"$branch"'")}";\n
+    \s*projectName\s=\s"[^"]+";\n
+    \s*serverUrl\s=\s"[^"]+";\n
+    \s*\},?\n?/x,
+  "")' <(defaults read net.sourceforge.cruisecontrol.CCMenu Projects))"
 }
 
 function cc_menu_present {
@@ -86,7 +92,7 @@ function cc_menu_init {
   defaults write net.sourceforge.cruisecontrol.CCMenu Projects '()'
 }
 
-function cc_menu_remove_list {
+function cc_menu_remove_branches {
   killall CCMenu 2>/dev/null
   for branch in "$@"; do
     cc_menu_remove_item "$branch"

@@ -5,6 +5,8 @@ function cc_menu_item_server_url {
     cc_menu_travis_url "$branch"
   elif [[ -f .buildkite/pipeline.yml ]]; then
     cc_menu_buildkite_url "$branch"
+  elif [[ -d .github/workflows ]]; then
+    cc_menu_github_actions_url "$branch"
   fi
 }
 
@@ -13,6 +15,18 @@ function cc_menu_travis_url {
   local branch="${1:-"$(git_current_branch)"}"
 
   echo "https://api.travis-ci.com/repos/$repo/cc.xml?branch=$branch"
+}
+
+function cc_menu_github_actions_url {
+  if ! ports_respond 45454; then
+    cc_menu_github_actions_server
+  fi
+
+  local repo=$(git_current_repo_with_org)
+  local branch="${1:-"$(git_current_branch)"}"
+  local workflow=$(ls -1 .github/workflows | head)
+
+  echo "http://localhost:45454/$repo/$workflow?branch=$branch"
 }
 
 function cc_menu_buildkite_url {

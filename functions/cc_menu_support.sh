@@ -52,7 +52,15 @@ function cc_menu_remove_purged {
 }
 
 function cc_menu_project_name {
-  curl "$(cc_menu_item_server_url $(git_main_branch))" 2>/dev/null | xmllint --xpath "string(//Projects/Project/@name)" -
+  curl "$(cc_menu_item_server_url "$branch")" 2>/dev/null | xmllint --xpath "string(//Projects/Project/@name)" -
+}
+
+function cc_menu_github_actions_server {
+  ( cd ~/.dotfiles/locals/github-cctray && chruby 3.0.0 && bundle exec rackup -p 45454 -D config.ru && wait_for_ports 45454 )
+}
+
+function cc_menu_github_actions_server_restart {
+  kill_port 45454 && cc_menu_github_actions_server
 }
 
 function cc_menu_add_item {
@@ -62,7 +70,7 @@ function cc_menu_add_item {
   defaults write net.sourceforge.cruisecontrol.CCMenu Projects -array-add "
     {
       displayName = \"$repo : $branch\";
-      projectName = \"$(cc_menu_project_name)\";
+      projectName = \"$(cc_menu_project_name "$branch")\";
       serverUrl = \"$(cc_menu_item_server_url "$branch")\";
 
     }

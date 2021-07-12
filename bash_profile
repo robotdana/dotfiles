@@ -6,10 +6,11 @@ bind '"\e[B":history-search-forward'
 set +H
 
 export PYENV_SHELL=bash
-export PATH=/Users/dana/.cargo/bin:/Users/dana/.pyenv/shims:/usr/local/heroku/bin:/usr/local/bin:/usr/local/sbin:/usr/local/lib/node:$PATH
+export PATH="$HOME/.cargo/bin:/Users/dana/.pyenv/shims:/usr/local/heroku/bin:/usr/local/bin:/usr/local/sbin:/usr/local/lib/node:$PATH"
 export EDITOR='/usr/local/bin/code --wait'
 export GUI_EDITOR=$EDITOR
 export GPG_TTY=$(tty)
+export BASH_SILENCE_DEPRECATION_WARNING=1
 
 if [[ -f /usr/local/opt/chruby/share/chruby/chruby.sh ]]; then
   source /usr/local/opt/chruby/share/chruby/chruby.sh
@@ -57,5 +58,3 @@ fi
 
 export PS2="\[$C_PINK\]» \[$C_RESET\]"
 export PS1="\[\$(last_command_style)\]\[$C_PINK\]\w\[$C_LIGHT_PINK\]\$(ruby_version_prompt)\[\$(git_status_color)\]\$(git_prompt_current_ref :)$PS2"
-
-export PATH="$HOME/.cargo/bin:$PATH"

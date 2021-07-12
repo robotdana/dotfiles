@@ -62,7 +62,7 @@ function cc_menu_remove {
 }
 
 function cc_menu_remove_purged {
-  cc_menu_remove_branches $(comm -23 <(cc_menu_list | sort) <(git branch --format="$(git_current_repo) : %(refname:short)" | sort) | cut -d: -f2)
+  cc_menu_remove_branches $(comm -23 <(cc_menu_list | sort) <(git branch --format="$(git_current_repo) : %(refname:short)" | sort) | grep -F "$(git_current_repo) :" | cut -d: -f2)
 }
 
 function cc_menu_project_name {

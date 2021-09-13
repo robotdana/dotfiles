@@ -50,6 +50,15 @@ function rt(){
   echodo bundle exec rspec --format documentation "$@"
 }
 
+function rcu(){
+  echodo bundle exec cucumber "$@"
+}
+
+function rcur(){
+  rcu -p ci "$@"
+  rcur "$@"
+}
+
 function rtr() {
   rt --failure-exit-code 2 "$@"
   [[ "$?" != "1" ]] && rtr "$@"

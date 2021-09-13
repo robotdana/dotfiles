@@ -5,6 +5,11 @@ export NVM_DIR="$HOME/.nvm"
 function nvm_use_node_version {
   if [[ -f .node-version ]]; then
     local new_version=$(<.node-version)
+  elif [[ -f .tool-versions ]]; then
+    local new_version=$(grep -F nodejs .tool-versions | cut -f2 -d' ')
+  fi
+
+  if [[ ! -z "$new_version" ]]; then
     local current_version=$(nvm current)
     if [[ "v$new_version" != "$current_version" ]]; then
       echodo nvm use $new_version

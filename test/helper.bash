@@ -1,12 +1,8 @@
 source ~/.dotfiles/functions/bash_support.sh
 
-if [[ -z $BATS_PLUGINS_DIR ]]; then
-  BATS_PLUGINS_DIR="$(brew --prefix)/lib"
-fi
-
-source "${BATS_PLUGINS_DIR}/bats-support/load.bash"
-source "${BATS_PLUGINS_DIR}/bats-assert/load.bash"
-source "${BATS_PLUGINS_DIR}/bats-file/load.bash"
+load './test_helper/bats-support/load'
+load './test_helper/bats-assert/load'
+load './test_helper/bats-file/load'
 
 function setup_git() {
   rm -rf ~/.git-test-repo

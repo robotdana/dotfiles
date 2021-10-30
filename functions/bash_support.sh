@@ -132,12 +132,12 @@ function strip_color() {
 
 function bt() {
   if (( $# == 0 )); then
-    ( cd ~/.dotfiles/test && command bats *.bats )
+    ( cd ~/.dotfiles/test && bats/bin/bats *.bats )
     if (( $? == 0 )); then
       echo $(last_test_modification) > ~/.dotfiles/test/.last_successful_test
     fi
   else
-    ( cd ~/.dotfiles/test && command bats ${@/%/.bats} )
+    ( cd ~/.dotfiles/test && bats/bin/bats ${@/%/.bats} )
   fi
   cd $PWD
 }

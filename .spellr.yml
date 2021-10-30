@@ -1,3 +1,6 @@
+excludes:
+  - vendor
+
 languages:
   ruby:
     includes:

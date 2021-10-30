@@ -4,7 +4,7 @@ function cc_menu_item_server_url {
   if [[ -f .travis.yml ]]; then
     cc_menu_travis_url "$branch"
   elif [[ -f .buildkite/pipeline.yml ]]; then
-    cc_menu_buildkite_url "$branch"
+    cc_menu_buildkite_url "$branch" "${@:2}"
   elif [[ -d .github/workflows ]]; then
     cc_menu_github_actions_url "$branch"
   fi
@@ -31,7 +31,7 @@ function cc_menu_github_actions_url {
 
 function cc_menu_buildkite_url {
   local branch=${1:-"$(git_current_branch)"}
-  local access_token=$(buildkite_access_token)
+  local access_token=${2:-"$(buildkite_access_token)"}
   if [[ ! -z "$access_token" ]]; then
     access_token="&access_token=$access_token"
   fi
@@ -107,6 +107,10 @@ function cc_menu_remove_item {
 function cc_menu_present {
   local branch="${1:-"$(git_current_branch)"}"
   defaults read net.sourceforge.cruisecontrol.CCMenu Projects | grep -qF "displayName = \"$(git_current_repo) : $branch\";"
+}
+
+function cc_menu_repo_present {
+  defaults read net.sourceforge.cruisecontrol.CCMenu Projects | grep -qF "serverUrl = \"$(cc_menu_item_server_url '' '')"
 }
 
 function cc_menu_init {

@@ -100,6 +100,14 @@ function git_purge {
   git_autostash git_purge_on_main
 }
 
+function git_purge_all {
+  local current_dir=$PWD
+  for repo in $(ls -1d $PROJECT_DIRS); do
+    cd "$repo" && [[ -d .git ]] && cc_menu_repo_present && echo "Purging $repo" && ( git purge || exit 1 )
+  done
+  cd "$current_dir"
+}
+
 # TODO: test
 function git_purge_on_main {
   git checkout "$(git_main_branch)"
@@ -382,7 +390,7 @@ function git_authors() {
 }
 
 function git_main_branch() {
-  git_branch_list | grep -F -e master -e main -e trunk -e primary
+  git_branch_list | grep -Fx -e master -e main -e trunk -e primary
 }
 
 function git_status_clean() {

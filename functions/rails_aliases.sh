@@ -45,6 +45,10 @@ function be(){
   echodo bundle exec "$@"
 }
 
+function brake(){
+  echodo bundle exec rake "$@"
+}
+
 # `rt [<test files>]` shortcut for rspec.
 function rt(){
   echodo bundle exec rspec --format documentation "$@"

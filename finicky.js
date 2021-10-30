@@ -4,11 +4,14 @@
 module.exports = {
   defaultBrowser: "Safari",
   options: {
-    hideIcon: true
+    hideIcon: false
   },
   handlers: [
     {
-      match: /^https?:\/\/meet\.google\.com\/.*$/,
+      match: finicky.matchDomains([
+        "zendesk.com",
+        "meet.google.com"
+      ]),
       browser: "Google Chrome"
     }
   ]

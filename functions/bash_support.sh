@@ -97,7 +97,7 @@ function quote() {
       echo -en '""'
     elif [[ "$string" = *"'"* ]]; then
       echo -en \""$(echo -en "$string" | sed -E 's/(["$])/\\\1/g')\""
-    elif [[ "$string" =~ \ |\(|\)|\[|\]|\$|\<|\> ]]; then
+    elif [[ "$string" =~ \ |\(|\)|\[|\]|\$|\<|\>|$'\n' ]]; then
       echo -en "'$string'"
     else
       echo -en "$string"
@@ -108,8 +108,8 @@ function quote() {
 # TODO: make this work with xargs
 # TODO: Test
 function echodo(){
-  ( echo_grey $(quote_array "$@") )>&2
-  eval $(quote_array "$@")
+  ( printf "%s" "$C_GREY"; quote_array "$@"; printf "%s" "$C_RESET" )>&2
+  "$@"
 }
 
 function echoerr(){
@@ -171,4 +171,8 @@ function clear_all {
 
 function cdp {
   cd ~/Projects/"$1"
+}
+function killchrome {
+  killall Google\ Chrome 2>/dev/null
+  killall chromedriver 2>/dev/null
 }

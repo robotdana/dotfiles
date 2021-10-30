@@ -185,6 +185,7 @@ snginx
 sqlite
 stylelint
 stylelintrc
+submodule
 subref
 sudo
 tcp

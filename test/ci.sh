@@ -7,4 +7,4 @@ ln -s $PWD ~/.dotfiles
 git config --global core.hooksPath '~/.dotfiles/hooks'
 
 # run some tests
-./bats-core/bin/bats test/*.bats
+test/bats/bin/bats test/*.bats

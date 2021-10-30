@@ -4,7 +4,9 @@
 ln -s $PWD ~/.dotfiles
 
 # i need my hooks
-git config --global core.hooksPath '~/.dotfiles/hooks'
+cp gitconfig ~/.gitconfig
+
+git config --global commit.gpgsign false
 
 # run some tests
 test/bats/bin/bats test/*.bats

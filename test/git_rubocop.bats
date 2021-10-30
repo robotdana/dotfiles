@@ -3,15 +3,20 @@
 load helper
 
 source ~/.dotfiles/functions/git_support.sh
-source /usr/local/opt/chruby/share/chruby/chruby.sh
+
+if [[ -f /usr/local/opt/chruby/share/chruby/chruby.sh ]]; then
+  source /usr/local/opt/chruby/share/chruby/chruby.sh
+fi
 
 function setup() {
   if [[ "$BATS_TEST_NUMBER" -eq "1" ]]; then
     setup_git
-    chruby 2.7.0
+    if declare -fF chruby >/dev/null; then
+      chruby 2.7.0
+    fi
 
     run ruby -v
-    assert_output --partial "ruby 2.7.0"
+    assert_output --partial "ruby 2.7"
     gem install bundler
 
     echo "
@@ -27,7 +32,9 @@ function setup() {
     git commit --no-verify -m "Initial commit"
   else
     reset_to_first_commit
-    chruby 2.7.0
+    if declare -fF chruby >/dev/null; then
+      chruby 2.7.0
+    fi
   fi
 }
 

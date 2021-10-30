@@ -8,7 +8,7 @@ function setup_git() {
   rm -rf ~/.git-test-repo
   mkdir ~/.git-test-repo
   cd ~/.git-test-repo || exit
-  git init
+  git init -b main
 }
 
 function reset_to_first_commit() {

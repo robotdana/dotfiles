@@ -186,6 +186,7 @@ sqlite
 stylelint
 stylelintrc
 submodule
+submodules
 subref
 sudo
 tcp

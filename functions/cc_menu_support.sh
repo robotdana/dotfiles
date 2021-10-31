@@ -26,7 +26,7 @@ function cc_menu_github_actions_url {
   local branch="${1:-"$(git_current_branch)"}"
   local workflow=$(ls -1 .github/workflows | head)
 
-  echo "http://localhost:45454/$repo/$workflow?branch=$branch"
+  echo "http://localhost:45454/$repo/$workflow?branch=$branch&token=$GITHUB_ACTIONS_TOKEN"
 }
 
 function cc_menu_buildkite_url {

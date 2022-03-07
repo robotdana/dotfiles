@@ -80,7 +80,8 @@ Initial commit"
   git add file1
   git commit -m "Commit 3"
   run git merge branch2
-  assert_output "CONFLICT (modify/delete): file1 deleted in branch2 and modified in HEAD. Version HEAD of file1 left in tree.
+  assert_output --partial "CONFLICT (modify/delete): file1 deleted in branch2 and modified in HEAD."
+  assert_output --partial "Version HEAD of file1 left in tree.
 Automatic merge failed; fix conflicts and then commit the result."
   yes n | run gmc
   run git log --format=%s -n 1
@@ -104,7 +105,8 @@ Automatic merge failed; fix conflicts and then commit the result."
   rm file1
   git commit -am "Commit 3"
   run git merge branch2
-  assert_output "CONFLICT (modify/delete): file1 deleted in HEAD and modified in branch2. Version branch2 of file1 left in tree.
+  assert_output --partial "CONFLICT (modify/delete): file1 deleted in HEAD and modified in branch2."
+  assert_output --partial "Version branch2 of file1 left in tree.
 Automatic merge failed; fix conflicts and then commit the result."
   yes n | run gmc
   assert_file_not_exist file1
@@ -126,7 +128,8 @@ Automatic merge failed; fix conflicts and then commit the result."
   git add file1 file2
   git commit -m "Commit 3"
   run git merge branch2
-  assert_output "CONFLICT (modify/delete): file1 deleted in HEAD and modified in branch2. Version branch2 of file1 left in tree.
+  assert_output --partial "CONFLICT (modify/delete): file1 deleted in HEAD and modified in branch2."
+  assert_output --partial "Version branch2 of file1 left in tree.
 Automatic merge failed; fix conflicts and then commit the result."
   yes | run gmc
   assert_file_exist file1
@@ -149,7 +152,8 @@ Automatic merge failed; fix conflicts and then commit the result."
   git add file1
   git commit -m "Commit 3"
   run git merge branch2
-  assert_output "CONFLICT (modify/delete): file1 deleted in branch2 and modified in HEAD. Version HEAD of file1 left in tree.
+  assert_output --partial "CONFLICT (modify/delete): file1 deleted in branch2 and modified in HEAD."
+  assert_output --partial "Version HEAD of file1 left in tree.
 Automatic merge failed; fix conflicts and then commit the result."
   yes | run gmc
   assert_file_not_exist file1

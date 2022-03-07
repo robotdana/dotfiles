@@ -504,6 +504,20 @@ function git_pr () {
   open $(github_path)/compare/$(git_current_branch)?expand=1
 }
 
+function github_actions_url () {
+  echo $(github_path)/actions?query=branch:$(git_current_branch)
+}
+
+function git_ci () {
+  local cc_menu_url="$(cc_menu_project_url)"
+  if [[ ! -z "$cc_menu_url" ]]; then
+    echodo open "$cc_menu_url"
+  else
+    echodo open "$(github_actions_url)"
+  fi
+}
+
+
 function git_has_upstream () {
   git remote get-url upstream &>/dev/null
 }

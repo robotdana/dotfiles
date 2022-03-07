@@ -66,11 +66,19 @@ function cc_menu_remove_purged {
 }
 
 function cc_menu_project_name {
+  local branch="${1:-"$(git_current_branch)"}"
+
   curl "$(cc_menu_item_server_url "$branch")" 2>/dev/null | xmllint --xpath "string(//Projects/Project/@name)" -
 }
 
+function cc_menu_project_url {
+  local branch="${1:-"$(git_current_branch)"}"
+
+  echo "$(curl "$(cc_menu_item_server_url "$branch")" 2>/dev/null | xmllint --xpath "string(//Projects/Project/@webUrl)" -)"
+}
+
 function cc_menu_github_actions_server {
-  ( cd ~/.dotfiles/locals/github-cctray && chruby 3.0.0 && bundle exec rackup -p 45454 -D config.ru && wait_for_ports 45454 )
+  ( cd ~/.dotfiles/locals/github-cctray && chruby 3.0.0 && bundle && bundle exec rackup -p 45454 -D config.ru && wait_for_ports 45454 )
 }
 
 function cc_menu_github_actions_server_restart {

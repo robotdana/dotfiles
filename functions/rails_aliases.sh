@@ -109,6 +109,11 @@ function rtn(){
   rt --next-failure "$@"
 }
 
+function crt {
+  echo_grey COVERAGE=1 MIN_COVERAGE=100
+  COVERAGE=1 MIN_COVERAGE=100 rt "$@" || echodo open coverage/index.html
+}
+
 function rtc {
   git_track_untracked
   local files=$(git_modified_with_line_numbers _spec.rb)

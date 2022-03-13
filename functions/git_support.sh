@@ -383,7 +383,7 @@ function git_system() {
 
 function git_authors() {
   if (( $# > 0 )); then
-    git_authors | grep -i "$@"
+    git_authors | grep -Fi ${@/#/-e } | awk '$0="Co-Authored-By: "$0'
   else
     git shortlog -sen | cut -f2
   fi

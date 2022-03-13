@@ -68,6 +68,43 @@ function rtr() {
   [[ "$?" != "1" ]] && rtr "$@"
 }
 
+function loop {
+  _loop_with_count 1 0 "$@"
+}
+
+function _loop_with_count {
+  echo_aqua "Iteration $1"
+  echodo "${@:3}"
+  if (( $? == 0 )); then
+    local successes=$(( $2 + 1 ))
+  else
+    local successes=$2
+  fi
+  echo_grey "Success rate: $successes/$1"
+  sleep 1 && _loop_with_count $(( $1 + 1 )) $successes "${@:3}"
+}
+
+function _loop_with_count_fail_fast_with_max {
+  echo_aqua "Iteration $1"
+  echodo "${@:3}"
+  if (( $? == 0 )); then
+    echo_grey "Success rate: $1/$1"
+  else
+    echo_grey "Success rate: $(( $1 - 1 ))/$1"
+    return 1
+  fi
+
+  if (( $1 >= $2 )); then
+    return 0
+  else
+    sleep 1 && _loop_with_count_fail_fast_with_max $(( $1 + 1 )) $2 "${@:3}"
+  fi
+}
+
+function loopN {
+  _loop_with_count_fail_fast_with_max 1 "$@"
+}
+
 function rtn(){
   rt --next-failure "$@"
 }

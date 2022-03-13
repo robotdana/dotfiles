@@ -24,6 +24,7 @@
 	conflictstyle = diff3
 [interactive]
 	singleKey = true
+	diffFilter = diff-highlight
 [status]
 	relativePaths = false
 	showUntrackedFiles = all
@@ -37,8 +38,6 @@
 	reword = "!f() { bash -lc \"git_reword $1\"; }; f"
 [log]
 	mailmap = true
-[interactive]
-  diffFilter = diff-highlight
 [commit]
   template = ~/.dotfiles/git_commit_template
 	verbose = true

@@ -16,6 +16,7 @@ ccmenu
 cctray
 cdot
 cdp
+changelog
 chmod
 chromedriver
 chruby

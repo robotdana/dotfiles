@@ -390,7 +390,11 @@ function git_authors() {
 }
 
 function git_main_branch() {
-  git_branch_list | grep -Fx -e master -e main -e trunk -e primary
+  git_branch_list | grep -Fx -e master -e main -e trunk -e primary -e gh-pages
+}
+
+function git_unstaged_binary_files() {
+  git diff --numstat | grep -q '\-\t-'
 }
 
 function git_status_clean() {

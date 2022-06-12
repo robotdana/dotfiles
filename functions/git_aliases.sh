@@ -4,8 +4,16 @@
 # interactively add, including new files
 # TODO: cope with binary files
 function ga() {
-  git_track_untracked
-  git_status_clean || echodo git add -p
+  if git_unstaged_binary_files; then
+    git_track_untracked
+    echodo git add -p
+    echoerr "There are binary files that require adding manually"
+    git status
+    false
+  else
+    git_track_untracked
+    git_status_clean || echodo git add -p
+  fi
 }
 
 # `gbn <new branch name>` git branch new

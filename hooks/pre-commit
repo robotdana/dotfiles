@@ -56,7 +56,7 @@ fi
 if [[ -f .rubocop.yml ]]; then
   rb_files=$(git_modified .rb .jbuilder .builder Gemfile .rake Rakefile)
   if [[ ! -z $rb_files ]]; then
-    echodo bundle exec rubocop -a --force-exclusion --color $rb_files || exit 1
+    echodo bundle exec rubocop -a --force-exclusion --color $rb_files || exit_code=1
     git --no-pager diff $rb_files
     [[ -z "$(git diff $rb_files)" ]] || exit_code=1
   fi

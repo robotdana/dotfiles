@@ -54,13 +54,9 @@ if [[ -f .eslintrc ]] || [[ -f .eslintrc.js ]]; then
 fi
 
 if [[ -f .rubocop.yml ]]; then
-  rb_files=$(git_modified .rb .jbuilder .builder Gemfile .rake)
+  rb_files=$(git_modified .rb .jbuilder .builder Gemfile .rake Rakefile)
   if [[ ! -z $rb_files ]]; then
-    if [[ -z "$(bundle exec rubocop --help | grep -F -e --display-only-fail-level-offenses)" ]]; then
-      echodo bundle exec rubocop -a --force-exclusion --color --fail-level=C $rb_files || exit 1
-    else
-      echodo bundle exec rubocop -a --force-exclusion --color --fail-level=C --display-only-fail-level-offenses $rb_files || exit 1
-    fi
+    echodo bundle exec rubocop -a --force-exclusion --color $rb_files || exit 1
     git --no-pager diff $rb_files
     [[ -z "$(git diff $rb_files)" ]] || exit_code=1
   fi

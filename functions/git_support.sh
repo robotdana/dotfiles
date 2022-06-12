@@ -241,8 +241,11 @@ function git_reword() {
 }
 
 function git_get() {
-  git fetch origin "$1"
-  git checkout "$1"
+  git fetch origin "$1" && git checkout "$1"
+}
+
+function git_fetch_merge {
+  git fetch origin "$1" && git merge --no-edit origin/"$1"
 }
 
 # TODO: test

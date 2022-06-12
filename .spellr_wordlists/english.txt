@@ -149,6 +149,7 @@ pryrc
 pwd
 pyenv
 rackup
+rakefile
 rbspy
 rcu
 rcur

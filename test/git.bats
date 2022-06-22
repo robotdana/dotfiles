@@ -25,30 +25,6 @@ function setup() {
   assert_equal "$(cat a)" "a"
 }
 
-@test "git_fake_auto_stash" {
-  echo a > a
-  echo b > b
-  git_fake_auto_stash
-  assert_file_not_exist a
-  assert_file_not_exist b
-  assert_git_status_clean
-  run git stash list
-  assert_output "stash@{0}: On main: fake autostash"
-}
-
-@test "git_fake_auto_stash_pop" {
-  echo a > a
-  echo b > b
-  git_fake_auto_stash
-  git stash list
-  git_fake_auto_stash_pop
-  assert_equal "$(cat a)" "a"
-  assert_equal "$(cat b)" "b"
-  run git_untracked
-  assert_output "a
-b"
-}
-
 @test "amend cleans up" {
   echo a > a
   git add .

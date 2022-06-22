@@ -101,11 +101,7 @@ function gcf() {
   commit=$(git_find_sha $*)
   if (( $? < 1 )); then
     if git_rebasable_quick "$commit^" && ga; then
-      if [[ "$commit" == "$(git rev-parse --short HEAD)" ]]; then
-        echodo git commit --amend --no-edit
-      else
-        echodo git commit --fixup "$commit" && git_rebase_i "$commit^"
-      fi
+      echodo git commit --fixup "$commit" && git_autolint_head && git_rebase_i "$commit^"
     fi
   else
     return 1
@@ -123,9 +119,9 @@ function gcpf() {
 # patch add, then commit with <message> or open editor for a message
 function gc() {
   if [ -z "$1" ]; then
-    ga && echodo git commit --verbose
+    ga && echodo git commit --verbose && git_autolint_head
   else
-    ga && echodo git commit -m "$*"
+    ga && echodo git commit -m "$*" && git_autolint_head
   fi
 }
 
@@ -255,9 +251,17 @@ function grc() {
   GIT_EDITOR=true echodo git rebase --continue || grc
 }
 
+function grce() {
+  [[ -z "$(git diff --name-only)" ]] &&
+    ( git commit --amend --no-edit --no-verify || true ) &&
+    ( GIT_EDITOR=true echodo git rebase --continue || grce )
+}
+
 # git rebase branch
 function grb() {
-  git rebase --interactive --autostash --autosquash $(git_branch_fork_point) || grc
+  git_no_untracked && (
+    git rebase --interactive --autostash --autosquash $(git_branch_fork_point) || grc
+  )
 }
 function gbr() {
   grb "$@"

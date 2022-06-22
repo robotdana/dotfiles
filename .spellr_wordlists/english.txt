@@ -3,6 +3,8 @@ an'd
 argf
 asc
 autocorrect
+autolint
+automain
 autosquash
 autostash
 awk
@@ -21,6 +23,7 @@ chmod
 chromedriver
 chruby
 cmd
+cmdexit
 cnf
 cntrl
 coc
@@ -49,6 +52,7 @@ eval
 evx
 excludesfile
 exercism
+exitstatus
 fixups
 flushcache
 gbb
@@ -87,6 +91,7 @@ gpgsign
 gpr
 grb
 grc
+grce
 grep
 grm
 grmp
@@ -129,6 +134,7 @@ newblank
 nginx
 nocasematch
 nodejs
+nomatch
 noninteractively
 noprefix
 numstat
@@ -159,6 +165,7 @@ readme
 rebasable
 rebase
 rebases
+rebasing
 refname
 refspec
 regexp

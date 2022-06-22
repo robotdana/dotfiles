@@ -3,7 +3,8 @@
 load helper
 
 source ~/.dotfiles/functions/git_support.sh
-
+source ~/.dotfiles/functions/bash_support.sh
+source ~/.dotfiles/functions/git_aliases.sh
 if [[ -f /usr/local/opt/chruby/share/chruby/chruby.sh ]]; then
   source /usr/local/opt/chruby/share/chruby/chruby.sh
 fi
@@ -23,11 +24,14 @@ function setup() {
       source 'https://rubygems.org'
       gem 'rubocop', '1.0.0'
     " > Gemfile
+    touch Gemfile.lock
     echo "
       AllCops:
         NewCops: enable
     " > .rubocop.yml
-    bundle --quiet
+    bundle
+    bundle lock --add-platform universal-darwin-20
+    bundle lock --add-platform x86_64-darwin-18
     git add .
     git commit --no-verify -m "Initial commit"
   else
@@ -42,7 +46,7 @@ function setup() {
   good_rb > foo.rb
   good_rb > bar.rb
   git add .
-  git commit -m "Pass rubocop"
+  gc "Pass rubocop"
   assert_git_status_clean
   assert_git_stash_empty
 }
@@ -51,42 +55,29 @@ function setup() {
   bad_rb > foo.rb
   bad_rb > bar.rb
   git add .
-  run git commit -m "Fail rubocop"
-  assert_cleaned_output "bundle exec rubocop -a --force-exclusion --color --fail-level=C --display-only-fail-level-offenses bar.rb foo.rb
-Inspecting 2 files
-WW
-
-Offenses:
-
-bar.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true } to make sure that the block will be associated with the str method call.
-  puts str { true }
-  ^^^^^^^^^^^^^^^^^
-foo.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true } to make sure that the block will be associated with the str method call.
-  puts str { true }
-  ^^^^^^^^^^^^^^^^^
-
-2 files inspected, 2 offenses detected"
-  run git diff --cached --name-only
-  assert_line "bar.rb"
-  assert_line "foo.rb"
-  assert_git_stash_empty
+  run gc "Fail rubocop"
+  # pause for correction
+  assert_failure
+  assert git_rebasing
 
   good_rb > foo.rb
   good_rb > bar.rb
 
   git add .
-
-  git commit -m "Pass rubocop"
+  grce
 
   assert_git_status_clean
   assert_git_stash_empty
+  refute git_rebasing
 }
 
+# this doesn't run rubocop because there are untracked files
 @test "partial add pass rubocop hook" {
   good_rb > foo.rb
   bad_rb > bar.rb
   git add foo.rb
-  git commit -m "Pass rubocop"
+  ( yes q | gc "Pass rubocop" ) || true
+  refute git_rebasing
   run git_untracked
   assert_output "bar.rb"
   assert_git_stash_empty
@@ -94,32 +85,20 @@ foo.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true
   assert_equal "$(cat bar.rb)" "$(cat baz.rb)"
 }
 
+# this doesn't run rubocop because there are untracked files
 @test "partial add fail rubocop hook" {
   good_rb > foo.rb
   bad_rb > bar.rb
   git add bar.rb
-  run git commit -m "Fail rubocop"
-  assert_cleaned_output "git stash save --include-untracked --quiet 'fake autostash'
-bundle exec rubocop -a --force-exclusion --color --fail-level=C --display-only-fail-level-offenses bar.rb
-Inspecting 1 file
-W
-
-Offenses:
-
-bar.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true } to make sure that the block will be associated with the str method call.
-  puts str { true }
-  ^^^^^^^^^^^^^^^^^
-
-1 file inspected, 1 offense detected"
-  run git diff --cached --name-only
-  assert_output "bar.rb"
-  run git_untracked
-  assert_output ""
+  git status
+  ( yes q | gc "Fail rubocop" ) || true
+  refute git_rebasing
+  git stash -u
   good_rb > bar.rb
-
-  git add bar.rb
-  git commit -m "Pass rubocop"
-
+  git add .
+  gcf
+  refute git_rebasing
+  git stash pop
   run git_untracked
   assert_output "foo.rb"
 }
@@ -132,7 +111,8 @@ bar.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true
   assert_output "foo.rb"
   run git diff --name-only
   assert_output "foo.rb"
-  git commit -m "Pass rubocop"
+  yes q | gc "Pass rubocop"
+  refute git_rebasing
   assert_equal "$(cat foo.rb)" "$(good_rb)
 $(bad_rb)"
 }
@@ -141,22 +121,12 @@ $(bad_rb)"
   bad_rb > foo.rb
   git add foo.rb
   good_rb >> foo.rb
-  run git commit -m "Fail rubocop"
-  assert_cleaned_output "git stash save --include-untracked --quiet 'fake autostash'
-bundle exec rubocop -a --force-exclusion --color --fail-level=C --display-only-fail-level-offenses foo.rb
-Inspecting 1 file
-W
-
-Offenses:
-
-foo.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true } to make sure that the block will be associated with the str method call.
-  puts str { true }
-  ^^^^^^^^^^^^^^^^^
-
-1 file inspected, 1 offense detected"
+  ( yes q | gc "Fail rubocop" ) || true
+  assert git_rebasing
   good_rb > foo.rb
   git add foo.rb
-  git commit -m "Pass rubocop"
+  grce
+  refute git_rebasing
   assert_equal "$(cat foo.rb)" "$(good_rb)
 $(good_rb)"
 }
@@ -166,28 +136,23 @@ $(good_rb)"
   git add foo.rb
   good_rb > foo.rb
   echo "CONFLICT = false" >> foo.rb
-  run git commit -m "Fail rubocop"
-  assert_cleaned_output "git stash save --include-untracked --quiet 'fake autostash'
-bundle exec rubocop -a --force-exclusion --color --fail-level=C --display-only-fail-level-offenses foo.rb
-Inspecting 1 file
-W
-
-Offenses:
-
-foo.rb:4:3: W: Lint/AmbiguousBlockAssociation: Parenthesize the param str { true } to make sure that the block will be associated with the str method call.
-  puts str { true }
-  ^^^^^^^^^^^^^^^^^
-
-1 file inspected, 1 offense detected"
+  ( yes q | gc "Fail rubocop" ) || true
+  assert git_rebasing
   good_rb > foo.rb
   echo "CONFLICTED = true" >> foo.rb
   git add foo.rb
-  git commit -m "Pass rubocop"
+  grce
+  refute git_rebasing
 
   run git log --format="%s"
-  assert_output "Pass rubocop
+  assert_output "Fail rubocop
 Initial commit"
-  assert_git_stash_empty
+  # assert_git_stash_empty
   assert_equal "$(cat foo.rb)" "$(good_rb)
-CONFLICT = false"
+<<<<<<< Updated upstream
+CONFLICTED = true
+||||||| constructed merge base
+=======
+CONFLICT = false
+>>>>>>> Stashed changes"
 }

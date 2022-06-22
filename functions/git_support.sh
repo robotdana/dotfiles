@@ -4,6 +4,17 @@ function git_untracked(){
   git ls-files --others --exclude-standard | escape_spaces
 }
 
+function git_no_untracked {
+  git_untrack_new_unstaged
+
+  if [[ ! -z "$(git_untracked)" ]]; then
+    echoerr "There are untracked files"
+    false
+  else
+    true
+  fi
+}
+
 function git_track_untracked(){
   if [[ ! -z "$(git_untracked)" ]]; then
     echodo git add -N $(git_untracked)
@@ -20,6 +31,10 @@ function git_untrack_new_unstaged() {
 
 function git_modified(){
   git diff --name-only HEAD --diff-filter=ACM -- "${@/#/*}"
+}
+
+function git_modified_head(){
+  git diff --name-only HEAD^..HEAD --diff-filter=ACM -- "${@/#/*}"
 }
 
 function git_modified_with_line_numbers(){
@@ -59,6 +74,70 @@ function git_handle_conflicts {
   fi
 }
 
+function git_autolint() {
+  exitstatus=0
+  git_autolint_prettier || exitstatus=$(( $exitstatus + $? ))
+  git_autolint_stylelint || exitstatus=$(( $exitstatus + $? ))
+  git_autolint_eslint || exitstatus=$(( $exitstatus + $? ))
+  git_autolint_rubocop || exitstatus=$(( $exitstatus + $? ))
+  git_autolint_spellr || exitstatus=$(( $exitstatus + $? ))
+  return $exitstatus
+}
+
+function git_autolint_head {
+  git_rebase_exec HEAD^ git_autolint
+}
+
+function git_autolint_prettier {
+  if [[ -f .prettierrc ]]; then
+    js_files=$(git_modified_head .js .jsx .ts .tsx)
+    if [[ ! -z "$js_files" ]]; then
+      echodo node_modules/.bin/prettier --write $js_files
+    fi
+  fi
+}
+
+function git_autolint_stylelint {
+  if [[ -f .stylelintrc ]]; then
+    style_files=$(git_modified_head .ts .tsx)
+    if [[ ! -z "$style_files" ]]; then
+      echodo node_modules/.bin/stylelint $style_files
+    fi
+  fi
+}
+
+function git_autolint_eslint {
+  if [[ -f .eslintrc ]] || [[ -f .eslintrc.js ]]; then
+    js_files=$(git_modified_head .js .jsx .ts .tsx)
+    if [[ ! -z $js_files ]]; then
+      echodo node_modules/.bin/eslint --fix $js_files
+    fi
+  fi
+}
+
+function git_autolint_rubocop {
+  if [[ -f .rubocop.yml ]]; then
+    rb_files=$(git_modified_head .rb .jbuilder .builder Gemfile .rake)
+    if [[ ! -z $rb_files ]]; then
+      if [[ -z "$(bundle exec rubocop --help | grep -F -e --autocorrect-all)" ]]; then
+        be rubocop -A --force-exclusion --color $rb_files
+      else
+        be rubocop -a --force-exclusion --color $rb_files
+      fi
+    fi
+  fi
+}
+
+function git_autolint_spellr {
+  if [[ -f .spellr.yml ]]; then
+    if grep -qs -e spellr Gemfile.lock; then
+      echodo bundle exec spellr -i $(git_modified_head)
+    else
+      echodo spellr -i $(git_modified_head)
+    fi
+  fi
+}
+
 function git_status_filtered() {
   git status --porcelain | grep -F "$* " | colrm 1 3 | quote_lines
 }
@@ -95,9 +174,15 @@ function git_open_conflicts() {
   fi
 }
 
+function git_automain {
+  current_branch="$(git_current_branch)"
+  git checkout "$(git_main_branch)"
+  "$@"
+  git checkout $current_branch
+}
 # TODO: test
 function git_purge {
-  git_autostash git_purge_on_main
+  git_autostash git_automain git_purge_on_main
 }
 
 function git_purge_all {
@@ -150,6 +235,7 @@ function git_purge_only_tracking() {
 function git_non_release_branch() {
   if (git_current_branch | grep -qEx $(git_release_branch_match)); then
     echoerr "can't do that on a release branch"
+    exit 1
   fi
 }
 
@@ -283,10 +369,12 @@ function git_log_oneline {
 function git_rebase_noninteractively {
   local new_task=$1
   local sha=$2
-  GIT_SEQUENCE_EDITOR="sed -i.~ s/^pick\ $sha\ /$new_task\ $sha\ /" git rebase --interactive --autosquash --autostash "$sha^" >/dev/null 2>/dev/null
+
+  git_no_untracked && GIT_SEQUENCE_EDITOR="sed -i.~ s/^pick\ $sha\ /$new_task\ $sha\ /" git rebase --interactive --autosquash --autostash "$sha^" >/dev/null 2>/dev/null
 }
+
 function git_squash_branch {
-  GIT_EDITOR=: GIT_SEQUENCE_EDITOR="sed -i.~ 1\ \!\ \ s/^pick\ /squash\ /" git rebase --interactive --autosquash --autostash "$(git_main_branch)"
+  git_no_untracked && GIT_EDITOR=: GIT_SEQUENCE_EDITOR="sed -i.~ 1\ \!\ \ s/^pick\ /squash\ /" git rebase --interactive --autosquash --autostash "$(git_main_branch)"
 }
 
 function git_log_range() {
@@ -346,30 +434,40 @@ function git_force_pull_release_branches() {
 function git_release_branch_match() {
   case $(git_current_repo) in
     dotfiles)     echo 'origin/main';;
+    '')           echo 'NOMATCH';;
     *)            echo '(origin/)?(master|main|trunk|primary)';;
   esac
 }
 
-# `git_rebasable` checks that no commits added since this was branched from the main branch have been merged into release/*
-# `git_rebasable commit-ish` checks that no commits added since `commit-ish` have been merged into something release-ish
 function git_rebasable() {
   git_non_release_branch
-  git_force_pull_release_branches
-  git_rebasable_quick
 }
 
 function git_rebasable_quick() {
   git_non_release_branch
-  local base=${1:-"$(git_main_branch)"}
-  local since_base=$(git rev-list --count $(git_log_range "$base"))
-  local unmerged_since_base=$(git rev-list --count $(git_release_branch_list --all | sed 's/$/..HEAD/'))
-  if (( $since_base > $unmerged_since_base )); then
-    echoerr some commits were merged to a release branch, only merge from now on
-  fi
 }
 
 function git_rebase_i() {
-  GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash "$@" || grc
+  git_no_untracked && (
+    GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash "$@" || grc
+  )
+}
+
+function git_rebase_save_exitstatus {
+  cmdexit=$1
+  echo $cmdexit > .git/last-rebase-exec-exitstatus
+  exit $cmdexit
+}
+
+function git_rebasing {
+  ls .git | grep -qF -e rebase-merge -e rebase-apply
+}
+
+function git_rebase_exec {
+  git_no_untracked && (
+    GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash "$1" --exec="bash -cl '${*:2}; git_rebase_save_exitstatus \$?'" ||
+      ( ga && [[ "$(cat .git/last-rebase-exec-exitstatus)" == "0" ]] && grce )
+  )
 }
 
 function git_system() {
@@ -425,11 +523,11 @@ function git_status_color() {
   fi
 }
 
-function git_changed_files() {
+function git_changed_files_after_merge() {
   git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD
 }
 
-function git_file_changed() {
+function git_file_changed_after_merge() {
   git_changed_files | grep -xE "$1"
 }
 
@@ -445,50 +543,12 @@ function git_stash() {
 }
 
 function git_autostash {
-  local current_branch="$(git_current_branch)"
-  if ! git_status_clean; then
-    git_untrack_new_unstaged
-    echodo git stash save --include-untracked --quiet "fake autostash"
-    local did_stash="1"
-  fi
-
-  echodo "$@"
-  local outcome=$?
-
-  echodo git checkout $current_branch
-  if [[ $did_stash == "1" ]]; then
-    echodo git stash pop --quiet
-  fi
-  return $outcome
+  git_rebase_exec HEAD "$@"
+  return "$(cat .git/last-rebase-exec-exitstatus)"
 }
 
 function git_uncommit() {
   echodo git reset --quiet HEAD^
-}
-function git_fake_auto_stash() {
-  if [[ ! -z "$(git diff)$(git ls-files --others --exclude-standard)" ]]; then
-    if [[ ! -z "$(git diff --cached)" ]]; then
-      git commit --no-verify --quiet --message "Temp (fake autostash index)"
-      git_untrack_new_unstaged
-      echodo git stash save --include-untracked --quiet "fake autostash"
-      git reset --soft HEAD^ --quiet
-    else
-      echodo git stash save --include-untracked --quiet "fake autostash"
-    fi
-  fi
-}
-
-function git_fake_auto_stash_pop() {
-  while [[ "$(git stash list -n 1)" = "stash@{0}: On $(git_current_branch): fake autostash" ]]; do
-    echodo git add .
-    echodo git stash apply --index --quiet
-    local conflicts=$(git grep -lE '^<{7}|>{7}' | quote_lines)
-    if [[ ! -z "$conflicts" ]]; then
-      echodo git checkout --theirs $conflicts
-    fi
-    echodo git stash drop --quiet
-    echodo git reset --quiet --
-  done
 }
 
 function git_undo () {

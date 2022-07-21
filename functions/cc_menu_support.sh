@@ -1,4 +1,4 @@
-function cc_menu_item_server_url {
+function cc_menu_item_server_urls {
   local branch="${1:-"$(git_current_branch)"}"
 
   if [[ -f .travis.yml ]]; then
@@ -6,7 +6,7 @@ function cc_menu_item_server_url {
   elif [[ -f .buildkite/pipeline.yml ]]; then
     cc_menu_buildkite_url "$branch" "${@:2}"
   elif [[ -d .github/workflows ]]; then
-    cc_menu_github_actions_url "$branch"
+    cc_menu_github_actions_urls "$branch"
   fi
 }
 
@@ -17,16 +17,17 @@ function cc_menu_travis_url {
   echo "https://api.travis-ci.com/repos/$repo/cc.xml?branch=$branch"
 }
 
-function cc_menu_github_actions_url {
+function cc_menu_github_actions_urls {
   if ! ports_respond 45454; then
     cc_menu_github_actions_server
   fi
 
   local repo=$(git_current_repo_with_org)
   local branch="${1:-"$(git_current_branch)"}"
-  local workflow=$(ls -1 .github/workflows | head)
 
-  echo "http://localhost:45454/$repo/$workflow?branch=$branch&token=$GITHUB_ACTIONS_TOKEN"
+  while IFS= read -r worflow; do
+    echo "http://localhost:45454/$repo/$workflow?branch=$branch&token=$GITHUB_ACTIONS_TOKEN"
+  done < <(ls -1 .github/workflows)
 }
 
 function cc_menu_buildkite_url {
@@ -42,7 +43,7 @@ function cc_menu_buildkite_url {
 function cc_menu_add {
   local branch="${1:-"$(git_current_branch)"}"
 
-  if [[ ! -z "$(cc_menu_item_server_url $branch)" ]]; then
+  if [[ ! -z "$(cc_menu_item_server_urls $branch)" ]]; then
     if ! cc_menu_present "$branch"; then
       killall CCMenu 2>/dev/null
       cc_menu_add_item "$branch"
@@ -68,13 +69,13 @@ function cc_menu_remove_purged {
 function cc_menu_project_name {
   local branch="${1:-"$(git_current_branch)"}"
 
-  curl "$(cc_menu_item_server_url "$branch")" 2>/dev/null | xmllint --xpath "string(//Projects/Project/@name)" -
+  curl "$(cc_menu_item_server_urls "$branch" | head -n 1)" 2>/dev/null | xmllint --xpath "string(//Projects/Project/@name)" -
 }
 
 function cc_menu_project_url {
   local branch="${1:-"$(git_current_branch)"}"
 
-  echo "$(curl "$(cc_menu_item_server_url "$branch")" 2>/dev/null | xmllint --xpath "string(//Projects/Project/@webUrl)" -)"
+  curl "$(cc_menu_item_server_urls "$branch" | head -n 1)" 2>/dev/null | xmllint --xpath "string(//Projects/Project/@webUrl)" -
 }
 
 function cc_menu_github_actions_server {
@@ -88,15 +89,18 @@ function cc_menu_github_actions_server_restart {
 function cc_menu_add_item {
   local repo="$(git_current_repo)"
   local branch="${1:-"$(git_current_branch)"}"
+  local project_name=$(cc_menu_project_name "$branch")
 
-  defaults write net.sourceforge.cruisecontrol.CCMenu Projects -array-add "
-    {
-      displayName = \"$repo : $branch\";
-      projectName = \"$(cc_menu_project_name "$branch")\";
-      serverUrl = \"$(cc_menu_item_server_url "$branch")\";
+  while IFS= read -r server_url; do
+    defaults write net.sourceforge.cruisecontrol.CCMenu Projects -array-add "
+      {
+        displayName = \"$repo : $branch\";
+        projectName = \"$project_name\";
+        serverUrl = \"$server_url\";
 
-    }
-  "
+      }
+    "
+  done < <(cc_menu_item_server_urls "$branch")
 }
 
 function cc_menu_remove_item {
@@ -118,7 +122,7 @@ function cc_menu_present {
 }
 
 function cc_menu_repo_present {
-  defaults read net.sourceforge.cruisecontrol.CCMenu Projects | grep -qF "serverUrl = \"$(cc_menu_item_server_url '' '')"
+  defaults read net.sourceforge.cruisecontrol.CCMenu Projects | grep -qF "serverUrl = \"$(cc_menu_item_server_urls '' '' | head -n 1)"
 }
 
 function cc_menu_init {

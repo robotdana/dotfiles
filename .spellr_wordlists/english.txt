@@ -12,6 +12,7 @@ backtrace
 basename
 bashrc
 baz
+bitbucket
 brewfile
 buildkite
 ccmenu

@@ -165,7 +165,7 @@ function gp(){
   fi
   echodo git push $options $set_upstream "$remote" "$branch"
 
-  if [[ ! -z "$(cc_menu_item_server_url)" ]]; then
+  if [[ ! -z "$(cc_menu_item_server_urls)" ]]; then
     cc_menu_add
   fi
 }

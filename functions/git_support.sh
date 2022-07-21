@@ -117,7 +117,7 @@ function git_autolint_eslint {
 
 function git_autolint_rubocop {
   if [[ -f .rubocop.yml ]]; then
-    rb_files=$(git_modified_head .rb .jbuilder .builder Gemfile .rake Rakefile)
+    rb_files=$(git_modified_head .rb .jbuilder .builder Gemfile .rake Rakefile .gemspec)
     if [[ ! -z $rb_files ]]; then
       if [[ -z "$(bundle exec rubocop --help | grep -F -e --autocorrect-all)" ]]; then
         be rubocop -A --force-exclusion --color $rb_files

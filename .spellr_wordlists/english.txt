@@ -74,6 +74,7 @@ gdot
 gdpf
 gemfile
 gemrc
+gemspec
 gitattributes
 gitconfig
 github

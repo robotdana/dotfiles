@@ -561,14 +561,28 @@ function git_undo () {
 
 function github_path () {
   local remote=${1:-origin}
-  local git_url=$(git remote get-url $remote)
+  local git_url="$(git remote get-url $remote)"
 
   git_url="${git_url/git@github.com:/https://github.com/}"
   echo ${git_url%%.git}
 }
 
+function bitbucket_path () {
+  local remote=${1:-origin}
+  local git_url="$(git remote get-url $remote)"
+
+  git_url="${git_url/git@bitbucket.org:/https://bitbucket.org/}"
+  echo ${git_url%%.git}
+}
+
 function git_pr () {
-  open $(github_path)/compare/$(git_current_branch)?expand=1
+  local remote=${1:-origin}
+  local git_url="$(git remote get-url $remote)"
+  if [[ "$git_url" = *github* ]]; then
+    echodo open "$(github_path)/compare/$(git_current_branch)?expand=1"
+  elif [[ "$git_url" = *bitbucket* ]]; then
+    echodo open "$(bitbucket_path)/pull-requests/new?source=$(git_current_branch)"
+  fi
 }
 
 function github_actions_url () {

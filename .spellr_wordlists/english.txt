@@ -32,8 +32,10 @@ colrm
 committerdate
 config
 conflictstyle
+cppflags
 cruisecontrol
 cwd
+diffr
 direnv
 dirname
 dirs
@@ -119,8 +121,10 @@ keygen
 keyid
 killall
 killchrome
+ldflags
 ldot
 lfs
+libffi
 localhost
 lsof
 lvh
@@ -149,6 +153,7 @@ pbcopy
 pickaxe
 pids
 pinentry
+pkgconfig
 ppid
 prettierrc
 printf
@@ -185,6 +190,7 @@ rubocop
 sbin
 secn
 shellcheck
+shellenv
 sherson
 shopt
 shortlog

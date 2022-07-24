@@ -24,7 +24,6 @@
 	conflictstyle = diff3
 [interactive]
 	singleKey = true
-	diffFilter = diff-highlight
 [status]
 	relativePaths = false
 	showUntrackedFiles = all
@@ -51,3 +50,7 @@
 	rebase = false
 [init]
 	defaultBranch = main
+[pager]
+  log = diffr | less
+  show = diffr | less
+  diff = diffr | less

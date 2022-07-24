@@ -11,11 +11,27 @@ export EDITOR='/usr/local/bin/code --wait'
 export GUI_EDITOR=$EDITOR
 export GPG_TTY=$(tty)
 export BASH_SILENCE_DEPRECATION_WARNING=1
+if [[ -f /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
+RUBIES=( $(command ls -d1 ~/.rubies/*) )
 if [[ -f /usr/local/opt/chruby/share/chruby/chruby.sh ]]; then
   source /usr/local/opt/chruby/share/chruby/chruby.sh
   source /usr/local/opt/chruby/share/chruby/auto.sh
 fi
+
+if [[ -f /opt/homebrew/opt/chruby/share/chruby/chruby.sh ]]; then
+  source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
+  source /opt/homebrew/opt/chruby/share/chruby/auto.sh
+fi
+
+if [[ -d opt/homebrew/opt/libffi ]]; then 
+  export LDFLAGS="-L/opt/homebrew/opt/libffi/lib"
+  export CPPFLAGS="-I/opt/homebrew/opt/libffi/include"
+  export PKG_CONFIG_PATH="/opt/homebrew/opt/libffi/lib/pkgconfig"
+fi
+
 
 if [ -f ~/.cargo/env ]; then
   source /Users/dana/.cargo/env
@@ -40,8 +56,6 @@ source ~/.dotfiles/functions/jekyll_aliases.sh
 source ~/.dotfiles/functions/webpack_aliases.sh
 
 PROMPT_COMMAND="maybe_update_terminal_cwd; resource_if_modified_since $(last_bash_profile_modification); check_untested_bash_profile; nvm_use_node_version"
-
-export PATH="$HOME/.cargo/bin:$PATH"
 
 if [ -f /usr/local/bin/direnv ]; then
   # direnv hook bash. idk what it's doing but i'm sure it's fine

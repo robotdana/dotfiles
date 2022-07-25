@@ -113,6 +113,7 @@ inconsolata
 irb
 irbrc
 istat
+istatmenus
 jbuilder
 jeks
 json
@@ -199,6 +200,7 @@ shosts
 sigint
 signingkey
 snginx
+spotify
 sqlite
 stylelint
 stylelintrc

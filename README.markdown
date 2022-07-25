@@ -4,6 +4,16 @@
 
 ```
 xcode-select --install
-git clone git@github.com:robotdana/dotfiles.git ~/.dotfiles
+git clone https://github.com/robotdana/dotfiles.git ~/.dotfiles
 ~/.dotfiles/scripts/install.sh
+change the computer name
+set Terminal.app to bash
+sign in to 1pass
+copy istatmenus config from 1pass
+sign in to everything else
+generate an ssh key
+add to github
+set up gpg
+find a cool background
+
 ```

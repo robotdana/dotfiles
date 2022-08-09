@@ -12,7 +12,10 @@ function reinstall_ruby {
 
   rm -rf "${ruby_path%/bin/ruby}"
   ruby-install "$chruby_identifier"
-  bundler_version=$(tail -n 1 Gemfile.lock)
-  gem install bundler "${bundler_version/#/--version=}"
+  install_bundler
   bundle
+}
+
+function install_bundler {
+  gem install --no-doc  --silent --norc bundler:"$(echo $(tail -n 1 Gemfile.lock))"
 }

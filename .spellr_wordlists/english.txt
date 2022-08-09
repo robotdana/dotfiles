@@ -1,4 +1,5 @@
 acm
+actionclicked
 an'd
 argf
 asc
@@ -33,6 +34,8 @@ colrm
 committerdate
 config
 conflictstyle
+contentclicked
+coreaudiod
 cppflags
 cruisecontrol
 cwd
@@ -148,6 +151,7 @@ numstat
 nvm
 ocommand
 oneline
+osascript
 oscrypto
 osxkeychain
 param
@@ -156,6 +160,7 @@ pickaxe
 pids
 pinentry
 pkgconfig
+pmset
 ppid
 prettierrc
 printf

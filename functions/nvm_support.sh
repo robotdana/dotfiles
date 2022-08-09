@@ -5,11 +5,13 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 function nvm_use_node_version {
-  if nvm --version >/dev/null 2>/dev/null; then 
+  if nvm --version >/dev/null 2>/dev/null; then
     if [[ -f .node-version ]]; then
       local new_version=$(<.node-version)
     elif [[ -f .tool-versions ]]; then
       local new_version=$(grep -F nodejs .tool-versions | cut -f2 -d' ')
+    elif [[ -f package.json ]]; then
+      local new_version=$(jq '.engines.node' -r package.json | tr -dc 0-9.)
     fi
 
     if [[ ! -z "$new_version" ]]; then

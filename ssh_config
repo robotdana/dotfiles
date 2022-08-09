@@ -1,4 +1,5 @@
 User dana
+IdentityFile ~/.ssh/id_ed25519
 IdentityFile ~/.ssh/id_rsa
 
 ControlMaster auto

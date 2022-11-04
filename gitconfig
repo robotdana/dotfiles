@@ -27,6 +27,7 @@
 [status]
 	relativePaths = false
 	showUntrackedFiles = all
+	short = true
 [rerere]
 	enabled = true
 [alias]

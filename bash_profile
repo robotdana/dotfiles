@@ -15,18 +15,7 @@ if [[ -f /opt/homebrew/bin/brew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-RUBIES=( $(command ls -d1 ~/.rubies/*) )
-if [[ -f /usr/local/opt/chruby/share/chruby/chruby.sh ]]; then
-  source /usr/local/opt/chruby/share/chruby/chruby.sh
-  source /usr/local/opt/chruby/share/chruby/auto.sh
-fi
-
-if [[ -f /opt/homebrew/opt/chruby/share/chruby/chruby.sh ]]; then
-  source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
-  source /opt/homebrew/opt/chruby/share/chruby/auto.sh
-fi
-
-if [[ -d opt/homebrew/opt/libffi ]]; then 
+if [[ -d opt/homebrew/opt/libffi ]]; then
   export LDFLAGS="-L/opt/homebrew/opt/libffi/lib"
   export CPPFLAGS="-I/opt/homebrew/opt/libffi/include"
   export PKG_CONFIG_PATH="/opt/homebrew/opt/libffi/lib/pkgconfig"
@@ -45,7 +34,7 @@ source ~/.dotfiles/functions/hosts_support.sh
 source ~/.dotfiles/functions/prompt_support.sh
 source ~/.dotfiles/functions/server_support.sh
 source ~/.dotfiles/functions/cc_menu_support.sh
-source ~/.dotfiles/functions/rails_support.sh
+source ~/.dotfiles/functions/chruby_support.sh
 source ~/.dotfiles/functions/less_support.sh
 
 source ~/.dotfiles/functions/git_aliases.sh

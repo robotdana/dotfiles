@@ -42,20 +42,32 @@ function rs(){
 }
 
 function be(){
-  echodo bundle exec "$@"
+  if [[ -z "which bundle" ]]; then
+    echodo "$@"
+  else
+    bundle --quiet && echodo bundle exec "$@"
+  fi
+}
+
+function be_rubocop_autocorrect_all {
+  if [[ -z "$(be rubocop --help | grep -F -e --autocorrect-all)" ]]; then
+    be rubocop -A "$@"
+  else
+    be rubocop -a "$@"
+  fi
 }
 
 function brake(){
-  echodo bundle exec rake "$@"
+  be rake "$@"
 }
 
 # `rt [<test files>]` shortcut for rspec.
 function rt(){
-  echodo bundle exec rspec --format documentation "$@"
+  be rspec --format documentation "$@"
 }
 
 function rcu(){
-  echodo bundle exec cucumber "$@"
+  be cucumber "$@"
 }
 
 function rcur(){

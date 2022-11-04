@@ -93,12 +93,14 @@ gmc
 gmm
 gnupg
 gpf
+gpfr
 gpg
 gpgsign
 gpr
 grb
 grc
 grce
+grcr
 grep
 grm
 grmp
@@ -147,6 +149,7 @@ nodejs
 nomatch
 noninteractively
 noprefix
+norc
 numstat
 nvm
 ocommand

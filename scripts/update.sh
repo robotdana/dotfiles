@@ -2,7 +2,9 @@
 
 source ~/.dotfiles/functions/bash_support.sh
 
-brew bundle
+if [[ -z "$CI" ]]; then
+  brew bundle
+fi
 
 function git_version_number {
   git --version | cut -d\( -f1 | grep -oE "[0-9\.]+"
@@ -44,10 +46,12 @@ fi
 ( cd ~/.dotfiles/locals/diff-highlight && make -f Makefile & )
 ln -sf ~/.dotfiles/locals/diff-highlight/diff-highlight /usr/local/bin/diff-highlight
 
-ruby-install ruby 2.4
-ruby-install ruby 2.5
-ruby-install ruby 2.6
-ruby-install ruby 2.7
-ruby-install ruby 3.0
+if [[ -z "$CI" ]]; then
+  ruby-install ruby 2.4
+  ruby-install ruby 2.5
+  ruby-install ruby 2.6
+  ruby-install ruby 2.7
+  ruby-install ruby 3.0
+fi
 
 resource

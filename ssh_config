@@ -1,5 +1,6 @@
+Include ~/.dotfiles/locals/secret_ssh_config
+
 User dana
-IdentityFile ~/.ssh/id_rsa
 
 ControlMaster auto
 ControlPath /tmp/%r@%h:%p

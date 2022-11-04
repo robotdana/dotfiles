@@ -25,7 +25,7 @@ if [[ ! -f "$GNUPG_DIR/gpg-agent.conf" ]]; then
   touch "$GNUPG_DIR/gpg-agent.conf"
 fi
 
-echo "pinentry-program /usr/local/bin/pinentry-mac" >> "$GNUPG_DIR/gpg-agent.conf"
+echo "pinentry-program $(which pinentry-mac)" >> "$GNUPG_DIR/gpg-agent.conf"
 
 if [[ ! -f "$GNUPG_DIR/gpg.conf" ]]; then
   touch "$GNUPG_DIR/gpg.conf"

@@ -100,8 +100,8 @@ function gcf() {
   local commit
   commit=$(git_find_sha $*)
   if (( $? < 1 )); then
-    if git_rebasable_quick "$commit^" && ga; then
-      echodo git commit --fixup "$commit" && git_autolint_head && git_rebase_i "$commit^"
+    if git_rebasable "$commit^" && ga; then
+      echodo git commit --fixup "$commit" && ( ! git_rebasing && git_autolint_head && git_rebase_i "$commit^" )
     fi
   else
     return 1
@@ -118,10 +118,10 @@ function gcpf() {
 # `gc [<message>]` git commit
 # patch add, then commit with <message> or open editor for a message
 function gc() {
-  if [ -z "$1" ]; then
-    ga && echodo git commit --verbose && git_autolint_head
+  if (( $# == 0 )); then
+    ga && echodo git commit --verbose && ( git_rebasing || git_autolint_head )
   else
-    ga && echodo git commit -m "$*" && git_autolint_head
+    ga && echodo git commit -m "$*" && ( git_rebasing || git_autolint_head )
   fi
 }
 
@@ -180,6 +180,10 @@ function gpf(){
 
 function gpr(){
   gp && git_pr
+}
+
+function gpfr() {
+  gpf && git_pr
 }
 
 # `gl [<remote>] [<branch>]` git pull
@@ -247,19 +251,22 @@ function grm() {
 # TODO: only allow to run during a rebase
 # TODO: more tests
 function grc() {
-  git_handle_conflicts
-  GIT_EDITOR=true echodo git rebase --continue || grc
+  if git_rebasing; then
+    git_handle_conflicts &&
+      git_commit_during_rebase &&
+      GIT_EDITOR=true echodo git rebase --continue
+  else
+    echoerr "Not rebasing"
+  fi
 }
 
-function grce() {
-  [[ -z "$(git diff --name-only)" ]] &&
-    ( git commit --amend --no-edit --no-verify || true ) &&
-    ( GIT_EDITOR=true echodo git rebase --continue || grce )
+function grcr {
+  grc || grcr
 }
 
 # git rebase branch
 function grb() {
-  git_no_untracked && (
+  git_can_autostash && (
     git rebase --interactive --autostash --autosquash $(git_branch_fork_point) || grc
   )
 }
@@ -269,11 +276,7 @@ function gbr() {
 
 function gs() {
   [[ -e .git/MERGE_HEAD ]] && git merge --abort
-  git_untrack_new_unstaged && git stash -u "$@"
-}
-
-function gbt() {
-  gbc bundle exec rspec --format documentation --fail-fast "$@"
+  git_stash "$@"
 }
 
 # TODO: test

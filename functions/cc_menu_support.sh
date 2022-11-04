@@ -25,7 +25,7 @@ function cc_menu_github_actions_urls {
   local repo=$(git_current_repo_with_org)
   local branch="${1:-"$(git_current_branch)"}"
 
-  while IFS= read -r worflow; do
+  while IFS= read -r workflow; do
     echo "http://localhost:45454/$repo/$workflow?branch=$branch&token=$GITHUB_ACTIONS_TOKEN"
   done < <(ls -1 .github/workflows)
 }
@@ -79,7 +79,7 @@ function cc_menu_project_url {
 }
 
 function cc_menu_github_actions_server {
-  ( cd ~/.dotfiles/locals/github-cctray && chruby 3.0.0 && bundle && bundle exec rackup -p 45454 -D config.ru && wait_for_ports 45454 )
+  ( cd ~/.dotfiles/locals/github-cctray && chruby 3.0.0 && bundle --quiet && be rackup -p 45454 -D config.ru && wait_for_ports 45454 )
 }
 
 function cc_menu_github_actions_server_restart {

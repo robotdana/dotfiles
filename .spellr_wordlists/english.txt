@@ -1,4 +1,5 @@
 acm
+actionclicked
 an'd
 argf
 asc
@@ -33,8 +34,12 @@ colrm
 committerdate
 config
 conflictstyle
+contentclicked
+coreaudiod
+cppflags
 cruisecontrol
 cwd
+diffr
 direnv
 dirname
 dirs
@@ -88,6 +93,7 @@ gmc
 gmm
 gnupg
 gpf
+gpfr
 gpg
 gpgconf
 gpgsign
@@ -95,6 +101,7 @@ gpr
 grb
 grc
 grce
+grcr
 grep
 grm
 grmp
@@ -122,8 +129,10 @@ keygen
 keyid
 killall
 killchrome
+ldflags
 ldot
 lfs
+libffi
 localhost
 lsof
 lvh
@@ -141,10 +150,12 @@ nodejs
 nomatch
 noninteractively
 noprefix
+norc
 numstat
 nvm
 ocommand
 oneline
+osascript
 oscrypto
 osxkeychain
 param
@@ -152,6 +163,8 @@ pbcopy
 pickaxe
 pids
 pinentry
+pkgconfig
+pmset
 ppid
 prettierrc
 printf
@@ -188,6 +201,7 @@ rubocop
 sbin
 secn
 shellcheck
+shellenv
 sherson
 shopt
 shortlog
@@ -226,6 +240,7 @@ vimrc
 webpack
 wget
 wip
+worflow
 xargs
 xcode
 xmllint

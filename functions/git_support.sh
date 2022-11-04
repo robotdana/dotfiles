@@ -311,7 +311,7 @@ function git_find_sha() {
   if git_rebasing; then
     root=$(git_rebase_onto)
   else
-    root="$(git_branch_fork_point)"
+    root="$(git_main_branch)"
   fi
 
   local commits=()
@@ -326,10 +326,7 @@ function git_find_sha() {
     done
     return ${#commits[@]}
   elif (( ${#commits[@]} == 0 )); then
-    git_log_oneline "$root"
-    git log --oneline
-
-    echoerr "Commit "$@" $val not found in branch:"
+    echoerr "Commit "$*" not found in branch:"
     gbl >&2 2>/dev/null
     return 1
   else

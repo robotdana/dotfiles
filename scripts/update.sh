@@ -40,7 +40,7 @@ fi
 if [[ ! -d ~/.dotfiles/locals/github-cctray ]]; then
   git clone https://github.com/robotdana/github-cctray.git ~/.dotfiles/locals/github-cctray
 fi
-( cd ~/.dotfiles/locals/github-cctray && git checkout branches && gl )
+( cd ~/.dotfiles/locals/github-cctray && gl )
 
 
 ( cd ~/.dotfiles/locals/diff-highlight && make -f Makefile & )

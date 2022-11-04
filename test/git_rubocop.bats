@@ -50,7 +50,7 @@ function setup() {
   good_rb > foo.rb
   good_rb > bar.rb
 
-  echo yy | grc
+  yes | grc
 
   assert_git_status_clean
   assert_git_stash_empty
@@ -73,7 +73,8 @@ function setup() {
 @test "partial add pass rubocop hook" {
   bad_rb > bar.rb
   good_rb > foo.rb
-  ( echo ny | gc "Pass rubocop" ) || true
+  git add foo.rb
+  ( yes q | gc "Pass rubocop" ) || true
   # this doesn't run rubocop because there are untracked files
   refute git_rebasing
   run git_untracked
@@ -93,7 +94,8 @@ function setup() {
 @test "partial add fail rubocop hook" {
   bad_rb > bar.rb
   good_rb > foo.rb
-  ( echo yn | gc "Fail rubocop" ) || true
+  git add bar.rb
+  ( yes q | gc "Fail rubocop" ) || true
   # this doesn't run rubocop because there are untracked files
   refute git_rebasing
   run git_untracked
@@ -108,7 +110,7 @@ function setup() {
   assert git_rebasing
 
   good_rb > bar.rb
-  echo y | grc
+  yes | grc
 
   refute git_rebasing
 
@@ -120,7 +122,8 @@ function setup() {
 @test "partial add autocorrect rubocop hook" {
   auto_bad_rb > bar.rb
   good_rb > foo.rb
-  ( echo yn | gc "Auto rubocop" ) || true
+  git add bar.rb
+  ( yes q | gc "Auto rubocop" ) || true
   # this doesn't run rubocop because there are untracked files
   refute git_rebasing
   run git_untracked
@@ -144,7 +147,7 @@ function setup() {
   assert_output "foo.rb"
   run git diff --name-only
   assert_output "foo.rb"
-  echo n | gc "Pass rubocop"
+  yes n | gc "Pass rubocop"
   refute git_rebasing
   assert_equal "$(cat foo.rb)" "$(good_rb)
 $(bad_rb)"
@@ -158,10 +161,10 @@ $(bad_rb)"
   assert_output "foo.rb"
   run git diff --name-only
   assert_output "foo.rb"
-  ( echo n | gc "Fail rubocop" ) || true
+  ( yes n | gc "Fail rubocop" ) || true
   assert git_rebasing
   good_rb > foo.rb
-  echo y | grc
+  yes | grc
   refute git_rebasing
   assert_equal "$(cat foo.rb)" "$(good_rb)
 $(good_rb)"
@@ -186,11 +189,11 @@ $(good_rb)"
   git add foo.rb
   good_rb > foo.rb
   echo "CONFLICT = false" >> foo.rb
-  ( echo q | gc "Fail rubocop" ) || true
+  ( yes q | gc "Fail rubocop" ) || true
   assert git_rebasing
   good_rb > foo.rb
   echo "CONFLICTED = true" >> foo.rb
-  echo y | grc
+  yes | grc
   refute git_rebasing
 
   run git log --format="%s"

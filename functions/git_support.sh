@@ -326,7 +326,9 @@ function git_find_sha() {
     done
     return ${#commits[@]}
   elif (( ${#commits[@]} == 0 )); then
-    git log
+    git_log_oneline "$root"
+    git log --oneline
+
     echoerr "Commit "$@" $val not found in branch:"
     gbl >&2 2>/dev/null
     return 1

@@ -12,6 +12,7 @@ backtrace
 basename
 bashrc
 baz
+bitbucket
 brewfile
 buildkite
 ccmenu
@@ -88,6 +89,7 @@ gmm
 gnupg
 gpf
 gpg
+gpgconf
 gpgsign
 gpr
 grb

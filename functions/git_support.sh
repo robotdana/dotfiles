@@ -631,3 +631,7 @@ function git_pickaxe {
 function git_pickaxe_b {
   git --no-pager log -p --pickaxe-regex -S'\b'"$1"'\b' "${@:2}"
 }
+
+function restart_gpg {
+  gpgconf --kill gpg-agent
+}

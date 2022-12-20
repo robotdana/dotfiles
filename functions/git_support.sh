@@ -140,7 +140,7 @@ function git_autolint_rubocop {
   if [[ -f .rubocop.yml ]]; then
     rb_files=$(git_modified_head .rb .jbuilder .builder Gemfile .rake Rakefile .gemspec)
     if [[ ! -z $rb_files ]]; then
-      be_rubocop_autocorrect_all --force-exclusion --color --display-only-fail-level-offenses $rb_files && on_dirty "$@"
+      be_rubocop_autocorrect_all --force-exclusion --color $rb_files && on_dirty "$@"
     fi
   fi
 }
@@ -523,7 +523,7 @@ function git_authors() {
 }
 
 function git_main_branch() {
-  git_branch_list | grep -Fx -e master -e main -e trunk -e primary -e gh-pages
+  git_branch_list | grep -Fx -e master -e main -e trunk -e primary -e gh-pages -e develop
 }
 
 function git_unstaged_binary_files() {

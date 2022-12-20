@@ -51,9 +51,9 @@ function be(){
 
 function be_rubocop_autocorrect_all {
   if [[ -z "$(be rubocop --help | grep -F -e --autocorrect-all)" ]]; then
-    be rubocop -A "$@"
-  else
     be rubocop -a "$@"
+  else
+    be rubocop -A "$@"
   fi
 }
 

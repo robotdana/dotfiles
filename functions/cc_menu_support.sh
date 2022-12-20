@@ -94,7 +94,7 @@ function cc_menu_add_item {
   while IFS= read -r server_url; do
     defaults write net.sourceforge.cruisecontrol.CCMenu Projects -array-add "
       {
-        displayName = \"$repo : $branch\";
+        displayName = \"$repo : $branch$label\";
         projectName = \"$project_name\";
         serverUrl = \"$server_url\";
 

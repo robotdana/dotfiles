@@ -2,3 +2,4 @@
 .overcommit.yml
 .git-fake-stash
 .buildkite-failures
+.local_notes

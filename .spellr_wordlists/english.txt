@@ -95,6 +95,7 @@ gnupg
 gpf
 gpfr
 gpg
+gpgconf
 gpgsign
 gpr
 grb

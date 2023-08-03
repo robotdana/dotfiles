@@ -85,6 +85,8 @@ function git_autolint() {
   git_autolint_eslint "$@" || exitstatus=$(( $exitstatus + $? ))
   git_autolint_rubocop "$@" || exitstatus=$(( $exitstatus + $? ))
   git_autolint_spellr "$@" || exitstatus=$(( $exitstatus + $? ))
+  git_autolint_rails_annotate "$@" || exitstatus=$(( $exitstatus + $? ))
+  git_autolint_rails_chusaku "$@" || exitstatus=$(( $exitstatus + $? ))
   echo $exitstatus
   return $exitstatus
 }
@@ -139,8 +141,29 @@ function git_autolint_eslint {
 function git_autolint_rubocop {
   if [[ -f .rubocop.yml ]]; then
     rb_files=$(git_modified_head .rb .jbuilder .builder Gemfile .rake Rakefile .gemspec)
+
     if [[ ! -z $rb_files ]]; then
       be_rubocop_autocorrect_all --force-exclusion --color $rb_files && on_dirty "$@"
+    fi
+  fi
+}
+
+function git_autolint_rails_annotate {
+  if [[ -f Gemfile.lock ]] && grep -Fq annotate Gemfile.lock; then
+    rb_files=$(git_modified_head db/schema.rb)
+
+    if [[ ! -z $rb_files ]]; then
+      bundle exec annotate && on_dirty "$@"
+    fi
+  fi
+}
+
+function git_autolint_rails_chusaku {
+  if [[ -f Gemfile.lock ]] && grep -Fq chusaku Gemfile.lock; then
+    rb_files=$(git_modified_head app/controllers/**/*.rb config/routes*)
+
+    if [[ ! -z $rb_files ]]; then
+      bundle exec chusaku && on_dirty "$@"
     fi
   fi
 }
@@ -204,7 +227,7 @@ function git_purge {
 
 function git_purge_all {
   local current_dir=$PWD
-  for repo in $(ls -1d $PROJECT_DIRS); do
+  for repo in $(eval ls -1d $PROJECT_DIRS); do
     cd "$repo" && [[ -d .git ]] && cc_menu_repo_present && echo "Purging $repo" && ( git purge || exit 1 )
   done
   cd "$current_dir"
@@ -563,7 +586,7 @@ function git_changed_files_after_merge() {
 }
 
 function git_file_changed_after_merge() {
-  git_changed_files | grep -xE "$1"
+  git_changed_files_after_merge | grep -xE "$1"
 }
 
 function git_unstage() {
@@ -674,7 +697,7 @@ function git_pickaxe {
 }
 
 function git_pickaxe_b {
-  git --no-pager log -p --pickaxe-regex -S'\b'"$1"'\b' "${@:2}"
+  git --no-pager log -p -G'(\b|_)'"$1"'(\b|_)' "${@:2}"
 }
 
 function restart_gpg {

@@ -24,6 +24,7 @@ changelog
 chmod
 chromedriver
 chruby
+chusaku
 cmd
 cmdexit
 cnf
@@ -40,6 +41,7 @@ cppflags
 cruisecontrol
 cwd
 diffr
+difftool
 direnv
 dirname
 dirs
@@ -140,6 +142,7 @@ mailmap
 makefile
 marketfacer
 mergeoptions
+mergetool
 mkdir
 mycnf
 mysql
@@ -237,6 +240,7 @@ untrack
 urls
 usr
 vimrc
+vscode
 webpack
 wget
 wip

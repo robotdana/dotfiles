@@ -15,7 +15,7 @@ function local_host_name() {
 function ports_respond(){
   local respond=true
   for port in "$@"; do
-    if [[ ! $(lsof -ti :"$port") ]]; then
+    if ! curl -I --silent "http://localhost:$port" >/dev/null; then
       local respond=false
     fi
   done

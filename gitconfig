@@ -55,3 +55,14 @@
   log = diffr | less
   show = diffr | less
   diff = diffr | less
+
+[core]
+  editor = code --wait
+[diff]
+  tool = vscode
+[difftool "vscode"]
+  cmd = code --wait --diff $LOCAL $REMOTE
+[merge]
+  tool = vscode
+[mergetool "vscode"]
+  cmd = code --wait $MERGED

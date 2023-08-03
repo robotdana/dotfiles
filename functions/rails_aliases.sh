@@ -71,7 +71,7 @@ function rcu(){
 }
 
 function rcur(){
-  rcu -p ci "$@"
+  rcu "$@"
   rcur "$@"
 }
 

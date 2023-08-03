@@ -62,8 +62,16 @@ end"
 function bad_rb(){
   echo "# frozen_string_literal: true
 
-def bar
-  puts str { true }
+def bar(unused_keyword: true)
+  puts true
+  puts true
+  puts true
+  puts true
+  puts true
+  puts true
+  puts true
+  puts true
+  puts true
 end"
 }
 

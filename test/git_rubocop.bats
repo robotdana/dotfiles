@@ -13,7 +13,7 @@ function setup() {
 
     echo "
       source 'https://rubygems.org'
-      gem 'rubocop', '1.0.0'
+      gem 'rubocop', '1.55.1'
     " > Gemfile
     echo "
       AllCops:
@@ -200,23 +200,11 @@ $(good_rb)"
   assert_output "Fail rubocop
 Initial commit"
   # assert_git_stash_empty
-  if [[ -z "$CI" ]]; then
-    # TODO: find out what version git changed this in, and check that instead
-    # Or just update if that's what needs to happen
-    assert_equal "$(cat foo.rb)" "$(good_rb)
-<<<<<<< Updated upstream
-CONFLICTED = true
-||||||| constructed merge base
-=======
-CONFLICT = false
->>>>>>> Stashed changes"
-  else
-    assert_equal "$(cat foo.rb)" "$(good_rb)
+  assert_equal "$(cat foo.rb)" "$(good_rb)
 <<<<<<< Updated upstream
 CONFLICTED = true
 ||||||| Stash base
 =======
 CONFLICT = false
 >>>>>>> Stashed changes"
-  fi
 }

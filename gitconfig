@@ -10,7 +10,6 @@
 	excludesfile = ~/.gitignore
 	mergeoptions = --no-edit
 	hooksPath = ~/.dotfiles/hooks
-	editor = mate --wait
 [help]
 	autocorrect = -1
 [push]
@@ -57,12 +56,12 @@
   diff = diffr | less
 
 [core]
-  editor = code --wait
+	editor = code --wait
 [diff]
-  tool = vscode
-[difftool "vscode"]
-  cmd = code --wait --diff $LOCAL $REMOTE
+	tool = vscode
 [merge]
-  tool = vscode
+	tool = vscode
 [mergetool "vscode"]
-  cmd = code --wait $MERGED
+	cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
+[difftool "vscode"]
+	cmd = code --wait --diff $LOCAL $REMOTE

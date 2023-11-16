@@ -7,8 +7,9 @@ set +H
 
 export PYENV_SHELL=bash
 export PATH="$HOME/.cargo/bin:/Users/dana/.pyenv/shims:/usr/local/heroku/bin:/usr/local/bin:/usr/local/sbin:/usr/local/lib/node:$PATH"
-export EDITOR='/usr/local/bin/code --wait'
+export EDITOR='code --wait'
 export GUI_EDITOR=$EDITOR
+export THOR_MERGE=$EDITOR' -d $1 $2'
 export GPG_TTY=$(tty)
 export BASH_SILENCE_DEPRECATION_WARNING=1
 if [[ -f /opt/homebrew/bin/brew ]]; then

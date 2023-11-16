@@ -54,4 +54,6 @@ if [[ -z "$CI" ]]; then
   ruby-install ruby 3.0
 fi
 
+install_launchagents.sh
+
 resource

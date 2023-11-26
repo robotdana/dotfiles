@@ -35,7 +35,7 @@ source ~/.dotfiles/functions/hosts_support.sh
 source ~/.dotfiles/functions/prompt_support.sh
 source ~/.dotfiles/functions/server_support.sh
 source ~/.dotfiles/functions/cc_menu_support.sh
-source ~/.dotfiles/functions/chruby_support.sh
+source ~/.dotfiles/functions/ruby_support.sh
 source ~/.dotfiles/functions/less_support.sh
 
 source ~/.dotfiles/functions/git_aliases.sh

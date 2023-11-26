@@ -383,14 +383,10 @@ function git_fetch_merge {
 # TODO: test
 function git_log_oneline {
   ( echo_grey git log --oneline $(git_log_range "$1") )>&2
-  if [[ "$1" != "$(git_current_branch)" ]]; then
-    local commits_in_origin=$(echo -e $(git log --format="%h" $(git_log_range "$1" HEAD origin/) 2>/dev/null))
-    local commit_in_origin_condition='index("'$commits_in_origin'", $2) > 0'
-  else
-    local commit_in_origin_condition="1==1"
-  fi
+  local commits_in_origin=$(echo -e $(git log --format="%h" $(git merge-base --fork-point $(git_main_remote_branch)) 2>/dev/null))
+  local commit_in_origin_condition='index("'$commits_in_origin'", $2) > 0'
 
-  git log --format="%b%n§%h§%s" $(git_log_range "$1") | awk -F'§' '{
+  git log --format="%b%n§%h§%s§%cr" $(git_log_range "$1") | awk -F'§' '{
     if ($0 ~ "^$") {
       # do nothing
     } else if ($1 != "" ) {
@@ -401,11 +397,11 @@ function git_log_oneline {
       } else {
         printf "%s", "'$C_GREEN'"
       }
-      printf "%s%s%s", $2, " '$C_RESET'", $3
+      printf "%s%s%s%s%s", $2, " '$C_RESET'", $3, " \033[2m", $4
 
       if (body != "") {
         gsub("\r", "", body)
-        printf "%s%s", "'$C_GREY'", body
+        printf "%s%s", "'$C_GREY'\033[2m", body
       }
 
       body=""

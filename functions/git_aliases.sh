@@ -69,7 +69,7 @@ function gbs {
 # `gwip` git wip
 # commit everything carelessly with the message `wip`
 function gwip(){
-  git_non_release_branch && echodo git add . && echodo git commit --no-verify -m "WIP $(date +"%Y-%m-%d %-I:%M%p")"
+  git_non_release_branch && echodo git add . && echodo git commit --no-verify -m "WIP"
 }
 
 # `gwipp` git wip

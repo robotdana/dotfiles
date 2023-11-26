@@ -4,7 +4,7 @@
 
 ```
 xcode-select --install
-git clone https://github.com/robotdana/dotfiles.git ~/.dotfiles
+git clone git@github.com:robotdana/dotfiles.git ~/.dotfiles
 ~/.dotfiles/scripts/install.sh
 change the computer name
 set Terminal.app to bash

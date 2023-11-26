@@ -138,6 +138,7 @@ libffi
 localhost
 lsof
 lvh
+macos
 mailmap
 makefile
 marketfacer

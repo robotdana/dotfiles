@@ -156,25 +156,27 @@ function check_untested_bash_profile {
   fi
 }
 
-function version_prompt {
-  ruby_version=$(ruby_version_prompt)
-  node_version=$(node_version_prompt)
+function prompt_version {
+  ruby_version="$(prompt_ruby_version | cut -d. -f1,2)"
+  node_version="$(prompt_node_version | cut -d. -f1,2)"
   if [[ ! -z "$ruby_version" ]] && [[ ! -z "$node_version" ]]; then
-    echo "{$ruby_version,$node_version}"
-  elif [[ ! -z "$ruby_version" ]] || [[ ! -z "$node_version" ]]; then
-    echo "{$ruby_version$node_version}"
+    echo -ne "$C_LIGHT_PINK{r$ruby_version,n$node_version}"
+  elif [[ ! -z "$ruby_version" ]]; then
+    echo -ne "$C_LIGHT_PINK{r$ruby_version}"
+  elif [[ ! -z "$ruby_version" ]]; then
+    echo -ne "$C_LIGHT_PINK{n$node_version}"
   fi
 }
 
-function ruby_version_prompt {
+function prompt_ruby_version {
   if [ -f Gemfile ]; then
-    echo "r$(ruby --version | cut -d' ' -f 2 | cut -dp -f1 | cut -d. -f1,2 )"
+    ruby --version | cut -d' ' -f 2 | cut -dp -f1
   fi
 }
 
-function node_version_prompt {
+function prompt_node_version {
   if [ -f package.json ]; then
-    echo "n$(nvm current | colrm 1 1 | cut -d. -f1,2 )"
+    nvm current | colrm 1 1 | cut -d. -f1,2
   fi
 }
 

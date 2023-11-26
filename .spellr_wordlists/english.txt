@@ -24,6 +24,7 @@ changelog
 chmod
 chromedriver
 chruby
+chusaku
 cmd
 cmdexit
 cnf
@@ -40,6 +41,7 @@ cppflags
 cruisecontrol
 cwd
 diffr
+difftool
 direnv
 dirname
 dirs
@@ -93,12 +95,15 @@ gmc
 gmm
 gnupg
 gpf
+gpfr
 gpg
+gpgconf
 gpgsign
 gpr
 grb
 grc
 grce
+grcr
 grep
 grm
 grmp
@@ -137,6 +142,7 @@ mailmap
 makefile
 marketfacer
 mergeoptions
+mergetool
 mkdir
 mycnf
 mysql
@@ -147,6 +153,7 @@ nodejs
 nomatch
 noninteractively
 noprefix
+norc
 numstat
 nvm
 ocommand
@@ -233,6 +240,7 @@ untrack
 urls
 usr
 vimrc
+vscode
 webpack
 wget
 wip

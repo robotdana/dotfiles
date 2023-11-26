@@ -25,7 +25,7 @@ function cc_menu_github_actions_urls {
   local repo=$(git_current_repo_with_org)
   local branch="${1:-"$(git_current_branch)"}"
 
-  while IFS= read -r worflow; do
+  while IFS= read -r workflow; do
     echo "http://localhost:45454/$repo/$workflow?branch=$branch&token=$GITHUB_ACTIONS_TOKEN"
   done < <(ls -1 .github/workflows)
 }
@@ -79,7 +79,8 @@ function cc_menu_project_url {
 }
 
 function cc_menu_github_actions_server {
-  ( cd ~/.dotfiles/locals/github-cctray && chruby 3.0.0 && bundle && bundle exec rackup -p 45454 -D config.ru && wait_for_ports 45454 )
+  return 1;
+  # ( cd ~/.dotfiles/locals/github-cctray && chruby 3.0.0 && bundle --quiet && be rackup -p 45454 -D config.ru )
 }
 
 function cc_menu_github_actions_server_restart {
@@ -94,7 +95,7 @@ function cc_menu_add_item {
   while IFS= read -r server_url; do
     defaults write net.sourceforge.cruisecontrol.CCMenu Projects -array-add "
       {
-        displayName = \"$repo : $branch\";
+        displayName = \"$repo : $branch$label\";
         projectName = \"$project_name\";
         serverUrl = \"$server_url\";
 

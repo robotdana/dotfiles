@@ -2,7 +2,9 @@
 
 source ~/.dotfiles/functions/bash_support.sh
 
-brew bundle
+if [[ -z "$CI" ]]; then
+  brew bundle
+fi
 
 function git_version_number {
   git --version | cut -d\( -f1 | grep -oE "[0-9\.]+"
@@ -38,16 +40,16 @@ fi
 if [[ ! -d ~/.dotfiles/locals/github-cctray ]]; then
   git clone https://github.com/robotdana/github-cctray.git ~/.dotfiles/locals/github-cctray
 fi
-( cd ~/.dotfiles/locals/github-cctray && git checkout branches && gl )
+( cd ~/.dotfiles/locals/github-cctray && gl )
 
 
 ( cd ~/.dotfiles/locals/diff-highlight && make -f Makefile & )
 ln -sf ~/.dotfiles/locals/diff-highlight/diff-highlight /usr/local/bin/diff-highlight
 
-ruby-install ruby 2.6
-ruby-install ruby 2.7
 ruby-install ruby 3.0
 ruby-install ruby 3.1
 ruby-install ruby 3.2
+
+install_launchagents.sh
 
 resource

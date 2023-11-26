@@ -6,7 +6,7 @@ source ~/.dotfiles/functions/git_support.sh
 git_system && exit 0
 base=$1
 
-if git_rebasable_quick $base; then
+if git_non_release_branch $base; then
   exit 0
 else
   exit 1

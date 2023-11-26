@@ -22,11 +22,15 @@ echodo ln -sf ~/.dotfiles/mycnf ~/.my.cnf
 echodo mkdir -p ~/.dotfiles/locals
 echodo touch ~/.dotfiles/locals/secrets
 
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-brew tap homebrew/cask
-brew tap homebrew/cask-fonts
-brew install mas
+if [[ -z "$CI" ]]; then
+  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  brew tap homebrew/cask
+  brew tap homebrew/cask-fonts
+  brew install mas
+fi
 
 ~/.dotfiles/scripts/update.sh
 
-ruby-install ruby-2.7.0 # the ruby used by bash tests
+if [[ -z "$CI" ]]; then
+  ruby-install ruby-3.0.0 # the ruby used by bash tests
+fi

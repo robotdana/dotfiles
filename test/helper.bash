@@ -14,22 +14,20 @@ function setup_git() {
 function reset_to_first_commit() {
   cd ~/.git-test-repo || exit
 
-  run git merge --abort
   run git rebase --abort
-  git checkout --quiet  main --
+  run git merge --abort
+  run git reset --hard HEAD --
+  git checkout --quiet main --
+  echo git branch --list
   if [[ ! -z "$(git branch --list | grep -Fv '* main')" ]]; then
-    git branch -D $(git branch --list | grep -Fv '* main')
+    echodo git branch -D $(git branch --list | grep -Fv '* main')
   fi
   git reset --hard "$(git log --reverse --format="%H" | head -n 1)" --
   git clean -fd
   git stash clear
 
-  run git status
-  assert_output "On branch main
-nothing to commit, working tree clean"
-
-  run git stash list
-  assert_output ""
+  assert_git_status_clean
+  assert_git_stash_empty
 
   run git log --format="%s"
   assert_output "Initial commit"
@@ -38,7 +36,7 @@ nothing to commit, working tree clean"
 }
 
 function assert_git_status_clean {
-  run git status
+  run git status --long
   assert_output "On branch main
 nothing to commit, working tree clean"
 }
@@ -64,7 +62,25 @@ end"
 function bad_rb(){
   echo "# frozen_string_literal: true
 
-def bar
-  puts str { true }
+def bar(unused_keyword: true)
+  puts true
+  puts true
+  puts true
+  puts true
+  puts true
+  puts true
+  puts true
+  puts true
+  puts true
 end"
 }
+
+function auto_bad_rb(){
+  echo "def foo()
+
+    puts true
+
+  end"
+}
+
+

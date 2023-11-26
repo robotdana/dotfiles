@@ -4,14 +4,13 @@ function git_untracked(){
   git ls-files --others --exclude-standard | escape_spaces
 }
 
-function git_no_untracked {
+function git_can_autostash {
   git_untrack_new_unstaged
 
   if [[ ! -z "$(git_untracked)" ]]; then
-    echoerr "There are untracked files"
+    echoerr "There are untracked files, can't autostash to rebase"
+    echoerr "Use git_stash_only_untracked"
     false
-  else
-    true
   fi
 }
 
@@ -46,46 +45,68 @@ function git_conflicts_with_line_numbers(){
 }
 
 function git_handle_conflicts {
-  # store merge flags
-  cp .git/MERGE_MSG /tmp/conflict_MERGE_MSG
-  if [[ -e .git/MERGE_HEAD ]]; then
-    local merge_head=$(cat .git/MERGE_HEAD)
-  fi
+  if [[ -e .git/MERGE_MSG ]]; then
+    # store merge flags
+    cp .git/MERGE_MSG /tmp/conflict_MERGE_MSG
+    if [[ -e .git/MERGE_HEAD ]]; then
+      local merge_head=$(cat .git/MERGE_HEAD)
+    fi
 
-  # prepare working directory for interactive add
-  git_prepare_content_conflicts
-  git_prepare_their_deletions
-  git_prepare_our_deletions
+    # prepare working directory for interactive add
+    git_prepare_content_conflicts
+    git_prepare_their_deletions
+    git_prepare_our_deletions
 
-  # interactive add
-  git_track_untracked
-  git add -p
+    # interactive add
+    git_track_untracked
+    git add -p
 
-  # clean up un-added
-  git_untrack_new_unstaged
+    # clean up un-added
+    git_untrack_new_unstaged
 
-  git stash save --keep-index --include-untracked --quiet
-  comm -12 <(git_status_filtered ?? | sort) <(git_status_filtered 'D ' | sort) | xargs rm
+    git stash save --keep-index --include-untracked --quiet
+    comm -12 <(git_status_filtered ?? | sort) <(git_status_filtered 'D ' | sort) | xargs rm
 
-  # restore merge flags
-  cp /tmp/conflict_MERGE_MSG .git/MERGE_MSG
-  if [[ ! -z "$merge_head" ]]; then
-    echo -e $merge_head > .git/MERGE_HEAD
+    # restore merge flags
+    cp /tmp/conflict_MERGE_MSG .git/MERGE_MSG
+    if [[ ! -z "$merge_head" ]]; then
+      echo -e $merge_head > .git/MERGE_HEAD
+    fi
+  else
+    true
   fi
 }
 
 function git_autolint() {
+  echo git_autolint
   exitstatus=0
-  git_autolint_prettier || exitstatus=$(( $exitstatus + $? ))
-  git_autolint_stylelint || exitstatus=$(( $exitstatus + $? ))
-  git_autolint_eslint || exitstatus=$(( $exitstatus + $? ))
-  git_autolint_rubocop || exitstatus=$(( $exitstatus + $? ))
-  git_autolint_spellr || exitstatus=$(( $exitstatus + $? ))
+  git_autolint_prettier "$@" || exitstatus=$(( $exitstatus + $? ))
+  git_autolint_stylelint "$@" || exitstatus=$(( $exitstatus + $? ))
+  git_autolint_eslint "$@" || exitstatus=$(( $exitstatus + $? ))
+  git_autolint_rubocop "$@" || exitstatus=$(( $exitstatus + $? ))
+  git_autolint_spellr "$@" || exitstatus=$(( $exitstatus + $? ))
+  git_autolint_rails_annotate "$@" || exitstatus=$(( $exitstatus + $? ))
+  git_autolint_rails_chusaku "$@" || exitstatus=$(( $exitstatus + $? ))
+  echo $exitstatus
   return $exitstatus
 }
 
 function git_autolint_head {
-  git_rebase_exec HEAD^ git_autolint
+  echo git_autolint_head
+  git_rebase_exec HEAD^ git_autolint git_commit_during_rebase
+}
+
+function git_autolint_branch {
+  git_rebase_exec $(git_branch_fork_point) git_autolint git_commit_during_rebase
+}
+
+function git_commit_during_rebase {
+  echo git_commit_during_rebase
+  ga &&
+  ( git_status_clean ||
+    git commit --no-edit --no-verify 2>/dev/null ||
+    ( git_find_sha HEAD && git commit --amend --no-edit --no-verify )
+  ) && ( git_status_clean || git_stash )
 }
 
 function git_autolint_prettier {
@@ -93,6 +114,7 @@ function git_autolint_prettier {
     js_files=$(git_modified_head .js .jsx .ts .tsx)
     if [[ ! -z "$js_files" ]]; then
       echodo node_modules/.bin/prettier --write $js_files
+      on_dirty "$@"
     fi
   fi
 }
@@ -111,6 +133,7 @@ function git_autolint_eslint {
     js_files=$(git_modified_head .js .jsx .ts .tsx)
     if [[ ! -z $js_files ]]; then
       echodo node_modules/.bin/eslint --fix $js_files
+      on_dirty "$@"
     fi
   fi
 }
@@ -118,24 +141,41 @@ function git_autolint_eslint {
 function git_autolint_rubocop {
   if [[ -f .rubocop.yml ]]; then
     rb_files=$(git_modified_head .rb .jbuilder .builder Gemfile .rake Rakefile .gemspec)
+
     if [[ ! -z $rb_files ]]; then
-      if [[ -z "$(bundle exec rubocop --help | grep -F -e --autocorrect-all)" ]]; then
-        be rubocop -A --force-exclusion --color $rb_files
-      else
-        be rubocop -a --force-exclusion --color $rb_files
-      fi
+      be_rubocop_autocorrect_all --force-exclusion --color $rb_files && on_dirty "$@"
+    fi
+  fi
+}
+
+function git_autolint_rails_annotate {
+  if [[ -f Gemfile.lock ]] && grep -Fq annotate Gemfile.lock; then
+    rb_files=$(git_modified_head db/schema.rb)
+
+    if [[ ! -z $rb_files ]]; then
+      bundle exec annotate && on_dirty "$@"
+    fi
+  fi
+}
+
+function git_autolint_rails_chusaku {
+  if [[ -f Gemfile.lock ]] && grep -Fq chusaku Gemfile.lock; then
+    rb_files=$(git_modified_head app/controllers/**/*.rb config/routes*)
+
+    if [[ ! -z $rb_files ]]; then
+      bundle exec chusaku && on_dirty "$@"
     fi
   fi
 }
 
 function git_autolint_spellr {
   if [[ -f .spellr.yml ]]; then
-    if grep -qs -e spellr Gemfile.lock; then
-      echodo bundle exec spellr -i $(git_modified_head)
-    else
-      echodo spellr -i $(git_modified_head)
-    fi
+    echodo be spellr -i $(git_modified_head) && on_dirty "$@"
   fi
+}
+
+function on_dirty {
+  git_status_clean || (( $# >= 1 )) && "$@"
 }
 
 function git_status_filtered() {
@@ -187,7 +227,7 @@ function git_purge {
 
 function git_purge_all {
   local current_dir=$PWD
-  for repo in $(ls -1d $PROJECT_DIRS); do
+  for repo in $(eval ls -1d $PROJECT_DIRS); do
     cd "$repo" && [[ -d .git ]] && cc_menu_repo_present && echo "Purging $repo" && ( git purge || exit 1 )
   done
   cd "$current_dir"
@@ -249,7 +289,8 @@ function git_current_branch() {
 }
 
 function git_branch_name() {
-  git rev-parse --symbolic-full-name --abbrev-ref "$1" 2>/dev/null
+  ref=$(git rev-parse --symbolic-full-name --abbrev-ref "$1")
+  [[ -z "$ref" ]] && echo "$1" || echo "$ref"
 }
 
 # TODO: test
@@ -289,11 +330,17 @@ function git_find_sha() {
     val=$(git rev-parse --short "$val")
   fi
 
+  local root
+  if git_rebasing; then
+    root=$(git_rebase_onto)
+  else
+    root="$(git_main_branch)"
+  fi
+
   local commits=()
   while IFS= read -r line; do
     commits+=( "$line" )
-  done < <(git_log_oneline "$(git_main_branch)" 2>/dev/null | grep -E -e '^(\e\[(\d;?)+m)?'"$val" -e ' .*'"$val")
-
+  done < <(git_log_oneline "$root" 2>/dev/null | grep -E -e '^([^\sm]+m)?'"$val" -e '\s.*'"$val")
   if (( ${#commits[@]} > 1 )); then
     echoerr "Multiple possible commits found:"
     for commit in "${commits[@]}"; do
@@ -301,11 +348,26 @@ function git_find_sha() {
     done
     return ${#commits[@]}
   elif (( ${#commits[@]} == 0 )); then
-    echoerr "Commit not found in branch:"
+    echoerr "Commit "$*" not found in branch:"
     gbl >&2 2>/dev/null
     return 1
   else
     echo "${commits[0]}" | cut -d' ' -f1 | strip_color
+  fi
+}
+
+function git_stash_only_untracked {
+  if [[ ! -z "$(git_untracked)" ]]; then
+    if [[ ! -z "$(git diff HEAD --diff-filter=ACM --name-only)" ]]; then
+      git stash --quiet &&
+      git stash -u &&
+      git stash pop stash@{1} --quiet &&
+      git rev-parse stash
+    else
+      git_stash
+    fi
+  else
+    false
   fi
 }
 
@@ -314,7 +376,7 @@ function git_reword() {
   local commit
   commit=$(git_find_sha $*)
   if (( $? < 1 )); then
-    if git_rebasable_quick "$commit^"; then
+    if git_rebasable "$commit^"; then
       if [[ "$commit" == "$(git rev-parse --short HEAD)" ]]; then
         git commit --amend
       else
@@ -372,12 +434,11 @@ function git_log_oneline {
 function git_rebase_noninteractively {
   local new_task=$1
   local sha=$2
-
-  git_no_untracked && GIT_SEQUENCE_EDITOR="sed -i.~ s/^pick\ $sha\ /$new_task\ $sha\ /" git rebase --interactive --autosquash --autostash "$sha^" >/dev/null 2>/dev/null
+  git_can_autostash && GIT_SEQUENCE_EDITOR="sed -i.~ s/^pick\ $sha\ /$new_task\ $sha\ /" git rebase --interactive --autosquash --autostash "$sha^" >/dev/null 2>/dev/null
 }
 
 function git_squash_branch {
-  git_no_untracked && GIT_EDITOR=: GIT_SEQUENCE_EDITOR="sed -i.~ 1\ \!\ \ s/^pick\ /squash\ /" git rebase --interactive --autosquash --autostash "$(git_main_branch)"
+  git_can_autostash && GIT_EDITOR=: GIT_SEQUENCE_EDITOR="sed -i.~ 1\ \!\ \ s/^pick\ /squash\ /" git rebase --interactive --autosquash --autostash "$(git_main_branch)"
 }
 
 function git_log_range() {
@@ -394,7 +455,7 @@ function git_branch_list() {
 function git_branch_rm {
   local branch=${1:-$(git_current_branch)}
   if [[ "$1" == "$(git_current_branch)" ]]; then
-    echodo git stash -u
+    git_stash
     echodo git checkout "$(git_main_branch)"
   fi
 
@@ -443,33 +504,27 @@ function git_release_branch_match() {
 }
 
 function git_rebasable() {
-  git_non_release_branch
-}
-
-function git_rebasable_quick() {
-  git_non_release_branch
+  ! git_rebasing && git_non_release_branch
 }
 
 function git_rebase_i() {
-  git_no_untracked && (
-    GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash "$@" || grc
+  git_can_autostash && (
+    GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash "$@"
   )
 }
 
-function git_rebase_save_exitstatus {
-  cmdexit=$1
-  echo $cmdexit > .git/last-rebase-exec-exitstatus
-  exit $cmdexit
+function git_rebasing {
+  [[ -d "$(git rev-parse --git-path rebase-merge)" ]] ||
+    [[ -d "$(git rev-parse --git-path rebase-apply)" ]]
 }
 
-function git_rebasing {
-  ls .git | grep -qF -e rebase-merge -e rebase-apply
+function git_rebase_onto {
+  cat $(git rev-parse --git-path rebase-merge/onto) $(git rev-parse --git-path rebase-apply/onto) 2>/dev/null
 }
 
 function git_rebase_exec {
-  git_no_untracked && (
-    GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash "$1" --exec="bash -cl '${*:2}; git_rebase_save_exitstatus \$?'" ||
-      ( ga && [[ "$(cat .git/last-rebase-exec-exitstatus)" == "0" ]] && grce )
+  git_can_autostash && (
+    git_rebase_i --exec="bash -cl '${*:2}'" "$1" --reschedule-failed-exec
   )
 }
 
@@ -491,7 +546,7 @@ function git_authors() {
 }
 
 function git_main_branch() {
-  git_branch_list | grep -Fx -e master -e main -e trunk -e primary -e gh-pages
+  git_branch_list | grep -Fx -e master -e main -e trunk -e primary -e gh-pages -e develop
 }
 
 function git_unstaged_binary_files() {
@@ -531,7 +586,7 @@ function git_changed_files_after_merge() {
 }
 
 function git_file_changed_after_merge() {
-  git_changed_files | grep -xE "$1"
+  git_changed_files_after_merge | grep -xE "$1"
 }
 
 function git_unstage() {
@@ -542,12 +597,25 @@ function git_unstage() {
 }
 
 function git_stash() {
-  git_untrack_new_unstaged && echodo git stash -u "$@"
+  echo git_stash
+  git_untrack_new_unstaged &&
+    echodo git stash -u "$@" --quiet &&
+    git rev-parse --short stash
 }
 
 function git_autostash {
-  git_rebase_exec HEAD "$@"
-  return "$(cat .git/last-rebase-exec-exitstatus)"
+  if git_status_clean; then
+    "$@"
+  else
+    local stash_sha="$(git_stash)"
+    echo "Autostash: $stash_sha"
+    if "$@"; then
+      git stash apply $stash_sha
+    else
+      git stash apply $stash_sha
+      false
+    fi
+  fi
 }
 
 function git_uncommit() {
@@ -629,5 +697,9 @@ function git_pickaxe {
 }
 
 function git_pickaxe_b {
-  git --no-pager log -p --pickaxe-regex -S'\b'"$1"'\b' "${@:2}"
+  git --no-pager log -p -G'(\b|_)'"$1"'(\b|_)' "${@:2}"
+}
+
+function restart_gpg {
+  gpgconf --kill gpg-agent
 }

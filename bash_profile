@@ -61,4 +61,4 @@ if [ -f /usr/local/bin/direnv ]; then
 fi
 
 export PS2="\[$C_PINK\]» \[$C_RESET\]"
-export PS1="\$(last_command_style)$C_PINK\w\$(prompt_version)\$(prompt_git)$PS2"
+export PS1="\[\$(last_command_style)\]\[$C_PINK\]\w\[$C_LIGHT_PINK\]\$(prompt_version)\[\$(prompt_git_color)\]\$(prompt_git)$PS2"

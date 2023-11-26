@@ -37,14 +37,20 @@ if [[ $(wc -l ~/.dotfiles/locals/diff-highlight/Makefile | awk -F' ' '{print $1}
   exit 1
 fi
 
-if [[ ! -d ~/.dotfiles/locals/github-cctray ]]; then
-  git clone https://github.com/robotdana/github-cctray.git ~/.dotfiles/locals/github-cctray
-fi
-( cd ~/.dotfiles/locals/github-cctray && gl )
-
-
 ( cd ~/.dotfiles/locals/diff-highlight && make -f Makefile & )
 ln -sf ~/.dotfiles/locals/diff-highlight/diff-highlight /usr/local/bin/diff-highlight
+
+git submodule add git@github.com:robotdana/github-cctray.git
+git_update_submodules
+( cd github-cctray && git remote add upstream git@github.com:joejag/github-cctray.git )
+
+git submodule add git@github.com:asdf-vm/asdf.git
+cd ~/.dotfiles/asdf
+latest_asdf=$(git fetch --tags origin && git tag -l | sort --version-sort -r | grep -v rc | head -n 1)
+cd -
+git submodule set-branch -b $latest_asdf asdf
+git submodule sync
+git_update_submodules
 
 ruby-install ruby 3.0
 ruby-install ruby 3.1

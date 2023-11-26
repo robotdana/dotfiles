@@ -160,11 +160,11 @@ function prompt_version {
   ruby_version="$(prompt_ruby_version | cut -d. -f1,2)"
   node_version="$(prompt_node_version | cut -d. -f1,2)"
   if [[ ! -z "$ruby_version" ]] && [[ ! -z "$node_version" ]]; then
-    echo -ne "$C_LIGHT_PINK{r$ruby_version,n$node_version}"
+    echo -ne "{r$ruby_version,n$node_version}"
   elif [[ ! -z "$ruby_version" ]]; then
-    echo -ne "$C_LIGHT_PINK{r$ruby_version}"
+    echo -ne "{r$ruby_version}"
   elif [[ ! -z "$ruby_version" ]]; then
-    echo -ne "$C_LIGHT_PINK{n$node_version}"
+    echo -ne "{n$node_version}"
   fi
 }
 
@@ -177,6 +177,39 @@ function prompt_ruby_version {
 function prompt_node_version {
   if [ -f package.json ]; then
     nvm current | colrm 1 1 | cut -d. -f1,2
+  fi
+}
+function prompt_git_color {
+  if git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null; then
+    if git_status_clean; then
+      if git_head_pushed; then
+        echo -ne "$C_AQUA"
+      else
+        echo -ne "$C_GREEN"
+      fi
+    else
+      echo -ne "$C_YELLOW"
+    fi
+  else
+    echo -ne "$C_WHITE"
+  fi
+}
+function prompt_git {
+  if git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null; then
+    local ref
+    local color
+
+    ref=$(git_current_branch 2>/dev/null)
+    if [[ $ref == 'HEAD' ]]; then
+      ref=$(git branch --format='%(refname:short)' --sort=-committerdate --contains HEAD 2>/dev/null | head -n 1)
+      local subref="$(git rev-parse --short HEAD 2>/dev/null)"
+
+      if [[ ! -z $subref ]]; then
+        ref="$ref[$subref]"
+      fi
+    fi
+
+    echo -ne ":$ref"
   fi
 }
 

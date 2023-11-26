@@ -293,36 +293,6 @@ function git_branch_name() {
   [[ -z "$ref" ]] && echo "$1" || echo "$ref"
 }
 
-# TODO: test
-function prompt_git() {
-  if git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null; then
-    local ref
-    local color
-
-    if git_status_clean; then
-      if git_head_pushed; then
-        color="$C_AQUA"
-      else
-        color="$C_GREEN"
-      fi
-    else
-      color="$C_YELLOW"
-    fi
-
-    ref=$(git_current_branch 2>/dev/null)
-    if [[ $ref == 'HEAD' ]]; then
-      ref=$(git branch --format='%(refname:short)' --sort=-committerdate --contains HEAD 2>/dev/null | head -n 1)
-      local subref="$(git rev-parse --short HEAD 2>/dev/null)"
-
-      if [[ ! -z $subref ]]; then
-        ref="$ref[$subref]"
-      fi
-    fi
-
-    echo -ne "$color:$ref"
-  fi
-}
-
 function git_current_repo() {
   local remote=${1:-origin}
   basename "$(git config --get remote.$remote.url 2>/dev/null)" .git
@@ -704,4 +674,9 @@ function git_pickaxe_b {
 
 function restart_gpg {
   gpgconf --kill gpg-agent
+}
+
+
+function git_update_submodules {
+  git submodule update --init --merge --remote --recursive
 }

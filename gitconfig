@@ -39,7 +39,8 @@
 	mailmap = true
 [commit]
   template = ~/.dotfiles/git_commit_template
-	verbose = true
+	# verbose = true
+	status = false
 	gpgsign = true
 [filter "lfs"]
 	clean = git-lfs clean -- %f
@@ -56,12 +57,12 @@
   diff = diffr | less
 
 [core]
-	editor = code --wait
+	editor = code -wn --disable-extensions --disable-extension vscode.emmet --disable-extension vscode.git
 [diff]
 	tool = vscode
 [merge]
 	tool = vscode
 [mergetool "vscode"]
-	cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
+	cmd = code -wn --disable-extensions --merge $REMOTE $LOCAL $BASE $MERGED
 [difftool "vscode"]
-	cmd = code --wait --diff $LOCAL $REMOTE
+	cmd = code --wait -n --disable-extensions --diff $LOCAL $REMOTE

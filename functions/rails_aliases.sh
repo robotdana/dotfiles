@@ -109,6 +109,10 @@ function rtn(){
   rt --next-failure "$@"
 }
 
+function rtnn(){
+  rt --only-failures "$@"
+}
+
 function crt {
   echo_grey COVERAGE=1 MIN_COVERAGE=100
   COVERAGE=1 MIN_COVERAGE=100 rt "$@" || echodo open coverage/index.html

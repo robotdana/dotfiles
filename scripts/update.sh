@@ -44,10 +44,10 @@ fi
 ( cd ~/.dotfiles/locals/diff-highlight && make -f Makefile & )
 ln -sf ~/.dotfiles/locals/diff-highlight/diff-highlight /usr/local/bin/diff-highlight
 
-ruby-install ruby 2.4
-ruby-install ruby 2.5
 ruby-install ruby 2.6
 ruby-install ruby 2.7
 ruby-install ruby 3.0
+ruby-install ruby 3.1
+ruby-install ruby 3.2
 
 resource

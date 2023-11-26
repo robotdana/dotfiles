@@ -1,6 +1,8 @@
 acm
 actionclicked
+alloc
 an'd
+applescript
 argf
 asc
 autocorrect
@@ -14,8 +16,10 @@ basename
 bashrc
 baz
 bitbucket
+bool
 brewfile
 buildkite
+cals
 ccmenu
 cctray
 cdot
@@ -30,6 +34,7 @@ cmdexit
 cnf
 cntrl
 coc
+colour
 colours
 colrm
 committerdate
@@ -46,6 +51,8 @@ direnv
 dirname
 dirs
 dns
+doctype
+dont
 dotfiles
 dscacheutil
 echodo
@@ -53,9 +60,11 @@ echoerr
 editmsg
 edot
 elif
+enum
 env
 eslint
 eslintrc
+euo
 eval
 evx
 excludesfile
@@ -100,11 +109,13 @@ gpg
 gpgconf
 gpgsign
 gpr
+grayscale
 grb
 grc
 grce
 grcr
 grep
+greyscale
 grm
 grmp
 grmpf
@@ -122,6 +133,7 @@ irb
 irbrc
 istat
 istatmenus
+itemexit
 jbuilder
 jeks
 json
@@ -131,6 +143,8 @@ keygen
 keyid
 killall
 killchrome
+launchagents
+launchctl
 ldflags
 ldot
 lfs
@@ -145,6 +159,7 @@ marketfacer
 mergeoptions
 mergetool
 mkdir
+mktemp
 mycnf
 mysql
 newblank
@@ -155,6 +170,7 @@ nomatch
 noninteractively
 noprefix
 norc
+nsurl
 numstat
 nvm
 ocommand
@@ -168,6 +184,7 @@ pickaxe
 pids
 pinentry
 pkgconfig
+plist
 pmset
 ppid
 prettierrc
@@ -200,6 +217,7 @@ rsf
 rspec
 rtc
 rtn
+rtnn
 rtr
 rubocop
 sbin
@@ -221,6 +239,7 @@ submodule
 submodules
 subref
 sudo
+systempreferences
 tcp
 termcap
 textmate
@@ -233,6 +252,7 @@ tty
 txt
 uncommit
 uniq
+universalaccess
 unmatch
 unmerged
 unstage
@@ -240,6 +260,7 @@ unstaged
 untrack
 urls
 usr
+utf
 vimrc
 vscode
 webpack

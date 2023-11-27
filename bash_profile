@@ -16,15 +16,21 @@ if [[ -f /opt/homebrew/bin/brew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-if [[ -d opt/homebrew/opt/libffi ]]; then
-  export LDFLAGS="-L/opt/homebrew/opt/libffi/lib"
-  export CPPFLAGS="-I/opt/homebrew/opt/libffi/include"
-  export PKG_CONFIG_PATH="/opt/homebrew/opt/libffi/lib/pkgconfig"
+# Brew doesn't finish setting this up, so i must do it
+if [[ -d "$(brew --prefix libffi)" ]]; then
+  export LDFLAGS="-L$(brew --prefix libffi)/lib"
+  export CPPFLAGS="-I$(brew --prefix libffi)/include"
+  export PKG_CONFIG_PATH="$(brew --prefix libffi)/lib/pkgconfig"
 fi
 
 
-if [ -f ~/.cargo/env ]; then
+if [[ -f ~/.cargo/env ]]; then
   source /Users/dana/.cargo/env
+fi
+
+if [[ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]]; then
+  source "$(brew --prefix asdf)/libexec/asdf.sh"
+  source "$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash"
 fi
 
 source ~/.dotfiles/locals/secrets.sh
@@ -47,7 +53,7 @@ source ~/.dotfiles/functions/webpack_aliases.sh
 
 PROMPT_COMMAND="maybe_update_terminal_cwd; resource_if_modified_since $(last_bash_profile_modification); check_untested_bash_profile; nvm_use_node_version"
 
-if [ -f /usr/local/bin/direnv ]; then
+if [ -d /usr/local/bin ] && [[ -f /usr/local/bin/direnv ]]; then
   # direnv hook bash. idk what it's doing but i'm sure it's fine
   _direnv_hook() {
     local previous_exit_status=$?;

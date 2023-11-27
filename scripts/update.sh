@@ -26,35 +26,19 @@ if [[ $(wc -l ~/.dotfiles/locals/git-completion.bash | awk -F' ' '{print $1}') =
   exit 1
 fi
 
-# get diff highlight
-mkdir ~/.dotfiles/locals/diff-highlight
-echodo curl "https://raw.githubusercontent.com/git/git/v$(git_version_number)/contrib/diff-highlight/DiffHighlight.pm" > ~/.dotfiles/locals/diff-highlight/DiffHighlight.pm
-echodo curl "https://raw.githubusercontent.com/git/git/v$(git_version_number)/contrib/diff-highlight/diff-highlight.perl" > ~/.dotfiles/locals/diff-highlight/diff-highlight.perl
-echodo curl "https://raw.githubusercontent.com/git/git/v$(git_version_number)/contrib/diff-highlight/Makefile" > ~/.dotfiles/locals/diff-highlight/Makefile
-
-if [[ $(wc -l ~/.dotfiles/locals/diff-highlight/Makefile | awk -F' ' '{print $1}') = "1" ]]; then
-  echoerr "diff highlight didn't download correctly"
-  exit 1
-fi
-
-( cd ~/.dotfiles/locals/diff-highlight && make -f Makefile & )
-ln -sf ~/.dotfiles/locals/diff-highlight/diff-highlight /usr/local/bin/diff-highlight
-
 git submodule add git@github.com:robotdana/github-cctray.git
 git_update_submodules
 ( cd github-cctray && git remote add upstream git@github.com:joejag/github-cctray.git )
 
-git submodule add git@github.com:asdf-vm/asdf.git
-cd ~/.dotfiles/asdf
-latest_asdf=$(git fetch --tags origin && git tag -l | sort --version-sort -r | grep -v rc | head -n 1)
-cd -
-git submodule set-branch -b $latest_asdf asdf
-git submodule sync
-git_update_submodules
+if [[ ! -z "$(which asdf)" ]]; then
+  asdf plugin add nodejs
+  asdf plugin add ruby
 
-ruby-install ruby 3.0
-ruby-install ruby 3.1
-ruby-install ruby 3.2
+  asdf install ruby latest:3.0
+  asdf install ruby latest:3.1
+  asdf install ruby latest:3.2
+  asdf install ruby 3.3.0-preview3
+end
 
 install_launchagents.sh
 

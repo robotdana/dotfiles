@@ -5,6 +5,8 @@ an'd
 applescript
 argf
 asc
+asdf
+asdfrc
 autocorrect
 autolint
 automain
@@ -27,7 +29,6 @@ cdp
 changelog
 chmod
 chromedriver
-chruby
 chusaku
 cmd
 cmdexit
@@ -41,6 +42,7 @@ committerdate
 config
 conflictstyle
 contentclicked
+contributers
 coreaudiod
 cppflags
 cruisecontrol
@@ -129,6 +131,7 @@ gzip
 i'm
 idk
 inconsolata
+inflight
 irb
 irbrc
 istat
@@ -136,6 +139,7 @@ istatmenus
 itemexit
 jbuilder
 jeks
+joejag
 json
 jsx
 kaos
@@ -148,6 +152,7 @@ launchctl
 ldflags
 ldot
 lfs
+libexec
 libffi
 localhost
 lsof
@@ -162,6 +167,7 @@ mkdir
 mktemp
 mycnf
 mysql
+nevergreen
 newblank
 nginx
 nocasematch

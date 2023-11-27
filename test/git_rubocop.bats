@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 source ~/.dotfiles/functions/git_aliases.sh
 source ~/.dotfiles/functions/git_support.sh
-source ~/.dotfiles/functions/chruby_support.sh
+source ~/.dotfiles/functions/ruby_support.sh
 
 load helper
 

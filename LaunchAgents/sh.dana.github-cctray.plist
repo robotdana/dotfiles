@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+   <key>EnvironmentVariables</key>
+   <dict>
+       <key>PATH</key>
+       <string>$PATH</string>
+       <key>BUNDLE_GEMFILE</key>
+       <string>$HOME/.dotfiles/github-cctray/Gemfile</string>
+       <key>ASDF_RUBY_VERSION</key>
+       <string>3.2.2</string>
+       <key>ASDF_DIR</key>
+       <string>/usr/local/opt/asdf/libexec</string>
+   </dict>
+   <key>Label</key>
+   <string>sh.dana.github-cctray</string>
+   <key>ProgramArguments</key>
+   <array>
+     <string>$HOME/.asdf/shims/bundle</string>
+     <string>exec</string>
+     <string>rackup</string>
+     <string>-p</string>
+     <string>45454</string>
+     <string>$HOME/.dotfiles/github-cctray/config.ru</string>
+   </array>
+   <key>RunAtLoad</key>
+   <true/>
+   <key>KeepAlive</key>
+   <true/>
+   <key>StandardErrorPath</key>
+   <string>/tmp/sh.dana.github-cctray.err</string>
+   <key>StandardOutPath</key>
+   <string>/tmp/sh.dana.github-cctray.out</string>
+</dict>
+</plist>

@@ -18,16 +18,17 @@ function cc_menu_travis_url {
 }
 
 function cc_menu_github_actions_urls {
-  if ! ports_respond 45454; then
-    cc_menu_github_actions_server
+  if [[ -z "$GITHUB_ACTIONS_TOKEN" ]]; then
+    echoerr "No \$GITHUB_ACTIONS_TOKEN"
+    return false
+  else
+    local repo=$(git_current_repo_with_org)
+    local branch="${1:-"$(git_current_branch)"}"
+
+    while IFS= read -r workflow; do
+      echo "http://localhost:45454/$repo/$workflow?branch=$branch&token=$GITHUB_ACTIONS_TOKEN"
+    done < <(ls -1 .github/workflows)
   fi
-
-  local repo=$(git_current_repo_with_org)
-  local branch="${1:-"$(git_current_branch)"}"
-
-  while IFS= read -r workflow; do
-    echo "http://localhost:45454/$repo/$workflow?branch=$branch&token=$GITHUB_ACTIONS_TOKEN"
-  done < <(ls -1 .github/workflows)
 }
 
 function cc_menu_buildkite_url {
@@ -45,9 +46,9 @@ function cc_menu_add {
 
   if [[ ! -z "$(cc_menu_item_server_urls $branch)" ]]; then
     if ! cc_menu_present "$branch"; then
-      killall CCMenu 2>/dev/null
+      cc_menu_stop
       cc_menu_add_item "$branch"
-      open -g /Applications/CCMenu.app
+      cc_menu
     fi
   fi
 }
@@ -56,9 +57,9 @@ function cc_menu_remove {
   local branch="${1:-"$(git_current_branch)"}"
 
   if cc_menu_present "$branch"; then
-    killall CCMenu 2>/dev/null
+    cc_menu_stop
     cc_menu_remove_item "$branch"
-    open -g /Applications/CCMenu.app
+    cc_menu
   fi
 }
 
@@ -78,13 +79,9 @@ function cc_menu_project_url {
   curl "$(cc_menu_item_server_urls "$branch" | head -n 1)" 2>/dev/null | xmllint --xpath "string(//Projects/Project/@webUrl)" -
 }
 
-function cc_menu_github_actions_server {
-  return 1;
-  # ( cd ~/.dotfiles/locals/github-cctray && chruby 3.0.0 && bundle --quiet && be rackup -p 45454 -D config.ru )
-}
-
 function cc_menu_github_actions_server_restart {
-  kill_port 45454 && cc_menu_github_actions_server
+  kill_port 45454
+  cc_menu
 }
 
 function cc_menu_add_item {
@@ -127,18 +124,26 @@ function cc_menu_repo_present {
 }
 
 function cc_menu_init {
-  killall CCMenu 2>/dev/null
+  cc_menu_stop
   defaults write net.sourceforge.cruisecontrol.CCMenu Projects '()'
 }
 
 function cc_menu_remove_branches {
-  killall CCMenu 2>/dev/null
+  cc_menu_stop
   for branch in "$@"; do
     cc_menu_remove_item "$branch"
   done
-  open -g /Applications/CCMenu.app
+  cc_menu
 }
 
 function cc_menu_list {
   defaults read net.sourceforge.cruisecontrol.CCMenu Projects | grep -F "displayName = " | cut -f 2 -d\"
+}
+
+function cc_menu_stop {
+  killall CCMenu 2>/dev/null
+}
+
+function cc_menu {
+  open -g /Applications/CCMenu.app
 }

@@ -8,16 +8,18 @@
        <string>$PATH</string>
        <key>BUNDLE_GEMFILE</key>
        <string>$HOME/.dotfiles/github-cctray/Gemfile</string>
-       <key>ASDF_RUBY_VERSION</key>
+       <key>RBENV_VERSION</key>
        <string>3.2.2</string>
-       <key>ASDF_DIR</key>
-       <string>/usr/local/opt/asdf/libexec</string>
    </dict>
    <key>Label</key>
    <string>sh.dana.github-cctray</string>
    <key>ProgramArguments</key>
    <array>
-     <string>$HOME/.asdf/shims/bundle</string>
+     <string>/usr/local/bin/rbenv</string>
+     <string>exec</string>
+     <string>bundle</string>
+     <string>exec</string>
+     <string>bundle</string>
      <string>exec</string>
      <string>rackup</string>
      <string>-p</string>

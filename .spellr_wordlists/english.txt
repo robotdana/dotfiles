@@ -5,8 +5,6 @@ an'd
 applescript
 argf
 asc
-asdf
-asdfrc
 autocorrect
 autolint
 automain
@@ -200,6 +198,7 @@ pwd
 pyenv
 rackup
 rakefile
+rbenv
 rbspy
 rcu
 rcur

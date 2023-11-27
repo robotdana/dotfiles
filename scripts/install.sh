@@ -14,7 +14,6 @@ echodo ln -sf ~/.dotfiles/gemrc ~/.gemrc
 echodo ln -sf ~/.dotfiles/irbrc ~/.irbrc
 echodo ln -sf ~/.dotfiles/finicky.js ~/.finicky.js
 echodo ln -sf ~/.dotfiles/vimrc ~/.vimrc
-echodo ln -sf ~/.dotfiles/asdfrc ~/.asdfrc
 echodo mkdir -p ~/.ssh
 echodo ln -sf ~/.dotfiles/ssh_config ~/.ssh/config
 echodo mkdir -p ~/.bundle

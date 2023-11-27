@@ -16,21 +16,8 @@ if [[ -f /opt/homebrew/bin/brew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-# Brew doesn't finish setting this up, so i must do it
-if [[ -d "$(brew --prefix libffi)" ]]; then
-  export LDFLAGS="-L$(brew --prefix libffi)/lib"
-  export CPPFLAGS="-I$(brew --prefix libffi)/include"
-  export PKG_CONFIG_PATH="$(brew --prefix libffi)/lib/pkgconfig"
-fi
-
-
 if [[ -f ~/.cargo/env ]]; then
   source /Users/dana/.cargo/env
-fi
-
-if [[ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]]; then
-  source "$(brew --prefix asdf)/libexec/asdf.sh"
-  source "$(brew --prefix asdf)/etc/bash_completion.d/asdf.bash"
 fi
 
 source ~/.dotfiles/locals/secrets.sh

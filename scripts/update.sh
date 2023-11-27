@@ -30,15 +30,10 @@ git submodule add git@github.com:robotdana/github-cctray.git
 git_update_submodules
 ( cd github-cctray && git remote add upstream git@github.com:joejag/github-cctray.git )
 
-if [[ ! -z "$(which asdf)" ]]; then
-  asdf plugin add nodejs
-  asdf plugin add ruby
-
-  asdf install ruby latest:3.0
-  asdf install ruby latest:3.1
-  asdf install ruby latest:3.2
-  asdf install ruby 3.3.0-preview3
-end
+rbenv install 3.0
+rbenv install 3.1
+rbenv install 3.2
+rbenv install 3.3.0-preview3
 
 install_launchagents.sh
 

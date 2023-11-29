@@ -9,7 +9,7 @@ load helper
 function setup() {
   if [[ "$BATS_TEST_NUMBER" -eq "1" ]]; then
     setup_git
-    cp ~/.dotfiles/.ruby-version .ruby-version
+    RBENV_VERSION=3.2.2 rbenv exec ruby -v
 
     echo "
       source 'https://rubygems.org'
@@ -19,9 +19,9 @@ function setup() {
       AllCops:
         NewCops: enable
     " > .rubocop.yml
-    bundle install
-    bundle lock --add-platform universal-darwin-20
-    bundle lock --add-platform x86_64-darwin-18
+    RBENV_VERSION=3.2.2 rbenv exec bundle install
+    RBENV_VERSION=3.2.2 rbenv exec bundle lock --add-platform universal-darwin-20
+    RBENV_VERSION=3.2.2 rbenv exec bundle lock --add-platform x86_64-darwin-18
     git add .
     git commit --no-verify -m "Initial commit"
   else
@@ -33,7 +33,7 @@ function setup() {
   good_rb > foo.rb
   good_rb > bar.rb
   git add .
-  gc "Pass rubocop"
+  RBENV_VERSION=3.2.2 rbenv exec gc "Pass rubocop"
   assert_git_status_clean
   assert_git_stash_empty
 }
@@ -42,7 +42,7 @@ function setup() {
   bad_rb > foo.rb
   bad_rb > bar.rb
   git add .
-  run gc "Fail rubocop"
+  RBENV_VERSION=3.2.2 run rbenv exec gc "Fail rubocop"
   # pause for correction
   assert_failure
   assert git_rebasing
@@ -50,7 +50,7 @@ function setup() {
   good_rb > foo.rb
   good_rb > bar.rb
 
-  yes | grc
+  yes | RBENV_VERSION=3.2.2 rbenv exec grc
 
   assert_git_status_clean
   assert_git_stash_empty
@@ -61,7 +61,7 @@ function setup() {
   auto_bad_rb > foo.rb
   auto_bad_rb > bar.rb
 
-  yes y | gc "Auto rubocop"
+  yes y | RBENV_VERSION=3.2.2 rbenv exec gc "Auto rubocop"
   refute git_rebasing
 
   assert_git_status_clean
@@ -74,7 +74,7 @@ function setup() {
   bad_rb > bar.rb
   good_rb > foo.rb
   git add foo.rb
-  ( yes q | gc "Pass rubocop" ) || true
+  ( yes q | RBENV_VERSION=3.2.2 rbenv exec gc "Pass rubocop" ) || true
   # this doesn't run rubocop because there are untracked files
   refute git_rebasing
   run git_untracked
@@ -82,7 +82,7 @@ function setup() {
 
   # manually lint
   git_stash_only_untracked
-  run git_autolint_head
+  RBENV_VERSION=3.2.2 run rbenv exec git_autolint_head
 
   refute git_rebasing
 
@@ -95,7 +95,7 @@ function setup() {
   bad_rb > bar.rb
   good_rb > foo.rb
   git add bar.rb
-  ( yes q | gc "Fail rubocop" ) || true
+  ( yes q | RBENV_VERSION=3.2.2 rbenv exec gc "Fail rubocop" ) || true
   # this doesn't run rubocop because there are untracked files
   refute git_rebasing
   run git_untracked
@@ -103,14 +103,14 @@ function setup() {
 
   # manually lint
   git_stash_only_untracked
-  run git_autolint_head
+  RBENV_VERSION=3.2.2 run rbenv exec git_autolint_head
 
   # pause for correction
   assert_failure
   assert git_rebasing
 
   good_rb > bar.rb
-  yes | grc
+  yes | RBENV_VERSION=3.2.2 rbenv exec grc
 
   refute git_rebasing
 
@@ -123,7 +123,7 @@ function setup() {
   auto_bad_rb > bar.rb
   good_rb > foo.rb
   git add bar.rb
-  ( yes q | gc "Auto rubocop" ) || true
+  ( yes q | RBENV_VERSION=3.2.2 rbenv exec gc "Auto rubocop" ) || true
   # this doesn't run rubocop because there are untracked files
   refute git_rebasing
   run git_untracked
@@ -131,7 +131,7 @@ function setup() {
 
   # manually lint
   git_stash_only_untracked
-  yes y | git_autolint_head
+  yes y | RBENV_VERSION=3.2.2 rbenv exec git_autolint_head
   refute git_rebasing
 
   git stash pop
@@ -147,7 +147,7 @@ function setup() {
   assert_output "foo.rb"
   run git diff --name-only
   assert_output "foo.rb"
-  yes n | gc "Pass rubocop"
+  yes n | RBENV_VERSION=3.2.2 rbenv exec gc "Pass rubocop"
   refute git_rebasing
   assert_equal "$(cat foo.rb)" "$(good_rb)
 $(bad_rb)"
@@ -161,10 +161,10 @@ $(bad_rb)"
   assert_output "foo.rb"
   run git diff --name-only
   assert_output "foo.rb"
-  ( yes n | gc "Fail rubocop" ) || true
+  ( yes n | RBENV_VERSION=3.2.2 rbenv exec gc "Fail rubocop" ) || true
   assert git_rebasing
   good_rb > foo.rb
-  yes | grc
+  yes | RBENV_VERSION=3.2.2 rbenv exec grc
   refute git_rebasing
   assert_equal "$(cat foo.rb)" "$(good_rb)
 $(good_rb)"
@@ -178,7 +178,7 @@ $(good_rb)"
   assert_output "foo.rb"
   run git diff --name-only
   assert_output "foo.rb"
-  yes y | gc "Auto rubocop"
+  yes y | RBENV_VERSION=3.2.2 rbenv exec gc "Auto rubocop"
   refute git_rebasing
   assert_equal "$(cat foo.rb)" "$(good_rb)
 # comment"
@@ -189,11 +189,11 @@ $(good_rb)"
   git add foo.rb
   good_rb > foo.rb
   echo "CONFLICT = false" >> foo.rb
-  ( yes q | gc "Fail rubocop" ) || true
+  ( yes q | RBENV_VERSION=3.2.2 rbenv exec gc "Fail rubocop" ) || true
   assert git_rebasing
   good_rb > foo.rb
   echo "CONFLICTED = true" >> foo.rb
-  yes | grc
+  yes | RBENV_VERSION=3.2.2 rbenv exec grc
   refute git_rebasing
 
   run git log --format="%s"

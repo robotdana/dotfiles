@@ -27,6 +27,7 @@ cdp
 changelog
 chmod
 chromedriver
+chruby
 chusaku
 cmd
 cmdexit
@@ -45,6 +46,8 @@ coreaudiod
 cppflags
 cruisecontrol
 cwd
+dest
+diffable
 diffr
 difftool
 direnv
@@ -235,6 +238,7 @@ shortlog
 shosts
 sigint
 signingkey
+simplecov
 snginx
 spotify
 sqlite
@@ -260,6 +264,7 @@ uniq
 universalaccess
 unmatch
 unmerged
+unsetenv
 unstage
 unstaged
 untrack

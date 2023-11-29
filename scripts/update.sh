@@ -30,10 +30,10 @@ git submodule add git@github.com:robotdana/github-cctray.git
 git_update_submodules
 ( cd github-cctray && git remote add upstream git@github.com:joejag/github-cctray.git )
 
-rbenv install 3.0
-rbenv install 3.1
-rbenv install 3.2
-rbenv install 3.3.0-preview3
+ruby-install 3.0
+ruby-install 3.1
+ruby-install 3.2
+ruby-install 3.3.0-preview3
 
 install_launchagents.sh
 

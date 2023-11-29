@@ -179,7 +179,7 @@ function on_dirty {
 }
 
 function git_status_filtered() {
-  git status --porcelain | grep -F "$* " | colrm 1 3 | quote_lines
+  git status --porcelain | grep -F "$* " | colrm 1 3 | escape_spaces
 }
 
 # TODO: test
@@ -190,7 +190,7 @@ function git_prepare_content_conflicts() {
 
 # Tested
 function git_prepare_their_deletions() {
-  local conflicted=$(git_status_filtered UD | quote_lines)
+  local conflicted=$(git_status_filtered UD | escape_spaces)
   if [[ ! -z "$conflicted" ]]; then
     git rm $conflicted
     git reset --quiet -- $conflicted # so we can interactively add the removal in the git add conflicts step
@@ -199,7 +199,7 @@ function git_prepare_their_deletions() {
 
 # Tested
 function git_prepare_our_deletions() {
-  local conflicted=$(git_status_filtered DU | quote_lines)
+  local conflicted=$(git_status_filtered DU | escape_spaces)
   if [[ ! -z "$conflicted" ]]; then
     git add $conflicted
     git reset --quiet -- $conflicted # so we can interactively re-add in the git add conflicts step

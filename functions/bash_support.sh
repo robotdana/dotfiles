@@ -63,13 +63,6 @@ function escape_brackets() {
   sed -E 's/([^\])([()])/\1\\\2/g'
 }
 
-# Tested
-function quote_lines() {
-  while read -r line; do
-    echo -e $(quote "$line")
-  done
-}
-
 function last_command_style() {
   if (( $? == 0 )); then
     echo -en "\033[1m"
@@ -78,37 +71,29 @@ function last_command_style() {
   fi
 }
 
-# Tested
-function quote_array() {
-  local space=""
+# do quotes manually here for aesthetics
+# everywhere actually use the output, find another way
+function echodo(){
+  local space="$C_GREY"
   for string in "$@"; do
-    echo -en "$space"
-    quote "$string"
+    echo -en "$space" >&2
+
+    if [[ -z "$string" ]]; then
+      echo -n "''" >&2
+    elif [[ "$string" =~ \'|\"|\ |\&|\{|\}|\(|\)|\[|\]|\$|\<|\>|\||\;|$'\n' ]]; then
+      if [[ "$string" =~ \' ]]; then
+        echo -n \""${string//\"/\\\"}"\" >&2
+      else
+        echo -n \'"$string"\' >&2
+      fi
+    else
+      echo -n "$string" >&2
+    fi
+
     space=" "
   done
-  echo ""
-}
+  echo -e "$C_RESET" >&2
 
-# Tested
-function quote() {
-  if (( $# > 0 )); then
-    local string=$*
-    if [[ -z "$string" ]]; then
-      echo -en '""'
-    elif [[ "$string" = *"'"* ]]; then
-      echo -en \""$(echo -en "$string" | sed -E 's/(["$])/\\\1/g')\""
-    elif [[ "$string" =~ \ |\(|\)|\[|\]|\$|\<|\>|$'\n' ]]; then
-      echo -en "'$string'"
-    else
-      echo -en "$string"
-    fi
-  fi
-}
-
-# TODO: make this work with xargs
-# TODO: Test
-function echodo(){
-  ( printf "%s" "$C_GREY"; quote_array "$@"; printf "%s" "$C_RESET" )>&2
   "$@"
 }
 

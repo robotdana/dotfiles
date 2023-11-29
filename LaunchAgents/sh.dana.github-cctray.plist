@@ -8,14 +8,12 @@
        <string>$PATH</string>
        <key>BUNDLE_GEMFILE</key>
        <string>$HOME/.dotfiles/github-cctray/Gemfile</string>
-       <key>RBENV_VERSION</key>
-       <string>3.2.2</string>
    </dict>
    <key>Label</key>
    <string>sh.dana.github-cctray</string>
    <key>ProgramArguments</key>
    <array>
-     <string>/usr/local/bin/rbenv</string>
+     <string>/usr/local/bin/chruby</string>
      <string>exec</string>
      <string>bundle</string>
      <string>exec</string>

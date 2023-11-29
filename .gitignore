@@ -17,3 +17,4 @@
 .last_successful_test
 Brewfile.lock.json
 /.vscode/settings.json
+/.rspec_status

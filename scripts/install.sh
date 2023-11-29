@@ -19,6 +19,7 @@ echodo ln -sf ~/.dotfiles/ssh_config ~/.ssh/config
 echodo mkdir -p ~/.bundle
 echodo ln -sf ~/.dotfiles/bundle_config ~/.bundle/config
 echodo ln -sf ~/.dotfiles/mycnf ~/.my.cnf
+echodo ln -sf ~/.ruby-version ~/.ruby-version
 echodo mkdir -p ~/.dotfiles/locals
 echodo touch ~/.dotfiles/locals/secrets
 

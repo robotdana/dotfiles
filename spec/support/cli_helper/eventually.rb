@@ -5,12 +5,16 @@ require 'timeout'
 module CLIHelper
   module Eventually
     class << self
-      def equal?(value, wait: CLIHelper.default_max_wait_time)
-        loop_within(wait) do
-          output = yield
-          return true if output == value
+      def satisfy(wait: CLIHelper.default_max_wait_time)
+        Timeout.timeout(wait) do
+          loop_within(wait) do
+            Timeout.timeout(wait) do
+              return true if yield
+            end
+          end
+
+          false
         end
-        false
       end
 
       private

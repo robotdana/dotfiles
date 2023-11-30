@@ -66,3 +66,41 @@
 	cmd = code -wn --disable-extensions --merge $REMOTE $LOCAL $BASE $MERGED
 [difftool "vscode"]
 	cmd = code --wait -n --disable-extensions --diff $LOCAL $REMOTE
+
+[advice]
+    # ambiguousFetchRefspec = false # Advice shown when a fetch refspec for multiple remotes maps to the same remote-tracking branch namespace and causes branch tracking set-up to fail.
+    # fetchShowForcedUpdates = false # Advice shown when git-fetch[1] takes a long time to calculate forced updates after ref updates, or to warn that the check is disabled.
+    # pushUpdateRejected = false # Set this variable to false if you want to disable pushNonFFCurrent, pushNonFFMatching, pushAlreadyExists, pushFetchFirst, pushNeedsForce, and pushRefNeedsUpdate simultaneously.
+    # pushNonFFCurrent = false # Advice shown when git-push[1] fails due to a non-fast-forward update to the current branch.
+    # pushNonFFMatching = false # Advice shown when you ran git-push[1] and pushed matching refs explicitly (i.e. you used :, or specified a refspec that isn’t your current branch) and it resulted in a non-fast-forward error.
+    # pushAlreadyExists = false # Shown when git-push[1] rejects an update that does not qualify for fast-forwarding (e.g., a tag.)
+    # pushFetchFirst = false # Shown when git-push[1] rejects an update that tries to overwrite a remote ref that points at an object we do not have.
+    # pushNeedsForce = false # Shown when git-push[1] rejects an update that tries to overwrite a remote ref that points at an object that is not a commit-ish, or make the remote ref point at an object that is not a commit-ish.
+    # pushUnqualifiedRefname = false # Shown when git-push[1] gives up trying to guess based on the source and destination refs what remote ref namespace the source belongs in, but where we can still suggest that the user push to either refs/heads/* or refs/tags/* based on the type of the source object.
+    # pushRefNeedsUpdate = false # Shown when git-push[1] rejects a forced update of a branch when its remote-tracking ref has updates that we do not have locally.
+    # skippedCherryPicks = false # Shown when git-rebase[1] skips a commit that has already been cherry-picked onto the upstream branch.
+    # statusAheadBehind = false # Shown when git-status[1] computes the ahead/behind counts for a local ref compared to its remote tracking ref, and that calculation takes longer than expected. Will not appear if status.aheadBehind is false or the option --no-ahead-behind is given.
+    statusHints = false # Show directions on how to proceed from the current state in the output of git-status[1], in the template shown when writing commit messages in git-commit[1], and in the help message shown by git-switch[1] or git-checkout[1] when switching branches.
+    # statusUoption = false # Advise to consider using the -u option to git-status[1] when the command takes more than 2 seconds to enumerate untracked files.
+    # commitBeforeMerge = false # Advice shown when git-merge[1] refuses to merge to avoid overwriting local changes.
+    # resetNoRefresh = false # Advice to consider using the --no-refresh option to git-reset[1] when the command takes more than 2 seconds to refresh the index after reset.
+    # resolveConflict = false # Advice shown by various commands when conflicts prevent the operation from being performed.
+    # sequencerInUse = false # Advice shown when a sequencer command is already in progress.
+    # implicitIdentity = false # Advice on how to set your identity configuration when your information is guessed from the system username and domain name.
+    detachedHead = false # Advice shown when you used git-switch[1] or git-checkout[1] to move to the detached HEAD state, to instruct how to create a local branch after the fact.
+    # suggestDetachingHead = false # Advice shown when git-switch[1] refuses to detach HEAD without the explicit --detach option.
+    # checkoutAmbiguousRemoteBranchName = false # Advice shown when the argument to git-checkout[1] and git-switch[1] ambiguously resolves to a remote tracking branch on more than one remote in situations where an unambiguous argument would have otherwise caused a remote-tracking branch to be checked out. See the checkout.defaultRemote configuration variable for how to set a given remote to be used by default in some situations where this advice would be printed.
+    # amWorkDir = false # Advice that shows the location of the patch file when git-am[1] fails to apply it.
+    # rmHints = false # In case of failure in the output of git-rm[1], show directions on how to proceed from the current state.
+    # addEmbeddedRepo = false # Advice on what to do when you’ve accidentally added one git repo inside of another.
+    # ignoredHook = false # Advice shown if a hook is ignored because the hook is not set as executable.
+    # waitingForEditor = false # Print a message to the terminal whenever Git is waiting for editor input from the user.
+    # nestedTag = false # Advice shown if a user attempts to recursively tag a tag object.
+    # submoduleAlternateErrorStrategyDie = false # Advice shown when a submodule.alternateErrorStrategy option configured to "die" causes a fatal error.
+    # submodulesNotUpdated = false # Advice shown when a user runs a submodule command that fails because git submodule update --init was not run.
+    # addIgnoredFile = false # Advice shown if a user attempts to add an ignored file to the index.
+    # addEmptyPathspec = false # Advice shown if a user runs the add command without providing the pathspec parameter.
+    # updateSparsePath = false # Advice shown when either git-add[1] or git-rm[1] is asked to update index entries outside the current sparse checkout.
+    # diverging = false # Advice shown when a fast-forward is not possible.
+    # worktreeAddOrphan = false # Advice shown when a user tries to create a worktree from an invalid reference, to instruct how to create a new orphan branch instead.
+

@@ -32,20 +32,24 @@ module CLIHelper
     def readlines
       string.each_line.to_a
     end
+
+    def clear
+      string.truncate(0)
+    end
   end
 
   module IOStringMethods
-    def string
+    def string(wait: CLIHelper.default_max_wait_time)
       @string ||= ''
-      @string += read_nonblock(4096)
-    rescue IO::WaitReadable
-      (readable? && retry) || @string
-    rescue Errno::EIO, IOError
+      Eventually.satisfy(wait: wait) do
+        @string += read_nonblock(4096)
+        true
+      rescue IO::WaitReadable
+        true unless readable? && retry
+      rescue Errno::EIO, IOError
+        true
+      end
       @string
-    end
-
-    def ==(other)
-      Eventually.equal?(other) { to_s }
     end
 
     def readable?
@@ -53,8 +57,13 @@ module CLIHelper
     end
 
     def empty?
-      sleep 0.1
+      sleep 0.5
       string.empty?
+    end
+
+    def clear
+      sleep 0.5
+      string.replace('')
     end
   end
 end

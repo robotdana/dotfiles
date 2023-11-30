@@ -6,6 +6,77 @@ require_relative 'pty_status'
 require_relative 'io_string_methods'
 
 module CLIHelper
+  class Output
+    def initialize(parent = nil)
+      @parent = parent
+    end
+
+    attr_accessor :status
+
+    def close
+      @stdout_reader&.close
+      @stdout_writer&.close
+      @stderr_reader&.close
+      @stderr_writer&.close
+      @stdin_writer&.close
+      @stdin_reader&.close
+    end
+
+    def pop
+      @parent
+    end
+
+    def stderr_reader
+      @stderr_reader || define_stderr && stderr_reader
+    end
+
+    def stderr_writer
+      @stderr_writer || define_stderr && stderr_writer
+    end
+
+    def stdout_reader
+      @stdout_reader || define_stdout && stdout_reader
+    end
+
+    def stdout_writer
+      @stdout_writer || define_stdout && stdout_writer
+    end
+
+    def stdin_reader
+      @stdin_reader || define_stdin && stdin_reader
+    end
+
+    def stdin_writer
+      @stdin_writer || define_stdin && stdin_writer
+    end
+
+    private
+
+    def define_stderr
+      return if defined?(@stderr_reader) && defined?(@stderr_writer)
+
+      @stderr_reader, @stderr_writer = IO.pipe
+      @stderr_reader.extend(StringIOStringMethods)
+      @stderr_reader.extend(IOStringMethods)
+    end
+
+    def define_stdin
+      return if defined?(@stdin_reader) && defined?(@stdin_writer)
+
+      @stdin_reader, @stdin_writer = IO.pipe
+      @stdin_reader.extend(StringIOStringMethods)
+      @stdin_reader.extend(IOStringMethods)
+    end
+
+    def define_stdout
+      return if defined?(@stdout_reader) && defined?(@stdout_writer)
+
+      @stdout_reader, @stdout_writer = IO.pipe
+      @stdout_reader.extend(StringIOStringMethods)
+      @stdout_reader.extend(IOStringMethods)
+    end
+  end
+
   class << self
     attr_accessor :default_max_wait_time
   end
@@ -17,54 +88,46 @@ module CLIHelper
       run("rake", "-f", "#{__dir__}/../../Rakefile", *task, &block)
     end
 
-    # def insert_pre_pty(cmd)
-      # cmd, args = cmd.split(' ', 2)
-      # "#{cmd} -r./spec/support/pre_pty.rb #{args}"
-    # end
-
-    def define_stderr
-      return if defined?(@stderr) && defined?(@stderr_writer)
-
-      @stderr, @stderr_writer = IO.pipe
-      @stderr.extend(StringIOStringMethods)
-      @stderr.extend(IOStringMethods)
-    end
-
-    def stderr
-      @stderr || define_stderr && stderr
-    end
-
-    def stderr_writer
-      @stderr_writer || define_stderr && stderr_writer
-    end
-
-    def define_stdout
-      return if defined?(@stdout) && defined?(@stdout_writer)
-
-      @stdout, @stdout_writer = IO.pipe
-      @stdout.extend(StringIOStringMethods)
-      @stdout.extend(IOStringMethods)
+    def output
+      if !block_given?
+        @output ||= Output.new
+      else
+        begin
+          @output = Output.new(output)
+          yield
+        ensure
+          @output.close
+          @output = @output.pop
+        end
+      end
     end
 
     def stdout
-      @stdout || define_stdout && stdout
+      output.stdout_reader
     end
 
-    def stdout_writer
-      @stdout_writer || define_stdout && stdout_writer
+    def stderr
+      output.stderr_reader
     end
 
-    attr_reader :status
+    def stdin
+      output.stdin_writer
+    end
 
-    def run(cmd, *cmd_args, env: {}, wait: CLIHelper.default_max_wait_time, **spawn_kwargs, &block) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    def status
+      output.status
+    end
+
+    def run(cmd, *cmd_args, env: {}, expect_exit: 0, wait: CLIHelper.default_max_wait_time, **spawn_kwargs, &block) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       Timeout.timeout(wait) { true while running? }
 
       env = self.env.merge(env.transform_keys(&:to_s))
 
       spawn_args = [env, cmd, *cmd_args]
       spawn_kwargs = {
-        err: stderr_writer.fileno,
-        out: stdout_writer.fileno,
+        err: output.stderr_writer.fileno,
+        out: output.stdout_writer.fileno,
+        in: output.stdin_reader,
         chdir: Dir.pwd,
         unsetenv_others: true,
         **spawn_kwargs
@@ -72,32 +135,22 @@ module CLIHelper
 
       if block_given?
         begin
-          PTY.spawn(*spawn_args, **spawn_kwargs) do |_, stdin, pid|
-            @status = PTYStatus.new(pid)
-            @stdin&.close # close existing
-            @stdin = stdin
+          Process.spawn(*spawn_args, **spawn_kwargs) do |_, _, pid|
+            output.status = PTYStatus.new(pid)
 
             block.call(stdin)
           end
-        ensure
-          @stdin&.puts('exit')
-          begin
-            @status
-          ensure
-            @stdin&.close
-            @stdin = nil
-          end
         end
-        @status
       else
-        @stdin&.close
-        _, @stdin, pid = PTY.spawn(*spawn_args, **spawn_kwargs)
-        @status = PTYStatus.new(pid)
+        _, _, pid = Process.spawn(*spawn_args, **spawn_kwargs)
+        output.status = PTYStatus.new(pid)
       end
+      expect(status).to eq(expect_exit) if expect_exit
+      status
     end
 
     def running?
-      @status&.running?
+      status&.running?
     end
 
     def self.write_env_to_pty(env = {}, stdin)
@@ -115,11 +168,7 @@ module CLIHelper
     end
 
     def pty_output_cleanup
-      @stdin&.close
-      @stdout&.close
-      @stdout_writer&.close
-      @stderr&.close
-      @stderr_writer&.close
+      @output&.close
     end
   end
 end

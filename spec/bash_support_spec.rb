@@ -11,22 +11,19 @@ C_LIGHT_PINK = "\033[38;5;205m"
 RSpec.describe 'bash_support', :aggregate_failures do
   it 'returns current ruby version' do
     within_temp_dir do
-      create_file ::File.read(::File.expand_path('~/.dotfiles/.ruby-version')), path: '.ruby-version'
+      copy_file '.ruby-version'
       run 'ruby', '-v'
-
       expect(stdout).to have_output "ruby 3.2.2 (2023-03-30 revision e51014f9c0) [x86_64-darwin22]\n"
       expect(stderr).to be_empty
-      expect(status).to eq 0
     end
   end
 
   describe 'echoerr' do
     it 'returns red text for echoerr' do
-      run 'echoerr', 'No'
+      run 'echoerr', 'No', expect_exit: 1
 
       expect(stderr).to have_output "#{C_RED}No#{C_RESET}\n"
       expect(stdout).to be_empty
-      expect(status).to eq 1
     end
   end
 

@@ -6,7 +6,9 @@ require 'fileutils'
 require 'delegate'
 
 module CLIHelper
-  class WithinTempDir < SimpleDelegator; end
+  module WithinTempDir; end
+  class WithinTempDirDelegator < SimpleDelegator; end
+
 
   module WithinTempDirHelper
     module ClassMethods
@@ -28,7 +30,9 @@ module CLIHelper
       if block_given?
         begin
           Dir.chdir(dir) do
-            WithinTempDir.new(self).instance_eval(&block)
+            delegator = Class.new(SimpleDelegator)
+            delegator.include(WithinTempDir)
+            delegator.new(self).instance_eval(&block)
           end
         ensure
           ::FileUtils.remove_dir(dir.to_s, true) if dir && !keep
@@ -46,7 +50,7 @@ module CLIHelper
   module WhenWithinTempDirHelper
     # already within temp dir
     def within_temp_dir
-      yield
+      yield if block_given?
     end
   end
 end

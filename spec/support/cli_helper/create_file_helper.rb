@@ -5,7 +5,7 @@ require 'pathname'
 module CLIHelper
   module CreateFileHelper
     def create_file(*lines, path:)
-      path = Pathname.pwd.join(path)
+      path = self.path(path)
       path.parent.mkpath
 
       if lines.empty?
@@ -21,9 +21,14 @@ module CLIHelper
       path
     end
 
+    def path(relative_path)
+      Pathname.pwd.join(relative_path)
+    end
+    alias_method :file, :path
+
     def copy_file(*relative_paths)
       relative_paths.each do |relative_path|
-        dest = ::Pathname.pwd.join(relative_path)
+        dest = path(relative_path)
         dest.parent.mkpath
         ::FileUtils.cp_r(
           ::File.expand_path(relative_path, "#{__dir__}/../../.."),
@@ -33,7 +38,7 @@ module CLIHelper
     end
 
     def create_dir(path, &block)
-      Pathname.pwd.join(path).mkpath
+      self.path(path).mkpath
       return path unless block_given?
 
       Dir.chdir(&block)
@@ -41,10 +46,10 @@ module CLIHelper
 
     def create_symlink(hash)
       hash.each do |link, target|
-        link_path = Pathname.pwd.join(link)
+        link_path = path(link)
         link_path.parent.mkpath
 
-        FileUtils.ln_s(Pathname.pwd.join(target), link_path.to_s)
+        FileUtils.ln_s(path(target), link_path.to_s)
       end
     end
 

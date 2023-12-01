@@ -216,7 +216,7 @@ function git_open_conflicts() {
 }
 
 function git_automain {
-  current_branch="$(git_current_branch)"
+  current_branch="$(git_branch_name)"
   git checkout "$(git_main_branch)"
   "$@"
   git checkout $current_branch
@@ -274,7 +274,7 @@ function git_purge_only_tracking() {
 
 
 function git_non_release_branch() {
-  if (git_current_branch | grep -qEx $(git_release_branch_match)); then
+  if (git_branch_name | grep -qEx $(git_release_branch_match)); then
     echoerr "can't do that on a release branch"
     exit 1
   fi
@@ -284,8 +284,8 @@ function git_no_tracking {
   comm -23 <( git_non_release_branch_list ) <( git_non_release_branch_list -r  | sed 's/origin\///')
 }
 
-# `git_current_branch [optional_prefix]` the current branch name possibly with a prefix
-function git_current_branch() {
+# `git_branch_name [optional_prefix]` the current branch name possibly with a prefix
+function git_branch_name() {
   git_branch_name HEAD
 }
 
@@ -428,7 +428,7 @@ function git_log_range() {
   local from="$(git_branch_name "$1")"
   local to="$(git_branch_name ${2:-HEAD})"
   local prefix="$3"
-  [[ "$from" != "$(git_current_branch)" ]] && echo "$prefix$from".."$prefix$to"
+  [[ "$from" != "$(git_branch_name)" ]] && echo "$prefix$from".."$prefix$to"
 }
 
 function git_branch_list() {
@@ -436,8 +436,8 @@ function git_branch_list() {
 }
 
 function git_branch_rm {
-  local branch=${1:-$(git_current_branch)}
-  if [[ "$1" == "$(git_current_branch)" ]]; then
+  local branch=${1:-$(git_branch_name)}
+  if [[ "$1" == "$(git_branch_name)" ]]; then
     git_stash
     echodo git checkout "$(git_main_branch)"
   fi
@@ -536,14 +536,6 @@ function git_unstaged_binary_files() {
   git diff --numstat | grep -q '\-\t-'
 }
 
-function git_head_pushed() {
-  if [[ "$(git rev-parse origin/$(git_current_branch) 2>/dev/null)" == "$(git rev-parse HEAD 2>/dev/null)" ]]; then
-    true
-  else
-    false
-  fi
-}
-
 function git_changed_files_after_merge() {
   git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD
 }
@@ -610,14 +602,14 @@ function git_pr () {
   local remote=${1:-origin}
   local git_url="$(git remote get-url $remote)"
   if [[ "$git_url" = *github* ]]; then
-    echodo open "$(github_path)/compare/$(git_current_branch)?expand=1"
+    echodo open "$(github_path)/compare/$(git_branch_name)?expand=1"
   elif [[ "$git_url" = *bitbucket* ]]; then
-    echodo open "$(bitbucket_path)/pull-requests/new?source=$(git_current_branch)"
+    echodo open "$(bitbucket_path)/pull-requests/new?source=$(git_branch_name)"
   fi
 }
 
 function github_actions_url () {
-  echo $(github_path)/actions?query=branch:$(git_current_branch)
+  echo $(github_path)/actions?query=branch:$(git_branch_name)
 }
 
 function git_ci () {
@@ -639,7 +631,7 @@ function git_branch_fork_point () {
 }
 
 function github_file {
-  open "$(github_path)/tree/$(git_current_branch)/$1"
+  open "$(github_path)/tree/$(git_branch_name)/$1"
 }
 
 function github_file_main {

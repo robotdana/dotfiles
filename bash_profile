@@ -55,6 +55,9 @@ fi
 
 . ~/.dotfiles/function/prompt_version
 . ~/.dotfiles/function/prompt_last_command_style
+. ~/.dotfiles/functions/echo_color
+. ~/.dotfiles/function/git_status_clean
+. ~/.dotfiles/function/git_head_pushed
 
 export PS2="\[$C_PINK\]» \[$C_RESET\]"
 export PS1="\[\$(prompt_last_command_style)\]\[$C_PINK\]\w\[$C_LIGHT_PINK\]\$(prompt_version)\[\$(prompt_git_color)\]\$(prompt_git)$PS2"

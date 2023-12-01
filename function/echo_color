@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+unset -f "${BASH_SOURCE##*/}"
+
+C_RED=$'\033[38;5;125m'
+C_GREEN=$'\033[38;5;48m'
+C_YELLOW=$'\033[38;5;227m'
+C_BLUE=$'\033[1;34m'
+C_AQUA=$'\033[1;36m'
+C_GREY=$'\033[0;90m'
+C_PINK=$'\033[38;5;199m'
+C_RESET=$'\033[0m'
+C_LIGHT_PINK=$'\033[38;5;205m'
+
+function echo_color() {
+  local name=C_$1
+  (( $# > 1 )) && local suffix=$'\n'$'\033[0m'
+  echo -n ${!name}"${@:2}"$suffix
+}
+
+eval "$(cat ~/.dotfiles/function_boilerplate)"
+

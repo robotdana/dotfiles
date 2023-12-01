@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 unset -f "${BASH_SOURCE##*/}"
 
 function echodo {

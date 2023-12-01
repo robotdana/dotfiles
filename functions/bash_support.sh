@@ -147,41 +147,6 @@ function check_untested_bash_profile {
   fi
 }
 
-function prompt_git_color {
-  if git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null; then
-    if git_status_clean; then
-      if git_head_pushed; then
-        echo -ne "$C_AQUA"
-      else
-        echo -ne "$C_GREEN"
-      fi
-    else
-      echo -ne "$C_YELLOW"
-    fi
-  else
-    echo -ne "$C_WHITE"
-  fi
-}
-
-function prompt_git {
-  if [[ -e .git ]]; then
-    local ref
-    local color
-
-    ref=$(git_current_branch 2>/dev/null)
-    if [[ $ref == 'HEAD' ]]; then
-      ref=$(git branch --format='%(refname:short)' --sort=-committerdate --contains HEAD 2>/dev/null | head -n 1)
-      local subref="$(git rev-parse --short HEAD 2>/dev/null)"
-
-      if [[ ! -z $subref ]]; then
-        ref="$ref[$subref]"
-      fi
-    fi
-
-    echo -ne ":$ref"
-  fi
-}
-
 alias default_latest_ruby="ls ~/.rubies | grep ruby- | sort -t- -k2,2 -n | tail -1 | cut -d '/' -f 1 > ~/.ruby-version"
 
 function clear_all {

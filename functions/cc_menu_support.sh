@@ -1,7 +1,7 @@
 # echo "required cc_menu_support"
 
 function cc_menu_item_server_urls {
-  local branch="${1:-"$(git_current_branch)"}"
+  local branch="${1:-"$(git_branch_name)"}"
 
   if [[ -f .travis.yml ]]; then
     cc_menu_travis_url "$branch"
@@ -14,7 +14,7 @@ function cc_menu_item_server_urls {
 
 function cc_menu_travis_url {
   local repo=$(git_current_repo_with_org)
-  local branch="${1:-"$(git_current_branch)"}"
+  local branch="${1:-"$(git_branch_name)"}"
 
   echo "https://api.travis-ci.com/repos/$repo/cc.xml?branch=$branch"
 }
@@ -25,7 +25,7 @@ function cc_menu_github_actions_urls {
     return false
   else
     local repo=$(git_current_repo_with_org)
-    local branch="${1:-"$(git_current_branch)"}"
+    local branch="${1:-"$(git_branch_name)"}"
 
     while IFS= read -r workflow; do
       echo "http://localhost:45454/$repo/$workflow?branch=$branch&token=$GITHUB_ACTIONS_TOKEN"
@@ -34,7 +34,7 @@ function cc_menu_github_actions_urls {
 }
 
 function cc_menu_buildkite_url {
-  local branch=${1:-"$(git_current_branch)"}
+  local branch=${1:-"$(git_branch_name)"}
   local access_token=${2:-"$(buildkite_access_token)"}
   if [[ ! -z "$access_token" ]]; then
     access_token="&access_token=$access_token"
@@ -44,7 +44,7 @@ function cc_menu_buildkite_url {
 }
 
 function cc_menu_add {
-  local branch="${1:-"$(git_current_branch)"}"
+  local branch="${1:-"$(git_branch_name)"}"
 
   if [[ ! -z "$(cc_menu_item_server_urls $branch)" ]]; then
     if ! cc_menu_present "$branch"; then
@@ -56,7 +56,7 @@ function cc_menu_add {
 }
 
 function cc_menu_remove {
-  local branch="${1:-"$(git_current_branch)"}"
+  local branch="${1:-"$(git_branch_name)"}"
 
   if cc_menu_present "$branch"; then
     cc_menu_stop
@@ -70,13 +70,13 @@ function cc_menu_remove_purged {
 }
 
 function cc_menu_project_name {
-  local branch="${1:-"$(git_current_branch)"}"
+  local branch="${1:-"$(git_branch_name)"}"
 
   curl "$(cc_menu_item_server_urls "$branch" | head -n 1)" 2>/dev/null | xmllint --xpath "string(//Projects/Project/@name)" -
 }
 
 function cc_menu_project_url {
-  local branch="${1:-"$(git_current_branch)"}"
+  local branch="${1:-"$(git_branch_name)"}"
 
   curl "$(cc_menu_item_server_urls "$branch" | head -n 1)" 2>/dev/null | xmllint --xpath "string(//Projects/Project/@webUrl)" -
 }
@@ -88,7 +88,7 @@ function cc_menu_github_actions_server_restart {
 
 function cc_menu_add_item {
   local repo="$(git_current_repo)"
-  local branch="${1:-"$(git_current_branch)"}"
+  local branch="${1:-"$(git_branch_name)"}"
   local project_name=$(cc_menu_project_name "$branch")
 
   while IFS= read -r server_url; do
@@ -105,7 +105,7 @@ function cc_menu_add_item {
 
 function cc_menu_remove_item {
   local repo="$(git_current_repo)"
-  local branch="${1:-"$(git_current_branch)"}"
+  local branch="${1:-"$(git_branch_name)"}"
 
   defaults write net.sourceforge.cruisecontrol.CCMenu Projects "$(ruby --disable-all -e 'puts ARGF.read.sub(/
     \{\n
@@ -117,7 +117,7 @@ function cc_menu_remove_item {
 }
 
 function cc_menu_present {
-  local branch="${1:-"$(git_current_branch)"}"
+  local branch="${1:-"$(git_branch_name)"}"
   defaults read net.sourceforge.cruisecontrol.CCMenu Projects | grep -qF "displayName = \"$(git_current_repo) : $branch\";"
 }
 

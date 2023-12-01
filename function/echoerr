@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
+unset -f "${BASH_SOURCE##*/}"
+
 function echoerr {
-  echo -e \033[31m"$*" >&2
+  echo_color RED "$@" >&2
   return 1
 }
+
+eval "$(cat ~/.dotfiles/function_boilerplate)"

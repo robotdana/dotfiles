@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+unset -f "${BASH_SOURCE##*/}"
+
+function prompt_git {
+  if [[ -e .git ]]; then
+    local ref
+
+    ref=$(git_branch_name 2>/dev/null)
+    if [[ $ref == 'HEAD' ]]; then
+      ref=$(git branch --format='%(refname:short)' --sort=-committerdate --contains HEAD 2>/dev/null | head -n 1)
+      local subref="$(git rev-parse --short HEAD 2>/dev/null)"
+
+      if [[ ! -z $subref ]]; then
+        ref="$ref[$subref]"
+      fi
+    fi
+
+    echo -ne ":$ref"
+  fi
+}
+
+eval "$(cat ~/.dotfiles/function_boilerplate)"
+

@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 unset -f "${BASH_SOURCE##*/}"
 
-function git_status_clean {
-  [[ -z "$(git status --porcelain 2>/dev/null)" ]]
+function git_branch_name {
+  git rev-parse --symbolic-full-name --abbrev-ref ${1:-HEAD} 2>/dev/null
 }
 
 eval "$(cat ~/.dotfiles/function_boilerplate)"
-

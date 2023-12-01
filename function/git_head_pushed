@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+unset -f "${BASH_SOURCE##*/}"
+
+function git_head_pushed() {
+  [[ "$(git rev-parse @{u} 2>/dev/null)" == "$(git rev-parse HEAD 2>/dev/null)" ]]
+}
+
+eval "$(cat ~/.dotfiles/function_boilerplate)"
+

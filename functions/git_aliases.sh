@@ -159,9 +159,9 @@ function grmpf(){
 # push the current branch to <remote> or origin
 function gp(){
   local remote=${1:-origin}
-  local branch=$(git_current_branch)
+  local branch=$(git_branch_name)
   local options=${@:2}
-  if [[ "$branch" == "$(git_current_branch)" && "$remote" == "origin" ]]; then
+  if [[ "$branch" == "$(git_branch_name)" && "$remote" == "origin" ]]; then
     local set_upstream="--set-upstream"
   fi
   echodo git push $options $set_upstream "$remote" "$branch"
@@ -191,7 +191,7 @@ function gpfr() {
 # pull <branch> or the current branch from <remote> or origin
 function gl(){
   local remote=${1:-origin}
-  local branch=${2:-$(git_current_branch)}
+  local branch=${2:-$(git_branch_name)}
   echodo git pull --no-edit "$remote" "$branch"
 }
 
@@ -199,7 +199,7 @@ function gl(){
 # force pull <branch> or the current branch from <remote> or origin
 function glf() {
   local remote=${1:-origin}
-  local branch=${2:-$(git_current_branch)}
+  local branch=${2:-$(git_branch_name)}
   echodo git fetch "$remote" "$branch" && echodo git reset --hard "$remote"/"$branch"
 }
 
@@ -326,5 +326,5 @@ function gdm {
   gd "$(git_main_branch)"
 }
 function gdpf {
-  gd origin/$(git_current_branch)..HEAD
+  gd origin/$(git_branch_name)..HEAD
 }

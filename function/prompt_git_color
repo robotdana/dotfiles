@@ -1,19 +1,20 @@
 #!/usr/bin/env bash
+
 unset -f "${BASH_SOURCE##*/}"
 
 function prompt_git_color() {
-  if git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null; then
+  if [[ -e .git ]]; then
     if git_status_clean; then
       if git_head_pushed; then
-        echo -ne "$C_AQUA"
+        echo_color AQUA
       else
-        echo -ne "$C_GREEN"
+        echo_color GREEN
       fi
     else
-      echo -ne "$C_YELLOW"
+      echo_color YELLOW
     fi
   else
-    echo -ne "$C_WHITE"
+    echo_color RESET
   fi
 }
 

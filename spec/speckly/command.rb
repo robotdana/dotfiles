@@ -3,21 +3,22 @@ require 'timeout'
 
 module Speckly
   class Command
-    def initialize(command, *args, chdir: ::Dir.pwd, env: {}, debug: false, **kwargs)
+    def initialize(command, *args, merge_output: false, chdir: ::Dir.pwd, env: {}, **kwargs)
       @command = [*Speckly.default_command_prefix, command, *args]
-      @env = Speckly.default_env.merge(env.transform_keys(&:to_s)).freeze
-      @stdin = ::Speckly::IO.pipe(:stdin, self)
-      @stdout = ::Speckly::IO.pipe(:stdout, self)
-      @stderr = ::Speckly::IO.pipe(:stderr, self)
+      @env = ::Speckly.default_env.merge(env.transform_keys(&:to_s)).freeze
+      @merge_output = merge_output
+      @stdin = ::Speckly::IO.pipe
+      @stdout = ::Speckly::IO.pipe
+      @stderr = merge_output ? @stdout : ::Speckly::IO.pipe
       _, _, @pid = ::PTY.spawn(
         @env,
         *Speckly.default_command_prefix,
         command,
         *args,
         unsetenv_others: true,
-        in: (debug ? $stdin : @stdin.reader.fileno),
-        out: (debug ? $stdout : @stdout.writer.fileno),
-        err: (debug ? $stderr : @stderr.writer.fileno),
+        in: @stdin.reader.fileno,
+        out: @stdout.writer.fileno,
+        err: @stderr.writer.fileno,
         chdir: chdir,
         **kwargs)
     end
@@ -25,6 +26,14 @@ module Speckly
     attr_reader :pid
     attr_reader :env
     attr_reader :command
+
+    def merged?
+      @merge_output
+    end
+
+    def output
+      merged? ? @stdout.reader : ConcatIO.new([@stdout.reader, @stderr.reader])
+    end
 
     def stdin
       @stdin.writer

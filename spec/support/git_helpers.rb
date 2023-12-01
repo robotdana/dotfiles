@@ -16,24 +16,11 @@ module CLIHelper
   end
 
   def expect_clean_git_status
-    result = git("status --long")
-    expect(result.stdout).to have_output("On branch main\nnothing to commit, working tree clean\n")
-    expect(result.stderr).to_not have_output
+    expect(git("status --long")).to have_output("On branch main\nnothing to commit, working tree clean\n")
   end
 
-  def expect_empty_git_stash
-    result = git("stash list")
-    expect(result.stdout).to_not have_output
-    expect(result.stderr).to_not have_output
-  end
-
-  def expect_git_log(*log)
-    result = git('log --format=%s')
-    require 'pry'
-    binding.pry
-
-    expect(result.stdout).to have_output("#{log.join("\n")}\n")
-    expect(result.stderr).to_not have_output
+  def git_log
+    git('log --format=%s')
   end
 end
 

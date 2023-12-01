@@ -20,11 +20,11 @@ module Speckly
 
     failure_message do
       if expected == NO_ARG
-        "expected run #{Shellwords.join(actual.command).inspect} to have an exitstatus"
+        "expected run #{Shellwords.join(actual.command).inspect} to have an exitstatus\noutput:\n#{actual.output}\n"
       elsif actual.exitstatus.nil?
-        "expected run #{Shellwords.join(actual.command).inspect} to have exitstatus=#{expected}, has no exitstatus"
+        "expected run #{Shellwords.join(actual.command).inspect} to have exitstatus=#{expected}, has no exitstatus\noutput:\n#{actual.output}\n"
       else
-        "expected run #{Shellwords.join(actual.command).inspect} to have exitstatus=#{expected}, has exitstatus=#{actual.exitstatus}"
+        "expected run #{Shellwords.join(actual.command).inspect} to have exitstatus=#{expected}, has exitstatus=#{actual.exitstatus}\noutput:\n#{actual.output}\n"
       end
     end
 

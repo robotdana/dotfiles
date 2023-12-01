@@ -20,12 +20,13 @@ require 'bundler/setup'
 
 require 'simplecov' if ENV['COVERAGE']
 
+require_relative 'speckly/rspec'
+Speckly.default_max_wait_time = 10
+Speckly.default_command_prefix = ["bash", "-lc"]
+
 Dir.glob(::File.expand_path('support/**/*.rb', __dir__)).each do |file|
   require file
 end
-require_relative 'support/speckly/rspec'
-Speckly.default_max_wait_time = 10
-Speckly.default_command_prefix = ["bash", "-lc"]
 
 RSpec.configure do |config|
   config.expect_with :rspec do |c|

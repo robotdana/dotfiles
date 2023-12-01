@@ -3,17 +3,15 @@ require 'delegate'
 module Speckly
   class IO
     class Pipe
-      def initialize(name, command)
+      def initialize
         reader, writer = ::IO.pipe(Encoding::BINARY, Encoding::BINARY, binmode: true)
         reader.set_encoding(Encoding::BINARY)
         writer.set_encoding(Encoding::BINARY)
-        @name = name
-        @command = command
-        @reader = ::Speckly::IO.new(reader, name, command)
-        @writer = ::Speckly::IO.new(writer, name, command)
+        @reader = ::Speckly::IO.new(reader)
+        @writer = ::Speckly::IO.new(writer)
       end
 
-      attr_reader :reader, :writer, :name, :command
+      attr_reader :reader, :writer
 
       def close
         @reader.close
@@ -22,16 +20,12 @@ module Speckly
       end
     end
 
-    def self.pipe(name, command)
-      Pipe.new(name, command)
+    def self.pipe
+      Pipe.new
     end
 
-    attr_reader :name, :command
-
-    def initialize(io, name, command)
+    def initialize(io)
       @io = io
-      @name = name
-      @command = command
     end
 
     def to_s(wait: Speckly.default_max_wait_time)

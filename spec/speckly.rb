@@ -1,5 +1,6 @@
 require_relative 'speckly/api'
 require_relative 'speckly/command'
+require_relative 'speckly/concat_io'
 require_relative 'speckly/io'
 require_relative 'speckly/session'
 require_relative 'speckly/eventually'

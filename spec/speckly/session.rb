@@ -1,23 +1,6 @@
 require 'tmpdir'
 
 module Speckly
-  class ConcatIO
-    def initialize(commands, name)
-      @commands = commands
-      @name = name
-    end
-
-    def to_s
-      @commands.map(&@name).join
-    end
-
-    def stopped?
-      @commands.all?(&:stopped?)
-    end
-
-    attr_reader :name
-  end
-
   class Session
     def initialize(parent: nil)
       @parent = parent
@@ -57,12 +40,20 @@ module Speckly
       @temp_dirs.any? { |dir| path == dir || path.start_with?("#{dir}/") }
     end
 
+    def merged?
+      false
+    end
+
+    def output
+      ConcatIO.new(commands.map(&:merged))
+    end
+
     def stdout
-      ConcatIO.new(commands, :stdout)
+      ConcatIO.new(commands.map(&:stdout))
     end
 
     def stderr
-      ConcatIO.new(commands, :stderr)
+      ConcatIO.new(commands.map(&:stderr))
     end
 
     private

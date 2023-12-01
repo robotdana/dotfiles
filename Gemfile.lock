@@ -59,6 +59,7 @@ GEM
       fast_ignore (>= 0.11.0)
       jaro_winkler
       parallel (~> 1.0)
+    syntax_suggest (1.1.0)
     tty_string (1.1.1)
     unicode-display_width (2.5.0)
 
@@ -71,6 +72,7 @@ DEPENDENCIES
   rubocop
   rubocop-rspec
   spellr
+  syntax_suggest
   tty_string
 
 BUNDLED WITH

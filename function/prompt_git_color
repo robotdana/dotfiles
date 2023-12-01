@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+unset -f "${BASH_SOURCE##*/}"
+
+function prompt_git_color() {
+  if git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null; then
+    if git_status_clean; then
+      if git_head_pushed; then
+        echo -ne "$C_AQUA"
+      else
+        echo -ne "$C_GREEN"
+      fi
+    else
+      echo -ne "$C_YELLOW"
+    fi
+  else
+    echo -ne "$C_WHITE"
+  fi
+}
+
+eval "$(cat ~/.dotfiles/function_boilerplate)"
+

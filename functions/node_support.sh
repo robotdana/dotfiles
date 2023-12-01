@@ -1,4 +1,5 @@
 # echo "required nvm_support"
+eval "$(fnm env --use-on-cd)"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$(brew --prefix nvm)/nvm.sh" ] && . "$(brew --prefix nvm)/nvm.sh"  # This loads nvm

@@ -5,7 +5,7 @@ bind '"\e[B":history-search-forward'
 
 set +H
 
-export PATH="$HOME/.cargo/bin:/usr/local/opt:/usr/local/bin:/usr/local/sbin:/usr/local/lib/node:$PATH"
+export PATH="$HOME/.dotfiles/function:$HOME/.cargo/bin:/usr/local/opt:/usr/local/bin:/usr/local/sbin:/usr/local/lib/node:$PATH"
 export EDITOR='code --wait'
 export GUI_EDITOR=$EDITOR
 export THOR_MERGE=$EDITOR' -d $1 $2'
@@ -21,7 +21,7 @@ fi
 
 source ~/.dotfiles/locals/secrets.sh
 source ~/.dotfiles/functions/bash_support.sh
-source ~/.dotfiles/functions/nvm_support.sh
+source ~/.dotfiles/functions/node_support.sh
 source ~/.dotfiles/functions/git_support.sh
 source ~/.dotfiles/functions/hosts_support.sh
 source ~/.dotfiles/functions/prompt_support.sh
@@ -52,5 +52,9 @@ if [ -d /usr/local/bin ] && [[ -f /usr/local/bin/direnv ]]; then
   fi
 fi
 
+
+. ~/.dotfiles/function/prompt_version
+. ~/.dotfiles/function/prompt_last_command_style
+
 export PS2="\[$C_PINK\]» \[$C_RESET\]"
-export PS1="\[\$(last_command_style)\]\[$C_PINK\]\w\[$C_LIGHT_PINK\]\$(prompt_version)\[\$(prompt_git_color)\]\$(prompt_git)$PS2"
+export PS1="\[\$(prompt_last_command_style)\]\[$C_PINK\]\w\[$C_LIGHT_PINK\]\$(prompt_version)\[\$(prompt_git_color)\]\$(prompt_git)$PS2"

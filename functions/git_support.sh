@@ -291,12 +291,14 @@ function git_current_branch() {
 
 function git_branch_name() {
   ref=$(git rev-parse --symbolic-full-name --abbrev-ref "$1" 2>/dev/null)
-  [[ -z "$ref" ]] && echo "$1" || echo "$ref"
+  echo "${ref:-$1}"
 }
 
 function git_current_repo() {
   local remote=${1:-origin}
-  basename "$(git config --get remote.$remote.url 2>/dev/null)" .git
+  local repo="$(git config --get remote.$remote.url 2>/dev/null)"
+  local repo=${repo##*/}
+  echo ${repo%.git}
 }
 
 function git_current_repo_org {
@@ -532,14 +534,6 @@ function git_main_branch() {
 
 function git_unstaged_binary_files() {
   git diff --numstat | grep -q '\-\t-'
-}
-
-function git_status_clean() {
-  if [[ -z "$(git status --porcelain 2>/dev/null)" ]]; then
-    true
-  else
-    false
-  fi
 }
 
 function git_head_pushed() {

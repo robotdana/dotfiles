@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+unset -f "${BASH_SOURCE##*/}"
+
+function prompt_last_command_style() {
+  if (( $? == 0 )); then
+    echo -en "\033[1m"
+  else
+    echo -en "\033[2m"
+  fi
+}
+
+eval "$(cat ~/.dotfiles/function_boilerplate)"
+

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+function echoerr {
+  echo -e \033[31m"$*" >&2
+  return 1
+}

@@ -75,27 +75,32 @@ function last_command_style() {
 # do quotes manually here for aesthetics
 # everywhere actually use the output, find another way
 function echodo(){
-  local space="$C_GREY"
+  str=$'\033[0;90m'
+  space=''
   for string in "$@"; do
-    echo -en "$space" >&2
+    str="$str$space"
 
     if [[ -z "$string" ]]; then
-      echo -n "''" >&2
+      str="$str''"
     elif [[ "$string" =~ \'|\"|\ |\&|\{|\}|\(|\)|\[|\]|\$|\<|\>|\||\;|$'\n' ]]; then
       if [[ "$string" =~ \' ]]; then
-        echo -n \""${string//\"/\\\"}"\" >&2
+        str="$str"\""${string//\"/\\\"}"\"
       else
-        echo -n \'"$string"\' >&2
+        str="$str"\'"$string"\'
       fi
     else
-      echo -n "$string" >&2
+      str="$str$string"
     fi
 
     space=" "
   done
-  echo -e "$C_RESET" >&2
 
+  echo -e "$str\033[0m" >&2
   "$@"
+}
+
+function prompt_version {
+  [[ -e Gemfile ]] && echo {r${RUBY_VERSION%.*}}
 }
 
 function echoerr(){
@@ -142,29 +147,6 @@ function check_untested_bash_profile {
   fi
 }
 
-function prompt_version {
-  ruby_version="$(prompt_ruby_version | cut -d. -f1,2)"
-  node_version="$(prompt_node_version | cut -d. -f1,2)"
-  if [[ ! -z "$ruby_version" ]] && [[ ! -z "$node_version" ]]; then
-    echo -ne "{r$ruby_version,n$node_version}"
-  elif [[ ! -z "$ruby_version" ]]; then
-    echo -ne "{r$ruby_version}"
-  elif [[ ! -z "$ruby_version" ]]; then
-    echo -ne "{n$node_version}"
-  fi
-}
-
-function prompt_ruby_version {
-  if [ -f Gemfile ]; then
-    ruby --version | cut -d' ' -f 2 | cut -dp -f1
-  fi
-}
-
-function prompt_node_version {
-  if [ -f package.json ]; then
-    nvm current | colrm 1 1 | cut -d. -f1,2
-  fi
-}
 function prompt_git_color {
   if git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null; then
     if git_status_clean; then
@@ -180,8 +162,9 @@ function prompt_git_color {
     echo -ne "$C_WHITE"
   fi
 }
+
 function prompt_git {
-  if git rev-parse --is-inside-work-tree >/dev/null 2>/dev/null; then
+  if [[ -e .git ]]; then
     local ref
     local color
 

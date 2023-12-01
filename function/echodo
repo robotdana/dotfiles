@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+unset -f "${BASH_SOURCE##*/}"
+
+function echodo {
+  local str=$'\033[0;90m'
+  local space=''
+  for string in "$@"; do
+    local str="$str$space"
+
+    if [[ -z "$string" ]]; then
+      local str="$str''"
+    elif [[ "$string" =~ \'|\"|\ |\&|\{|\}|\(|\)|\[|\]|\$|\<|\>|\||\;|$'\n' ]]; then
+      if [[ "$string" =~ \' ]]; then
+        local str="$str"\""${string//\"/\\\"}"\"
+      else
+        local str="$str"\'"$string"\'
+      fi
+    else
+      local str="$str$string"
+    fi
+
+    local space=" "
+  done
+
+  echo -e "$str\033[0m" >&2
+  "$@"
+}
+
+eval "$(cat ~/.dotfiles/function_boilerplate)"

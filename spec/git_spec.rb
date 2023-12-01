@@ -135,9 +135,9 @@ RSpec.describe 'git' do
       sha_by_alias = run("git rev-parse --short HEAD^")
       expect(sha_by_alias).to have_output(/\A\h+\n\z/)
       expect(sha_by_name.output.to_s).to eq sha_by_alias.output.to_s
-      expect(run("git_reword 'to be changed'", env: { GIT_EDITOR: "sed -i.~ s/to\\ be\\ changed/was\\ changed/" }))
+      expect(run("git_reword 'to be changed'", env: { GIT_EDITOR: "sed -i.~ 's/to be changed/was changed/'" }))
         .to_not have_output
-      expect(git_log).to have_output(["commit message to remain", "Commit message was changed", "Initial commit"], split: true)
+      expect(git_log).to have_output(["Commit message to remain", "Commit message was changed", "Initial commit"], split: true)
     end
   end
 end

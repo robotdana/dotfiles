@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+git rev-parse --symbolic-full-name --abbrev-ref ${1:-HEAD} 2>/dev/null

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if (( $? == 0 )); then
+  echo -en "\033[1m"
+else
+  echo -en "\033[2m"
+fi

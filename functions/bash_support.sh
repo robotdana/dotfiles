@@ -1,43 +1,4 @@
 # echo "required bash_support"
-C_RED=$'\033[38;5;125m'
-C_GREEN=$'\033[38;5;48m'
-C_YELLOW=$'\033[38;5;227m'
-C_BLUE=$'\033[1;34m'
-C_AQUA=$'\033[1;36m'
-C_GREY=$'\033[0;90m'
-C_PINK=$'\033[38;5;199m'
-C_RESET=$'\033[0m'
-C_LIGHT_PINK=$'\033[38;5;205m'
-
-function echo_red(){
-  echo -e "$C_RED$@$C_RESET"
-}
-function echo_green(){
-  echo -e "$C_GREEN$@$C_RESET"
-}
-function echo_yellow(){
-  echo -e "$C_YELLOW$@$C_RESET"
-}
-function echo_blue(){
-  echo -e "$C_BLUE$@$C_RESET"
-}
-function echo_aqua(){
-  echo -e "$C_AQUA$@$C_RESET"
-}
-function echo_grey(){
-  echo -e "$C_GREY$@$C_RESET"
-}
-function echo_reset(){
-  echo -e "$C_RESET$@$C_RESET"
-}
-function echo_pink(){
-  echo -e "$C_PINK$@$C_RESET"
-}
-
-# `resource` reload bash profile
-function resource(){
-  echodo source ~/.bash_profile
-}
 
 function resource_if_modified_since(){
   if (( $1 < $(last_bash_profile_modification) )) ; then
@@ -101,11 +62,6 @@ function echodo(){
 
 function prompt_version {
   [[ -e Gemfile ]] && echo {r${RUBY_VERSION%.*}}
-}
-
-function echoerr(){
-  ( echo_red $* )>&2
-  return 1
 }
 
 function alias_frequency() {

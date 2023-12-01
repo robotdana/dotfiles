@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echodo killall Google\ Chrome 2>/dev/null
+echodo killall chromedriver 2>/dev/null

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+[[ -z "$(git status --porcelain 2>/dev/null)" ]]
+

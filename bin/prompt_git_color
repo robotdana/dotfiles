@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+if [[ -e .git ]]; then
+  if git_status_clean; then
+    if git_head_pushed; then
+      echo -en $COLOR_AQUA
+    else
+      echo -en $COLOR_GREEN
+    fi
+  else
+    echo -en $COLOR_YELLOW
+  fi
+else
+  echo -en $COLOR_RESET
+fi

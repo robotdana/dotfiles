@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+if [[ -e .git ]]; then
+  ref=$(git_branch_name 2>/dev/null)
+
+  if [[ $ref == 'HEAD' ]]; then
+    ref=$(git branch --format='%(refname:short)' --sort=-committerdate --contains HEAD 2>/dev/null | head -n 1)
+    subref="$(git rev-parse --short HEAD 2>/dev/null)"
+
+    if [[ ! -z $subref ]]; then
+      ref="$ref[$subref]"
+    fi
+  fi
+
+  echo -ne ":$ref"
+fi

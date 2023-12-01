@@ -86,24 +86,24 @@ function loop {
 }
 
 function _loop_with_count {
-  echo_aqua "Iteration $1"
+  echo "${COLOR_AQUA}Iteration $1$COLOR_RESET"
   echodo "${@:3}"
   if (( $? == 0 )); then
     local successes=$(( $2 + 1 ))
   else
     local successes=$2
   fi
-  echo_grey "Success rate: $successes/$1"
+  echo "${COLOR_GREY}Success rate: $successes/$1$COLOR_RESET"
   sleep 1 && _loop_with_count $(( $1 + 1 )) $successes "${@:3}"
 }
 
 function _loop_with_count_fail_fast_with_max {
-  echo_aqua "Iteration $1"
+  echo $COLOR_AQUA"Iteration $1"$COLOR_RESET
   echodo "${@:3}"
   if (( $? == 0 )); then
-    echo_grey "Success rate: $1/$1"
+    echo $COLOR_GREY"Success rate: $1/$1"$COLOR_RESET
   else
-    echo_grey "Success rate: $(( $1 - 1 ))/$1"
+    echo $COLOR_GREY"Success rate: $(( $1 - 1 ))/$1"$COLOR_RESET
     return 1
   fi
 
@@ -127,7 +127,7 @@ function rtnn(){
 }
 
 function crt {
-  echo_grey COVERAGE=1 MIN_COVERAGE=100
+  echo -n $COLOR_GREY"COVERAGE=1 MIN_COVERAGE=100 "$COLOR_RESET
   COVERAGE=1 MIN_COVERAGE=100 rt "$@" || echodo open coverage/index.html
 }
 

@@ -283,7 +283,7 @@ function gs() {
 # TODO: test
 function git_bisect_branch() {
   if echodo "$@"; then
-    echo_green HEAD passes
+    echo ${COLOR_GREEN}HEAD passes${COLOR_RESET}
   else
     echodo git bisect reset # TODO: don't do this if you're not bisecting so there's no error
     echodo git bisect start
@@ -302,7 +302,7 @@ function git_bisect_branch() {
 
 function git_bisect() {
   if echodo "${@:2}"; then
-    echo_green HEAD passes
+    echo ${COLOR_GREEN}HEAD passes$COLOR_RESET
   else
     echodo git bisect reset # TODO: don't do this if you're not bisecting so there's no error
     echodo git bisect start

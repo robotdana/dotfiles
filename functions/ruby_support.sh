@@ -14,6 +14,6 @@ function ruby-install {
     echoerr "No version given"
   else
     mkdir -p ~/.rubies
-    echodo ruby-build $1 "$HOME/.rubies/$1" && echo_green "Install succeeded, restart the shell to use" && exit 0
+    echodo ruby-build $1 "$HOME/.rubies/$1" && resource
   fi
 }

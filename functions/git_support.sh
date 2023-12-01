@@ -385,7 +385,7 @@ function git_fetch_merge {
 
 # TODO: test
 function git_log_oneline {
-  ( echo_grey git log --oneline $(git_log_range "$1") )>&2
+  echo ${COLOR_GREY}$(git log --oneline $(git_log_range "$1"))$COLOR_RESET >&2
   local commits_in_origin=$(echo -e $(git log --format="%h" $(git merge-base --fork-point $(git_remote_main_branch)) 2>/dev/null))
   local commit_in_origin_condition='index("'$commits_in_origin'", $2) > 0'
 
@@ -396,15 +396,15 @@ function git_log_oneline {
       body = body " " $1
     } else {
       if('"$commit_in_origin_condition"') {
-        printf "%s", "'$C_AQUA'"
+        printf "%s", "'$COLOR_AQUA'"
       } else {
-        printf "%s", "'$C_GREEN'"
+        printf "%s", "'$COLOR_GREEN'"
       }
-      printf "%s%s%s%s%s", $2, " '$C_RESET'", $3, " \033[2m", $4
+      printf "%s%s%s%s%s", $2, " '$COLOR_RESET'", $3, " \033[2m", $4
 
       if (body != "") {
         gsub("\r", "", body)
-        printf "%s%s", "'$C_GREY'\033[2m", body
+        printf "%s%s", "'$COLOR_GREY'\033[2m", body
       }
 
       body=""

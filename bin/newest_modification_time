@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+max=0
+
+for number in $(stat -f %m $@); do
+  if (( $number > $max )); then
+    max=$number
+  fi
+done
+
+echo $max
+

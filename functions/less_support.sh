@@ -1,3 +1,4 @@
+# echo "required less_support"
 # Have less display colours
 # from: https://wiki.archlinux.org/index.php/Color_output_in_console#man
 export LESS_TERMCAP_mb=$C_BLUE         # begin bold

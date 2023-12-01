@@ -1,3 +1,4 @@
+# echo "required prompt_support"
 # source ./git_support.sh
 
 function title() {

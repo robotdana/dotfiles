@@ -1,3 +1,5 @@
+# echo "required cc_menu_support"
+
 function cc_menu_item_server_urls {
   local branch="${1:-"$(git_current_branch)"}"
 

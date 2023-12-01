@@ -1,3 +1,4 @@
+# echo "required rails_aliases"
 # `rc` rails console
 function rc(){
   title 'Console'

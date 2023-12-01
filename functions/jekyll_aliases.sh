@@ -1,3 +1,4 @@
+# echo "required jekyll_aliases"
 # `jeks` jekyll server
 # start a jekyll server, then open the home page
 # TODO: start guard at the same time

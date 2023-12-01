@@ -1,3 +1,4 @@
+# echo "required bash_support"
 C_RED=$'\033[38;5;125m'
 C_GREEN=$'\033[38;5;48m'
 C_YELLOW=$'\033[38;5;227m'

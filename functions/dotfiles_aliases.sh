@@ -1,3 +1,5 @@
+# echo "required dotfiles_aliases"
+
 function cdot() {
   echodo cd ~/.dotfiles
 }

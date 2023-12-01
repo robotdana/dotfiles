@@ -20,8 +20,8 @@ if [[ -f ~/.cargo/env ]]; then
 fi
 
 source ~/.dotfiles/locals/secrets.sh
-source ~/.dotfiles/functions/nvm_support.sh
 source ~/.dotfiles/functions/bash_support.sh
+source ~/.dotfiles/functions/nvm_support.sh
 source ~/.dotfiles/functions/git_support.sh
 source ~/.dotfiles/functions/hosts_support.sh
 source ~/.dotfiles/functions/prompt_support.sh

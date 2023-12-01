@@ -1,3 +1,4 @@
+# echo "required webpack_aliases"
 function ys(){
   echodo kill_port 3808
   echodo ttab -G "title Webpack; yarn start; exit" 2>/dev/null

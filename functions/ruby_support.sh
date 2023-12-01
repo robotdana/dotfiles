@@ -1,3 +1,5 @@
+# echo "required ruby_support"
+# echo "$HOME"
 source $(brew --prefix chruby)/share/chruby/chruby.sh
 source $(brew --prefix chruby)/share/chruby/auto.sh
 

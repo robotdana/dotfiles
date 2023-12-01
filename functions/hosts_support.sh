@@ -1,3 +1,4 @@
+# echo "required hosts_support"
 function rehosts(){
   echodo dscacheutil -flushcache && echodo sudo killall mDNSResponder
 }

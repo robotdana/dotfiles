@@ -1,3 +1,4 @@
+# echo "required git_support"
 # source ./bash_support.sh
 
 function git_untracked(){
@@ -383,7 +384,7 @@ function git_fetch_merge {
 # TODO: test
 function git_log_oneline {
   ( echo_grey git log --oneline $(git_log_range "$1") )>&2
-  local commits_in_origin=$(echo -e $(git log --format="%h" $(git merge-base --fork-point $(git_main_remote_branch)) 2>/dev/null))
+  local commits_in_origin=$(echo -e $(git log --format="%h" $(git merge-base --fork-point $(git_remote_main_branch)) 2>/dev/null))
   local commit_in_origin_condition='index("'$commits_in_origin'", $2) > 0'
 
   git log --format="%b%n§%h§%s§%cr" $(git_log_range "$1") | awk -F'§' '{

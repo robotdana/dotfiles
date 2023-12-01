@@ -1,3 +1,4 @@
+# echo "required server_support"
 function port_offset() {
   local base=${1:-3000}
   local offset=${2:-0}

@@ -1,3 +1,4 @@
+# echo "required git_aliases"
 # source ./git_support.sh
 
 # `ga` git add

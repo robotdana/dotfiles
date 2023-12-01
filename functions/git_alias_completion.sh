@@ -1,3 +1,5 @@
+# echo "required git_alias_completion"
+
 source ~/.dotfiles/locals/git-completion.bash
 
 __git_complete gb __git_complete_refs

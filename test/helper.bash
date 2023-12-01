@@ -51,36 +51,5 @@ function assert_cleaned_output {
   assert_output "$@"
 }
 
-function good_rb() {
-  echo "# frozen_string_literal: true
-
-def foo
-  puts true
-end"
-}
-
-function bad_rb(){
-  echo "# frozen_string_literal: true
-
-def bar(unused_keyword: true)
-  puts true
-  puts true
-  puts true
-  puts true
-  puts true
-  puts true
-  puts true
-  puts true
-  puts true
-end"
-}
-
-function auto_bad_rb(){
-  echo "def foo()
-
-    puts true
-
-  end"
-}
 
 

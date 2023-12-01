@@ -22,7 +22,7 @@ RSpec.describe 'git' do
       expect(file('a')).to exist
       expect(file('b')).to exist
       expect_clean_git_status
-      expect(git("stash list")).to_not have_output
+      expect_empty_stash
       expect(git_log).to have_output(["Amended commit with b", "Initial commit"], split: true)
     end
   end

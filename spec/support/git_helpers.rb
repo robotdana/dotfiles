@@ -19,6 +19,10 @@ module CLIHelper
     expect(git("status --long")).to have_output("On branch main\nnothing to commit, working tree clean\n")
   end
 
+  def expect_empty_stash
+    expect(git("stash list")).to_not have_output
+  end
+
   def git_log
     git('log --format=%s')
   end

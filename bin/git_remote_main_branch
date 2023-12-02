@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/env bash
 
 remotes=( $(git branch -vv -r | grep -E '^\s+[^/]+/HEAD' | cut -d'>' -f2) )
 remote_heads=()

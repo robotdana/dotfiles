@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe 'git rubocop hooks' do
   before do
     copy_file('.ruby-version')
@@ -12,7 +14,7 @@ RSpec.describe 'git rubocop hooks' do
     run('bundle install')
     run('bundle lock --add-platform universal-darwin-20')
     run('bundle lock --add-platform x86_64-darwin-18')
-    git("init")
+    git('init')
     git_add('.')
     git_commit('--no-verify -m "Initial commit"')
   end
@@ -59,10 +61,11 @@ RSpec.describe 'git rubocop hooks' do
     file('foo.rb').write(good_rb)
     file('bar.rb').write(good_rb)
     git_add('.')
-    run "gc Pass rubocop"
+    run 'gc Pass rubocop'
     expect_clean_git_status
     expect_empty_stash
-    expect(git_log).to have_output(["Pass rubocop", "Initial commit"], split: true)
+    expect(git_log)
+      .to have_output(['Pass rubocop', 'Initial commit'], split: true)
     expect(file('foo.rb')).to exist
     expect(file('bar.rb')).to exist
   end
@@ -95,14 +98,16 @@ RSpec.describe 'git rubocop hooks' do
   end
 
   # TODO: make this less manual
-  it "partial add pass rubocop hook" do
+  it 'partial add pass rubocop hook' do
     file('foo.rb').write(good_rb)
     file('bar.rb').write(bad_rb)
     git_add('foo.rb')
     run('yes q | gc Pass rubocop', expect_exit: be_nonzero)
     # it fails due to the rebase not attempting, but does make the commit:
-    expect(git_log).to have_output(['Pass rubocop', 'Initial commit'], split: true)
-    expect(run('git show --pretty=format: --name-only')).to have_output("foo.rb\n")
+    expect(git_log)
+      .to have_output(['Pass rubocop', 'Initial commit'], split: true)
+    expect(run('git show --pretty=format: --name-only'))
+      .to have_output("foo.rb\n")
 
     run('git_rebasing', expect_exit: be_nonzero)
     expect(run('git_untracked')).to have_output("bar.rb\n")
@@ -117,14 +122,18 @@ RSpec.describe 'git rubocop hooks' do
   end
 
   # TODO: make this less manual
-  it "partial add fail rubocop hook" do
+  it 'partial add fail rubocop hook' do
     file('foo.rb').write(good_rb)
     file('bar.rb').write(bad_rb)
     git_add('bar.rb')
     run('yes q | gc Pass rubocop', expect_exit: be_nonzero)
     # it fails due to the rebase not attempting, but does make the commit:
-    expect(git_log).to have_output(['Pass rubocop', 'Initial commit'], split: true)
-    expect(run('git show --pretty=format: --name-only')).to have_output("bar.rb\n")
+    expect(git_log)
+      .to have_output(
+        ['Pass rubocop', 'Initial commit'], split: true
+      )
+    expect(run('git show --pretty=format: --name-only'))
+      .to have_output("bar.rb\n")
 
     run('git_rebasing', expect_exit: be_nonzero)
     expect(run('git_untracked')).to have_output("foo.rb\n")
@@ -134,8 +143,6 @@ RSpec.describe 'git rubocop hooks' do
     run('git_autolint_head', expect_exit: be_nonzero)
     run('git_rebasing')
     file('bar.rb').write(good_rb)
-    require 'pry'
-    binding.pry
     run('yes | grc')
     run('git_rebasing', expect_exit: be_nonzero)
 
@@ -144,94 +151,94 @@ RSpec.describe 'git rubocop hooks' do
   end
 end
 
-  # @test "partial add autocorrect rubocop hook" {
-  #   auto_bad_rb > bar.rb
-  #   good_rb > foo.rb
-  #   git add bar.rb
-  #   ( yes q | RBENV_VERSION=3.2.2 rbenv exec gc "Auto rubocop" ) || true
-  #   # this doesn't run rubocop because there are untracked files
-  #   refute git_rebasing
-  #   run git_untracked
-  #   assert_output "foo.rb"
+# @test "partial add autocorrect rubocop hook" {
+#   auto_bad_rb > bar.rb
+#   good_rb > foo.rb
+#   git add bar.rb
+#   ( yes q | RBENV_VERSION=3.2.2 rbenv exec gc "Auto rubocop" ) || true
+#   # this doesn't run rubocop because there are untracked files
+#   refute git_rebasing
+#   run git_untracked
+#   assert_output "foo.rb"
 
-  #   # manually lint
-  #   git_stash_only_untracked
-  #   yes y | RBENV_VERSION=3.2.2 rbenv exec git_autolint_head
-  #   refute git_rebasing
+#   # manually lint
+#   git_stash_only_untracked
+#   yes y | RBENV_VERSION=3.2.2 rbenv exec git_autolint_head
+#   refute git_rebasing
 
-  #   git stash pop
-  #   run git_untracked
-  #   assert_output "foo.rb"
-  # }
+#   git stash pop
+#   run git_untracked
+#   assert_output "foo.rb"
+# }
 
-  # @test "patch add pass rubocop hook" {
-  #   good_rb > foo.rb
-  #   git add foo.rb
-  #   bad_rb >> foo.rb
-  #   run git diff --cached --name-only
-  #   assert_output "foo.rb"
-  #   run git diff --name-only
-  #   assert_output "foo.rb"
-  #   yes n | RBENV_VERSION=3.2.2 rbenv exec gc "Pass rubocop"
-  #   refute git_rebasing
-  #   assert_equal "$(cat foo.rb)" "$(good_rb)
-  # $(bad_rb)"
-  # }
+# @test "patch add pass rubocop hook" {
+#   good_rb > foo.rb
+#   git add foo.rb
+#   bad_rb >> foo.rb
+#   run git diff --cached --name-only
+#   assert_output "foo.rb"
+#   run git diff --name-only
+#   assert_output "foo.rb"
+#   yes n | RBENV_VERSION=3.2.2 rbenv exec gc "Pass rubocop"
+#   refute git_rebasing
+#   assert_equal "$(cat foo.rb)" "$(good_rb)
+# $(bad_rb)"
+# }
 
-  # @test "patch add fail rubocop hook" {
-  #   bad_rb > foo.rb
-  #   git add foo.rb
-  #   good_rb >> foo.rb
-  #   run git diff --cached --name-only
-  #   assert_output "foo.rb"
-  #   run git diff --name-only
-  #   assert_output "foo.rb"
-  #   ( yes n | RBENV_VERSION=3.2.2 rbenv exec gc "Fail rubocop" ) || true
-  #   assert git_rebasing
-  #   good_rb > foo.rb
-  #   yes | RBENV_VERSION=3.2.2 rbenv exec grc
-  #   refute git_rebasing
-  #   assert_equal "$(cat foo.rb)" "$(good_rb)
-  # $(good_rb)"
-  # }
+# @test "patch add fail rubocop hook" {
+#   bad_rb > foo.rb
+#   git add foo.rb
+#   good_rb >> foo.rb
+#   run git diff --cached --name-only
+#   assert_output "foo.rb"
+#   run git diff --name-only
+#   assert_output "foo.rb"
+#   ( yes n | RBENV_VERSION=3.2.2 rbenv exec gc "Fail rubocop" ) || true
+#   assert git_rebasing
+#   good_rb > foo.rb
+#   yes | RBENV_VERSION=3.2.2 rbenv exec grc
+#   refute git_rebasing
+#   assert_equal "$(cat foo.rb)" "$(good_rb)
+# $(good_rb)"
+# }
 
-  # @test "patch add autocorrect rubocop hook" {
-  #   auto_bad_rb > foo.rb
-  #   git add foo.rb
-  #   echo "# comment" >> foo.rb
-  #   run git diff --cached --name-only
-  #   assert_output "foo.rb"
-  #   run git diff --name-only
-  #   assert_output "foo.rb"
-  #   yes y | RBENV_VERSION=3.2.2 rbenv exec gc "Auto rubocop"
-  #   refute git_rebasing
-  #   assert_equal "$(cat foo.rb)" "$(good_rb)
-  # # comment"
-  # }
+# @test "patch add autocorrect rubocop hook" {
+#   auto_bad_rb > foo.rb
+#   git add foo.rb
+#   echo "# comment" >> foo.rb
+#   run git diff --cached --name-only
+#   assert_output "foo.rb"
+#   run git diff --name-only
+#   assert_output "foo.rb"
+#   yes y | RBENV_VERSION=3.2.2 rbenv exec gc "Auto rubocop"
+#   refute git_rebasing
+#   assert_equal "$(cat foo.rb)" "$(good_rb)
+# # comment"
+# }
 
-  # @test "patch add conflict fail rubocop hook" {
-  #   bad_rb > foo.rb
-  #   git add foo.rb
-  #   good_rb > foo.rb
-  #   echo "CONFLICT = false" >> foo.rb
-  #   ( yes q | RBENV_VERSION=3.2.2 rbenv exec gc "Fail rubocop" ) || true
-  #   assert git_rebasing
-  #   good_rb > foo.rb
-  #   echo "CONFLICTED = true" >> foo.rb
-  #   yes | RBENV_VERSION=3.2.2 rbenv exec grc
-  #   refute git_rebasing
+# @test "patch add conflict fail rubocop hook" {
+#   bad_rb > foo.rb
+#   git add foo.rb
+#   good_rb > foo.rb
+#   echo "CONFLICT = false" >> foo.rb
+#   ( yes q | RBENV_VERSION=3.2.2 rbenv exec gc "Fail rubocop" ) || true
+#   assert git_rebasing
+#   good_rb > foo.rb
+#   echo "CONFLICTED = true" >> foo.rb
+#   yes | RBENV_VERSION=3.2.2 rbenv exec grc
+#   refute git_rebasing
 
-  #   run git log --format="%s"
-  #   assert_output "Fail rubocop
-  # Initial commit"
-  #   # assert_git_stash_empty
-  #   assert_equal "$(cat foo.rb)" "$(good_rb)
-  # <<<<<<< Updated upstream
-  # CONFLICTED = true
-  # ||||||| Stash base
-  # =======
-  # CONFLICT = false
-  # >>>>>>> Stashed changes"
-  # }
+#   run git log --format="%s"
+#   assert_output "Fail rubocop
+# Initial commit"
+#   # assert_git_stash_empty
+#   assert_equal "$(cat foo.rb)" "$(good_rb)
+# <<<<<<< Updated upstream
+# CONFLICTED = true
+# ||||||| Stash base
+# =======
+# CONFLICT = false
+# >>>>>>> Stashed changes"
+# }
 
-  # end
+# end

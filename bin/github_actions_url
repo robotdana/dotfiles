@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+    echo $(git_web_url)/actions?query=branch:$(git_branch_name)

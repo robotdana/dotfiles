@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+    echo git_autolint;
+    exitstatus=0;
+    git_autolint_prettier "$@" || exitstatus=$(( $exitstatus + $? ));
+    git_autolint_stylelint "$@" || exitstatus=$(( $exitstatus + $? ));
+    git_autolint_eslint "$@" || exitstatus=$(( $exitstatus + $? ));
+    git_autolint_rubocop "$@" || exitstatus=$(( $exitstatus + $? ));
+    git_autolint_spellr "$@" || exitstatus=$(( $exitstatus + $? ));
+    git_autolint_rails_annotate "$@" || exitstatus=$(( $exitstatus + $? ));
+    git_autolint_rails_chusaku "$@" || exitstatus=$(( $exitstatus + $? ));
+    echo $exitstatus;
+    return $exitstatus

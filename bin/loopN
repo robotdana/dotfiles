@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+    _loop_with_count_fail_fast_with_max 1 "$@"

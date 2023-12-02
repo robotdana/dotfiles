@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+    if nvm --version > /dev/null 2> /dev/null; then
+        if [[ -f .node-version ]]; then
+            new_version=$(<.node-version);
+        else
+            if [[ -f .tool-versions ]]; then
+                new_version=$(grep -F nodejs .tool-versions | cut -f2 -d' ');
+            else
+                if [[ -f package.json ]]; then
+                    new_version=$(jq '.engines.node' -r package.json | tr -dc '>'=0-9.);
+                fi;
+            fi;
+        fi;
+        if [[ "$new_version" == '>='* ]]; then
+            new_version="node";
+        fi;
+        if [[ ! -z "$new_version" ]]; then
+            current_version=$(nvm current);
+            if [[ "v$new_version" != "$current_version" ]]; then
+                nvm use $new_version > /dev/null 2> /dev/null || echodo nvm install $new_version;
+            fi;
+        fi;
+    fi

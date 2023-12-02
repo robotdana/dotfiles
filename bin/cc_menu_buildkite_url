@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+branch=${1:-"$(git_branch_name)"};
+access_token=${2:-"$(buildkite_access_token)"};
+if [[ ! -z "$access_token" ]]; then
+    access_token="&access_token=$access_token";
+fi;
+echo "https://cc.buildkite.com/$(buildkite_org_slug)/$(buildkite_pipeline_slug).xml?branch=$branch$access_token"

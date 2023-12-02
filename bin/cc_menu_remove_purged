@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+cc_menu_remove_branches $(comm -23 <(cc_menu_list | sort) <(git branch --format="$(git_current_repo) : %(refname:short)" | sort) | grep -F "$(git_current_repo) :" | cut -d: -f2)

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# `glp [<remote>]` git pull push
+# pull then push the current branch to <remote> or origin
+
+    gl "$@" && gp "$@"

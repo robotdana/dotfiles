@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# transform git remote url to web url
+# works for github & bitbucket & gitlab
+
+remote=${1:-origin}
+url="$(git remote get-url $remote)"
+
+
+url="${url%%.git}"
+url="${url##git@}"
+url="${url##https://}"
+url="https://${url/://}"
+
+echo $url

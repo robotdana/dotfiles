@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# `grp [<remote>]` git pull push
+# pull using rebase, then push the current branch to <remote> or origin
+
+
+    glr "$@" && gp "$@"

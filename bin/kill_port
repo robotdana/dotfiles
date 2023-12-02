@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+    for port in "$@";
+    do
+        lsof -ti :"$port" | xargs kill -9;
+    done

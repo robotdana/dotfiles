@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+
+# TODO: test
+    git checkout "$(git_main_branch)";
+    echodo git fetch -qp origin $(git_branch_local_and_remote);
+    git reset --hard --quiet origin/"$(git_main_branch)";
+    git_purge_merged;
+    git_purge_rebase_merged;
+    git_purge_only_tracking;
+    cc_menu_remove_purged

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# `gc [<message>]` git commit
+# patch add, then commit with <message> or open editor for a message
+
+if (( $# == 0 )); then
+    git_add_p && echodo git commit --verbose && ( git_rebasing || git_autolint_head );
+else
+    git_add_p && echodo git commit -m "$*" && ( git_rebasing || git_autolint_head );
+fi

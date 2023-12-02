@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
+# `rt [<test files>]` shortcut for rspec.
+
 be rspec --format documentation "$@"

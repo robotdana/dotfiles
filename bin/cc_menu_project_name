@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+branch="${1:-"$(git_branch_name)"}";
+curl "$(cc_menu_item_server_urls "$branch" | head -n 1)" 2> /dev/null | xmllint --xpath "string(//Projects/Project/@name)" -

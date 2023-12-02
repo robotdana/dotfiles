@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+    if [[ -f .prettierrc ]]; then
+        js_files=$(git_modified_head .js .jsx .ts .tsx);
+        if [[ ! -z "$js_files" ]]; then
+            echodo node_modules/.bin/prettier --write $js_files;
+            on_dirty "$@";
+        fi;
+    fi

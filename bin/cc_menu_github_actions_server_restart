@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# this is restarted by launchctl
+kill_port 45454;
+cc_menu

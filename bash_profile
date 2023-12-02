@@ -21,23 +21,12 @@ if [[ -f ~/.cargo/env ]]; then
   source /Users/dana/.cargo/env
 fi
 
+source $(brew --prefix chruby)/share/chruby/chruby.sh
+source $(brew --prefix chruby)/share/chruby/auto.sh
+
 source ~/.dotfiles/locals/secrets.sh
-source ~/.dotfiles/functions/node_support.sh
-source ~/.dotfiles/functions/git_support.sh
-source ~/.dotfiles/functions/hosts_support.sh
-source ~/.dotfiles/functions/prompt_support.sh
-source ~/.dotfiles/functions/server_support.sh
-source ~/.dotfiles/functions/cc_menu_support.sh
-source ~/.dotfiles/functions/ruby_support.sh
-source ~/.dotfiles/functions/less_support.sh
 
-source ~/.dotfiles/functions/git_aliases.sh
-source ~/.dotfiles/functions/git_alias_completion.sh
-source ~/.dotfiles/functions/dotfiles_aliases.sh
-source ~/.dotfiles/functions/rails_aliases.sh
-source ~/.dotfiles/functions/jekyll_aliases.sh
-
-if [ -d /usr/local/bin ] && [[ -f /usr/local/bin/direnv ]]; then
+if [[ -e /usr/local/bin/direnv ]]; then
   # direnv hook bash. idk what it's doing but i'm sure it's fine
 
   _direnv_hook() {
@@ -56,7 +45,7 @@ track_source ~/.dotfiles/functions/colors
 track_source ~/.dotfiles/functions/functionify
 
 # have functions for things i call _all the time_
-track_functionify_q echodo echoerr echo_color
+track_functionify_q echodo echoerr echo_color be
 
 # have functions for things called by prompt
 track_functionify_q prompt_last_command_style

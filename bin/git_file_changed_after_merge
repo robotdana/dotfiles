@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+    git_changed_files_after_merge | grep -xE "$1"

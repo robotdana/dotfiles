@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+    open "$(git_web_url)/tree/$(git_main_branch)/$1"

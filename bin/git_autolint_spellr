@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+    if [[ -f .spellr.yml ]]; then
+        echodo be spellr -i $(git_modified_head) && on_dirty "$@";
+    fi

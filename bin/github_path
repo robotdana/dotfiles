@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+    remote=${1:-origin};
+    git_url="$(git remote get-url $remote)";
+    git_url="${git_url/git@github.com:/https://github.com/}";
+    echo ${git_url%%.git}

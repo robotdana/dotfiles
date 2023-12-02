@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# `gcp [<message>]` git commit push
+# patch add, then commit with <message> or open editor for a message, then push
+
+gc "$*" && gp

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+branch="${1:-"$(git_branch_name)"}";
+if [[ -f .travis.yml ]]; then
+    cc_menu_travis_url "$branch";
+elif [[ -f .buildkite/pipeline.yml ]]; then
+    cc_menu_buildkite_url "$branch" "${@:2}";
+elif [[ -d .github/workflows ]]; then
+    cc_menu_github_actions_urls "$branch";
+fi

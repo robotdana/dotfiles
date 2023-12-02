@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+    path=$(git rev-parse --show-toplevel);
+    if [[ "$path" == $HOME/.gem ]] || [[ "$path" == $HOME/Library ]] || [[ "$path" != $HOME/* ]]; then
+        true;
+    else
+        false;
+    fi

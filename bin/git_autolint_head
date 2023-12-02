@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+    echo git_autolint_head;
+    git_rebase_exec HEAD^ git_autolint git_commit_during_rebase

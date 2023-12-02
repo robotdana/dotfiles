@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# `gr [<branch or commit>]` git rebase
+# rebase the current branch against <branch or commit> or latest main branch
+# TODO: if it's a commit, don't checkout the latest
+# TODO: don't switch branches if you don't have to
+
+base=${1:-"$(git_main_branch)"};
+echodo git checkout "$base" && gl && echodo git checkout - && git_rebase_i "$base"

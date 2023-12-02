@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# git rebase branch
+
+git_can_autostash && ( git rebase --interactive --autostash --autosquash $(git_branch_fork_point) || grc )

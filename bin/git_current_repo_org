@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+    remote=${1:-origin};
+    basename "$(dirname "$(git config --get remote.$remote.url)")" | cut -d: -f2

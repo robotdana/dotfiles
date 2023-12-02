@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+    if [[ -f Gemfile.lock ]] && grep -Fq annotate Gemfile.lock; then
+        rb_files=$(git_modified_head db/schema.rb);
+        if [[ ! -z $rb_files ]]; then
+            bundle exec annotate && on_dirty "$@";
+        fi;
+    fi

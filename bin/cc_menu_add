@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+branch="${1:-"$(git_branch_name)"}";
+if [[ ! -z "$(cc_menu_item_server_urls $branch)" ]]; then
+    if ! cc_menu_present "$branch"; then
+        cc_menu_stop;
+        cc_menu_add_item "$branch";
+        cc_menu;
+    fi;
+fi

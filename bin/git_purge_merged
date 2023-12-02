@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+    for branch in $(git_non_release_branch_list --merged "$(git_main_branch)");
+    do
+        echodo git branch -d "$branch";
+    done

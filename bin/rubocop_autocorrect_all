@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [[ -z "$(be rubocop --help | grep -F -e --autocorrect-all)" ]]; then
+    be rubocop -a "$@";
+else
+    be rubocop -A "$@";
+fi

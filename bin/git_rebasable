@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+    ! git_rebasing && git_non_release_branch

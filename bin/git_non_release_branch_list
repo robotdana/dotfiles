@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+    git_branch_list "$@" | grep -Evx "$(git_release_branch_match)"

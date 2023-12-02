@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+    if git_status_clean; then
+        "$@";
+    else
+        stash_sha="$(git_stash)";
+        echo "Autostash: $stash_sha";
+        if "$@"; then
+            git stash apply $stash_sha;
+        else
+            git stash apply $stash_sha;
+            false;
+        fi;
+    fi

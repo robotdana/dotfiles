@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+    _loop_with_count 1 0 "$@"

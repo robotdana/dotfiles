@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# `gcf [<commit>]` git commit fix
+# fixups <commit> or the last commit & rebases
+commit=$(git_find_sha $*);
+if (( $? < 1 )); then
+    if git_rebasable "$commit^" && git_add_p; then
+        echodo git commit --fixup "$commit" && ( ! git_rebasing && git_autolint_head && git_rebase_i "$commit^" );
+    fi;
+else
+    false;
+fi

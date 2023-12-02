@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+    commit=$(git_find_sha $*);
+    if (( $? < 1 )); then
+        if git_rebasable "$commit^"; then
+            if [[ "$commit" == "$(git rev-parse --short HEAD)" ]]; then
+                git commit --amend;
+            else
+                git_rebase_noninteractively reword $commit;
+            fi;
+        fi;
+    else
+        false
+    fi

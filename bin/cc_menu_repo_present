@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+defaults read net.sourceforge.cruisecontrol.CCMenu Projects | grep -qF "serverUrl = \"$(cc_menu_item_server_urls '' '' | head -n 1)"

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+    remote=${1:-origin};
+    echo "$(git_current_repo_org $remote)/$(git_current_repo $remote)"

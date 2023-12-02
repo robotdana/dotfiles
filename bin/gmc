@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# `gmc` git merge conflicts
+# load the merge conflicts into the editor, then once the issues are resolved, commit the merge.
+# TODO: only allow to run during a merge
+# TODO: more tests
+
+git_handle_conflicts;
+echodo git commit --no-verify --no-edit

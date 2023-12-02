@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+    if [[ ! -z "$(git_untracked)" ]]; then
+        echodo git add -N $(git_untracked);
+    fi

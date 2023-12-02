@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+    comm -23 <( git_non_release_branch_list ) <( git_non_release_branch_list -r  | sed 's/origin\///')

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+    git_rebase_exec $(git_branch_fork_point) git_autolint git_commit_during_rebase

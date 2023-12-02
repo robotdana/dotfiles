@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+    has_staged=$(git diff --cached --numstat --no-renames | grep -Ev "^0\t0\t");
+    if [[ ! -z "$has_staged" ]]; then
+        echodo git reset --quiet -- && git_track_untracked;
+    fi

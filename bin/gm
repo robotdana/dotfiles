@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# `gm <branch>` git merge
+# merge the latest of <branch> or main branch into the current branch
+# TODO: allow merging directly from any origin
+
+branch=${1:-"$(git_main_branch)"};
+echodo git fetch origin "$branch" && echodo git merge origin/"$branch" --no-edit

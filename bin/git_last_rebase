@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+    git log -n 1 $(git merge-base "$(git_main_branch)" HEAD) --format=%cr

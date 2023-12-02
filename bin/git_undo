@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+    revision=${1:-1};
+    git_autostash echodo git reset --hard HEAD@{$revision}

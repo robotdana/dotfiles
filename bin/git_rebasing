@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+    [[ -d "$(git rev-parse --git-path rebase-merge)" ]] || [[ -d "$(git rev-parse --git-path rebase-apply)" ]]

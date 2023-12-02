@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+    [[ -e .git/MERGE_HEAD ]] && git merge --abort;
+    git_stash "$@"

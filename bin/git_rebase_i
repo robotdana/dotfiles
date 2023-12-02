@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+    git_can_autostash && ( GIT_SEQUENCE_EDITOR=: echodo git rebase --interactive --autosquash --autostash "$@" )

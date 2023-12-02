@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+    new_task=$1;
+    sha=$2;
+    git_can_autostash && GIT_SEQUENCE_EDITOR="sed -i.~ s/^pick\ $sha\ /$new_task\ $sha\ /" git rebase --interactive --autosquash --autostash "$sha^" > /dev/null 2> /dev/null

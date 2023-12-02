@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+    active_conflicts=($(git_conflicts_with_line_numbers));
+    if (( ${#active_conflicts[@]} > 0 )); then
+        code -w ${active_conflicts[@]/#/-g } && git_open_conflicts;
+    fi

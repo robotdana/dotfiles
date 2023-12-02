@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+    cat $(git rev-parse --git-path rebase-merge/onto) $(git rev-parse --git-path rebase-apply/onto) 2> /dev/null

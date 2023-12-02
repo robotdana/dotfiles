@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# TODO: test
+    git_open_conflicts;
+    git_status_filtered UU | xargs git add

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# TODO: test
+git_autostash git_automain git_purge_on_main

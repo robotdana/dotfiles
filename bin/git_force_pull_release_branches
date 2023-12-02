@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+    branches=$(git_release_branch_list -r | cut -d'/' -f 2-);
+    if [[ ! -z "$branches" ]]; then
+        echodo git fetch --force origin $branches;
+    fi

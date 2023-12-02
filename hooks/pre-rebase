@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source ~/.dotfiles/functions/git_support.sh
-
 git_system && exit 0
 base=$1
 

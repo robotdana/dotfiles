@@ -1,8 +1,0 @@
-if [[ "$0" == "$BASH_SOURCE" ]]; then
-  name=${BASH_SOURCE##*/};
-  if declare -f "$name" >/dev/null; then
-    ${BASH_SOURCE##*/} "$@"
-  else
-    echo -e "\033[31m$BASH_SOURCE doesn't define $name, it does define $(declare -F | cut -d' ' -f 3)\033[0m"
-  fi
-fi

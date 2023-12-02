@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+    git --no-pager log -p -G'(\b|_)'"$1"'(\b|_)' "${@:2}"

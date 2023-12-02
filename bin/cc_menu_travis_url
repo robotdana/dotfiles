@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+repo=$(git_current_repo_with_org);
+branch="${1:-"$(git_branch_name)"}";
+echo "https://api.travis-ci.com/repos/$repo/cc.xml?branch=$branch"

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+branch=${1:-$(git_branch_name)};
+if [[ "$1" == "$(git_branch_name)" ]]; then
+    git_stash;
+    echodo git checkout "$(git_main_branch)";
+fi;
+echodo git branch -D "$branch";
+echodo git branch -Dr origin/"$branch" upstream/"$branch";
+cc_menu_remove "$branch"

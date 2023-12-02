@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+branch="${1:-"$(git_branch_name)"}";
+if cc_menu_present "$branch"; then
+    cc_menu_stop;
+    cc_menu_remove_item "$branch";
+    cc_menu;
+fi

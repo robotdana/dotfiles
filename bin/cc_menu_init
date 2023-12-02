@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cc_menu_stop;
+defaults write net.sourceforge.cruisecontrol.CCMenu Projects '()'

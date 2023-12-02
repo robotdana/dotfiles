@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+    if [[ -f Gemfile.lock ]] && grep -Fq chusaku Gemfile.lock; then
+        rb_files=$(git_modified_head app/controllers/**/*.rb config/routes*);
+        if [[ ! -z $rb_files ]]; then
+            bundle exec chusaku && on_dirty "$@";
+        fi;
+    fi

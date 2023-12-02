@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+    git_can_autostash && ( git_rebase_i --exec="bash -cl '${*:2}'" "$1" --reschedule-failed-exec )

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+    if [[ -f .stylelintrc ]]; then
+        style_files=$(git_modified_head .ts .tsx);
+        if [[ ! -z "$style_files" ]]; then
+            echodo node_modules/.bin/stylelint $style_files;
+        fi;
+    fi

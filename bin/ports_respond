@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+    respond=true;
+    for port in "$@";
+    do
+        if ! curl -I --silent "http://localhost:$port" > /dev/null; then
+            respond=false;
+        fi;
+    done;
+    $respond

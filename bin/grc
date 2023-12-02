@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# `grc` git rebase conflicts
+# load the rebase conflicts into an editor, then once issues are resolved, continue the rebase.
+# TODO: only allow to run during a rebase
+# TODO: more tests
+
+if git_rebasing; then
+    git_handle_conflicts && git_commit_during_rebase && GIT_EDITOR=true echodo git rebase --continue;
+else
+    echoerr "Not rebasing";
+fi

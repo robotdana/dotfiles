@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+repo="$(git_current_repo)";
+branch="${1:-"$(git_branch_name)"}";
+defaults write net.sourceforge.cruisecontrol.CCMenu Projects "$(ruby --disable-all -e 'puts ARGF.read.sub(/
+\{\n
+  \s*displayName\s=\s"#{Regexp.escape("'"$repo"'")}\s:\s#{Regexp.escape("'"$branch"'")}";\n
+  \s*projectName\s=\s"[^"]+";\n
+  \s*serverUrl\s=\s"[^"]+";\n
+\s*\},?\n?/x,
+"")' <(defaults read net.sourceforge.cruisecontrol.CCMenu Projects))"

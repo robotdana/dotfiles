@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+    remote=${1:-origin};
+    repo="$(git config --get remote.$remote.url 2>/dev/null)";
+    repo=${repo##*/};
+    echo ${repo%.git}

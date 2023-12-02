@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+    if [[ -f .eslintrc ]] || [[ -f .eslintrc.js ]]; then
+        js_files=$(git_modified_head .js .jsx .ts .tsx);
+        if [[ ! -z $js_files ]]; then
+            echodo node_modules/.bin/eslint --fix $js_files;
+            on_dirty "$@";
+        fi;
+    fi

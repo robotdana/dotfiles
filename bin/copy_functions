@@ -1,3 +1,18 @@
 #!/usr/bin/env bash
 
-declare -F | cut -d' ' -f3
+output=~/.dotfiles/bin_new
+rm -rf $output
+mkdir -p $output
+
+functions=( $(bash -lc 'declare -F' | cut -d' ' -f3 | sort | grep -v '^_') )
+# already_bin=( $(ls -1 ~/.dotfiles/bin | sort) )
+
+for fn in "${functions[@]}"; do
+  if which -s "$fn"; then
+    echo "already have $fn";
+  else
+    echo "#!/usr/bin/env bash"$'\n' > "$output/$fn"
+    chmod +x "$output/$fn"
+    bash -lc 'declare -f '"$fn" | tail +3 | sed '$d' | sed -E "s/^( *)local /\\1/" >> "$output/$fn"
+  fi
+done

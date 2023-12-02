@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Tested
+    conflicted=$(git_status_filtered DU | escape_spaces);
+    if [[ ! -z "$conflicted" ]]; then
+        git add $conflicted;
+        git reset --quiet -- $conflicted;  # so we can interactively re-add in the git add conflicts step
+        git add -N $conflicted;
+    fi

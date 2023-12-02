@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Tested
+
+    conflicted=$(git_status_filtered UD | escape_spaces);
+    if [[ ! -z "$conflicted" ]]; then
+        git rm $conflicted;
+        git reset --quiet -- $conflicted; # so we can interactively add the removal in the git add conflicts step
+    fi

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+    only_tracking=$(comm -13 <( git_non_release_branch_list | sed 's/^/origin\//' ) <( git_non_release_branch_list -r ));
+    if [[ ! -z $only_tracking ]]; then
+        echodo git branch -rD $only_tracking;
+    fi

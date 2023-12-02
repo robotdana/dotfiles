@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+repo="$(git_current_repo)";
+branch="${1:-"$(git_branch_name)"}";
+project_name=$(cc_menu_project_name "$branch");
+while IFS= read -r server_url; do
+    defaults write net.sourceforge.cruisecontrol.CCMenu Projects -array-add "
+  {
+    displayName = \"$repo : $branch$label\";
+    projectName = \"$project_name\";
+    serverUrl = \"$server_url\";
+  }
+";
+done < <(cc_menu_item_server_urls "$branch")

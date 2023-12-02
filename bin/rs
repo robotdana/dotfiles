@@ -1,0 +1,14 @@
+# `rs [<port offset>] [<host>] [<path>]` rails server
+# start a rails server on <port offset> or 3000
+# once it's ready, open <host>.lvh.me:<port>/<path>
+
+  port=$(( 3000 + ${1:-0} ))
+  host=$(local_host_name "$2")
+  path="$3"
+
+  # echodo kill_port $port
+  wait_for_port_then "echodo open -g http://$host:$port$path" $port
+
+  title "Server:$port"
+  echodo rails server -p $port --pid=tmp/pids/server"$port".pid -b 0.0.0.0
+  title

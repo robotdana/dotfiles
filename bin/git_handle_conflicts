@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+    if [[ -e .git/MERGE_MSG ]]; then
+        # store merge flags
+        cp .git/MERGE_MSG /tmp/conflict_MERGE_MSG;
+        if [[ -e .git/MERGE_HEAD ]]; then
+            merge_head=$(cat .git/MERGE_HEAD);
+        fi;
+
+        # prepare working directory for interactive add
+        git_prepare_content_conflicts;
+        git_prepare_their_deletions;
+        git_prepare_our_deletions;
+
+        # interactive add
+        git_track_untracked;
+        git add -p;
+
+        # clean up unadded
+        git_untrack_new_unstaged;
+        git stash save --keep-index --include-untracked --quiet;
+        comm -12 <(git_status_filtered ?? | sort) <(git_status_filtered 'D ' | sort) | xargs rm;
+
+        # restore merge flags
+        cp /tmp/conflict_MERGE_MSG .git/MERGE_MSG;
+        if [[ ! -z "$merge_head" ]]; then
+            echo -e $merge_head > .git/MERGE_HEAD;
+        fi;
+    else
+        true;
+    fi

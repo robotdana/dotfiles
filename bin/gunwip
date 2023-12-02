@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+if [[ "$(git log --format="%an | %s" -n 1)" == "Dana Sherson | WIP"* ]]; then
+    git uncommit && gunwip;
+fi

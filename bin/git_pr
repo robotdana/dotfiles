@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+remote=${1:-origin};
+git_url="$(git remote get-url $remote)";
+if [[ "$git_url" = *github* ]]; then
+    echodo open "$(git_web_url)/compare/$(git_branch_name)?expand=1";
+else
+    if [[ "$git_url" = *bitbucket* ]]; then
+        echodo open "$(git_web_url)/pull-requests/new?source=$(git_branch_name)";
+    fi;
+fi

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+branch="${1:-"$(git_branch_name)"}";
+defaults read net.sourceforge.cruisecontrol.CCMenu Projects | grep -qF "displayName = \"$(git_current_repo) : $branch\";"

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+defaults read net.sourceforge.cruisecontrol.CCMenu Projects | grep -F "displayName = " | cut -f 2 -d\"

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+    for file in $(git_modified $*);
+    do
+        git blame -fs -M -C ..HEAD "$file";
+    done | awk -F' ' '/^0+ / {print $2 ":" $3+0}'

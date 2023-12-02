@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# `gpf [<remote>]` git push force
+# force push the current branch to <remote> or origin
+
+remote=${1:-origin};
+git_non_release_branch && gp "$remote" --force-with-lease

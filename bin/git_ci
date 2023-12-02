@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+    cc_menu_url="$(cc_menu_project_url)";
+    if [[ ! -z "$cc_menu_url" ]]; then
+        echodo open "$cc_menu_url";
+    else
+        echodo open "$(github_actions_url)";
+    fi

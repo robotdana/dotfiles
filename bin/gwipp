@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# `gwipp` git wip
+# commit everything carelessly with the message `wip`, then push
+
+gwip && gp

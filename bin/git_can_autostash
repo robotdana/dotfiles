@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+    git_untrack_new_unstaged;
+    if [[ ! -z "$(git_untracked)" ]]; then
+        echoerr "There are untracked files, can't autostash to rebase";
+        echoerr "Use git_stash_only_untracked";
+        false;
+    fi

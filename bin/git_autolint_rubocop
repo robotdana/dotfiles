@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+    if [[ -f .rubocop.yml ]]; then
+        rb_files=$(git_modified_head .rb .jbuilder .builder Gemfile .rake Rakefile .gemspec);
+        if [[ ! -z $rb_files ]]; then
+            rubocop_autocorrect_all --force-exclusion --color $rb_files && on_dirty "$@";
+        fi;
+    fi

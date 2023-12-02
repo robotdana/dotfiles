@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+    newblank=$(git diff --numstat --no-renames --diff-filter=A | awk -F'\t' '/^[0-9]+\t0\t/ { print $3 }' | escape_spaces);
+    if [[ ! -z "$newblank" ]]; then
+        echodo git reset -- $newblank;
+    fi

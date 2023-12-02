@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if [[ -z "$GITHUB_ACTIONS_TOKEN" ]]; then
+    echoerr "No \$GITHUB_ACTIONS_TOKEN";
+    return false;
+else
+    repo=$(git_current_repo_with_org);
+    branch="${1:-"$(git_branch_name)"}";
+    while IFS= read -r workflow; do
+        echo "http://localhost:45454/$repo/$workflow?branch=$branch&token=$GITHUB_ACTIONS_TOKEN";
+    done < <(ls -1 .github/workflows);
+fi

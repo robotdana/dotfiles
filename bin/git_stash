@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+    echo git_stash;
+    git_untrack_new_unstaged && echodo git stash -u "$@" --quiet && git rev-parse --short stash

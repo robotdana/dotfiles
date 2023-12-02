@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+    if [[ ! -z "$(git_untracked)" ]]; then
+        if [[ ! -z "$(git diff HEAD --diff-filter=ACM --name-only)" ]]; then
+            git stash --quiet && git stash -u && git stash pop stash@{1} --quiet && git rev-parse stash;
+        else
+            git_stash;
+        fi;
+    else
+        false;
+    fi

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+    current_branch="$(git_branch_name)";
+    git checkout "$(git_main_branch)";
+    "$@";
+    git checkout $current_branch

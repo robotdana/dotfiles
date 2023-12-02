@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# `glf [<remote>] [<branch>]` git pull force
+# force pull <branch> or the current branch from <remote> or origin
+
+
+remote=${1:-origin};
+branch=${2:-$(git_branch_name)};
+echodo git fetch "$remote" "$branch" && echodo git reset --hard "$remote"/"$branch"

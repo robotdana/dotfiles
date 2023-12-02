@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+    gm "$(git_main_branch)"

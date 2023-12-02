@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+    current_dir=$PWD;
+    for repo in $(eval ls -1d $PROJECT_DIRS);
+    do
+        cd "$repo" && [[ -d .git ]] && cc_menu_repo_present && echo "Purging $repo" && ( git purge || exit 1 );
+    done;
+    cd "$current_dir"

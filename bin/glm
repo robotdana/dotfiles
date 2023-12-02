@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# `glm` git pull main
+# switch to main branch and pull
+
+echodo git checkout "$(git_main_branch)" && gl

@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+    val="${*:-HEAD}";
+    if git rev-parse --verify --quiet "$val" > /dev/null; then
+        val=$(git rev-parse --short "$val");
+    fi;
+    if git_rebasing; then
+        root=$(git_rebase_onto);
+    else
+        root="$(git_main_branch)";
+    fi;
+    commits=();
+    while IFS= read -r line; do
+        commits+=("$line");
+    done < <(git_log_oneline "$root" 2>/dev/null | grep -E -e '^([^\sm]+m)?'"$val" -e '\s.*'"$val");
+    if (( ${#commits[@]} > 1 )); then
+        echoerr "Multiple possible commits found:";
+        for commit in "${commits[@]}";
+        do
+            echo -e "$commit" 1>&2;
+        done;
+        return ${#commits[@]};
+    else
+        if (( ${#commits[@]} == 0 )); then
+            echoerr "Commit "$*" not found in branch:";
+            gbl 1>&2 2> /dev/null;
+            return 1;
+        else
+            echo "${commits[0]}" | cut -d' ' -f1 | strip_color;
+        fi;
+    fi

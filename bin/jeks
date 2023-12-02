@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# echo "required jekyll_aliases"
+# `jeks` jekyll server
+# start a jekyll server, then open the home page
+# TODO: start guard at the same time
+
+    echodo kill_port 4000;
+    title "Server:4000";
+    echodo rm .jekyll-metadata;
+    wait_for_port_then "echodo open -g http://localhost:4000" 4000;
+    be jekyll serve --incremental -H 0.0.0.0 --trace && title

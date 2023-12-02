@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+cc_menu_stop;
+for branch in "$@"; do
+    cc_menu_remove_item "$branch";
+done;
+cc_menu

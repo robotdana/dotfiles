@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# `gl [<remote>] [<branch>]` git pull
+# pull <branch> or the current branch from <remote> or origin
+
+remote=${1:-origin};
+branch=${2:-$(git_branch_name)};
+echodo git pull --no-edit "$remote" "$branch"

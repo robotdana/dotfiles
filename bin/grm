@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+    if git_has_upstream; then
+        git_non_release_branch && echodo git checkout "$(git_main_branch)" && glf upstream && gp && git checkout - && git_rebase_i "$(git_main_branch)";
+    else
+        gr;
+    fi

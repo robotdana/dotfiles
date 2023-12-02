@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+    case $(git_current_repo) in 
+        dotfiles)
+            echo 'origin/main'
+        ;;
+        '')
+            echo 'NOMATCH'
+        ;;
+        *)
+            echo '(origin/)?(master|main|trunk|primary)'
+        ;;
+    esac

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# `gp [<remote>] [<options>]` git push
+# push the current branch to <remote> or origin
+
+    remote=${1:-origin};
+    branch=$(git_branch_name);
+    options=${@:2};
+    if [[ "$branch" == "$(git_branch_name)" && "$remote" == "origin" ]]; then
+        set_upstream="--set-upstream";
+    fi;
+    echodo git push $options $set_upstream "$remote" "$branch";
+    if [[ ! -z "$(cc_menu_item_server_urls)" ]]; then
+        cc_menu_add;
+    fi

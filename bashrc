@@ -1,5 +1,3 @@
-source ~/.dotfiles/functions/git_support.sh
-
 . ~/.dotfiles/functions/color
 PATH="~/.dotfiles/bin:$PATH"
 

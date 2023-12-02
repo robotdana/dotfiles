@@ -2,9 +2,11 @@
 
 set -e
 
+~/.dotfiles/bin/echodo ln -sf ~/.dotfiles/bash_profile ~/.bash_profile
+~/.dotfiles/bin/echodo ln -sf ~/.dotfiles/bashrc ~/.bashrc
+~/.dotfiles/bin/resource
+
 echodo ln -sf ~/.dotfiles/Brewfile ~/Brewfile
-echodo ln -sf ~/.dotfiles/bashrc ~/.bashrc
-echodo ln -sf ~/.dotfiles/bash_profile ~/.bash_profile
 echodo ln -sf ~/.dotfiles/gemrc ~/.gemrc
 echodo ln -sf ~/.dotfiles/gitconfig ~/.gitconfig
 echodo ln -sf ~/.dotfiles/gitignore ~/.gitignore

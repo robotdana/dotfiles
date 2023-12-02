@@ -1,36 +1,8 @@
-# echo "required rails_aliases"
-# `rc` rails console
-function rc(){
-  title 'Console'
-  echodo rails console
-  title
-}
-
-# `rg <generate command>` rails generate
-function rg(){
-  echodo rails generate "$@"
-}
-
-# `rgm <new migration>` rails generate migration
-# run rails generate <new migration>, open the migration file, migrate the database.
-function rgm(){
-  local filename=$(rg migration "$@" | awk '/db\/migrate/ {print $2}')
-  if [[ ! -z $filename ]]; then
-    echodo code -w "$filename"
-    if [[ -s $filename ]]; then
-      echodo rails db:migrate
-    else
-      echodo rm "$filename"
-    fi
-  fi
-}
-
-
 # `rs [<port offset>] [<host>] [<path>]` rails server
 # start a rails server on <port offset> or 3000
 # once it's ready, open <host>.lvh.me:<port>/<path>
 function rs(){
-  local port=$(port_offset 3000 "$1")
+  local port=$(( 3000 + ${1:-0} ))
   local host=$(local_host_name "$2")
   local path="$3"
 
@@ -42,24 +14,12 @@ function rs(){
   title
 }
 
-function be(){
-  if [[ -z "which bundle" ]]; then
-    echodo "$@"
-  else
-    bundle --quiet && echodo bundle exec "$@"
-  fi
-}
-
 function be_rubocop_autocorrect_all {
   if [[ -z "$(be rubocop --help | grep -F -e --autocorrect-all)" ]]; then
     be rubocop -a "$@"
   else
     be rubocop -A "$@"
   fi
-}
-
-function brake(){
-  be rake "$@"
 }
 
 # `rt [<test files>]` shortcut for rspec.

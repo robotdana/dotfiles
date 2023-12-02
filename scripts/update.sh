@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source ~/.dotfiles/functions/bash_support.sh
-
 if [[ -z "$CI" ]]; then
   brew bundle
 fi

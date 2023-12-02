@@ -22,5 +22,3 @@ done
 
 echo -e "$str\033[0m" >&2
 "$@"
-
-# eval "$(cat ~/.dotfiles/function_boilerplate)"

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if (( $# == 0 )); then
+  sed -E "/^[[:cntrl:]]\\[1;90m.*[[:cntrl:]]\\[0m$/d;s/([[:cntrl:]]\\[[0-9]{1,3}(;[0-9]{1,3})*m)//g"
+else
+  echo -e "$@" | "$BASH_SOURCE"
+fi

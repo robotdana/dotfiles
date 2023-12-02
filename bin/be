@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if which -s bundle; then
+  echodo bundle exec "$@"
+else
+  echodo "$@"
+fi

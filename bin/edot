@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# not whitespace files friendly
+
+if (( $# > 0 )); then
+  files=( $(grep -rn "${@/#/-e }" ~/.dotfiles | cut -f1,2 -d:) )
+fi
+echodo code ${files[@]/#/-g } -n ~/.dotfiles

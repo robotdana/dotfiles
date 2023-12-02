@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo -n $COLOR_GREY"COVERAGE=1 MIN_COVERAGE=100 "$COLOR_RESET
+COVERAGE=1 MIN_COVERAGE=100 rt "$@" || echodo open coverage/index.html

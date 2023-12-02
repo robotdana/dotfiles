@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-source ~/.dotfiles/functions/bash_support.sh
 source ~/.dotfiles/functions/git_support.sh
 source ~/.dotfiles/functions/server_support.sh
 source ~/.dotfiles/functions/ruby_support.sh

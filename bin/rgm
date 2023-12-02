@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+
+# `rgm <new migration>` rails generate migration
+# run rails generate <new migration>, open the migration file, migrate the database.
+filename=$(echodo rails generate migration "$@" | awk '/db\/migrate/ {print $2}')
+
+if [[ ! -z $filename ]]; then
+  echodo $EDITOR "$filename"
+  if [[ -s $filename ]]; then
+    echodo rails db:migrate
+  else
+    echodo rm "$filename"
+  fi
+fi

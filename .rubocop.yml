@@ -1,0 +1,137 @@
+require: rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  Exclude:
+    - .bundle/**/*
+    - tmp/**/*
+    - vendor/**/*
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+
+Layout/ArrayAlignment:
+  EnforcedStyle: with_fixed_indentation
+
+Layout/HashAlignment:
+  EnforcedLastArgumentHashStyle: always_ignore
+
+Layout/ParameterAlignment:
+  EnforcedStyle: with_fixed_indentation
+
+Layout/BlockAlignment:
+  EnforcedStyleAlignWith: start_of_block
+
+Layout/CaseIndentation:
+  EnforcedStyle: end
+
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: start_of_line
+
+Layout/ExtraSpacing:
+  AllowForAlignment: false
+
+Layout/FirstArrayElementLineBreak:
+  Enabled: true
+
+Layout/FirstHashElementLineBreak:
+  Enabled: true
+
+Layout/FirstArgumentIndentation:
+  EnforcedStyle: consistent
+
+Layout/FirstArrayElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/MultilineAssignmentLayout:
+  EnforcedStyle: same_line
+
+Layout/MultilineOperationIndentation:
+  EnforcedStyle: indented
+  # indentationWidtH: 2
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Metrics:
+  CountComments: false
+
+Metrics/BlockLength:
+  ExcludedMethods:
+    - configure
+    - describe
+    - context
+    - it
+
+Layout/LineLength:
+  Max: 80
+  IgnoreCopDirectives: true
+
+Metrics/MethodLength:
+  Max: 6
+
+RSpec:
+  Enabled: true
+  Include:
+    - spec/**/*.rb
+
+RSpec/DescribeClass:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+# I misuse matchers often
+RSpec/ExpectActual:
+  Enabled: false
+
+RSpec/FilePath:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
+Style/CollectionMethods:
+  Enabled: true
+
+Style/Documentation:
+  Enabled: false
+
+Style/FormatStringToken:
+  Enabled: false
+
+# [a, b].include?(x) is more unclear than a == x || b == x
+Style/MultipleComparison:
+  Enabled: false
+
+Style/NumericPredicate:
+  Enabled: false
+
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    default: '{}'
+    '%w': '{}'
+    '%W': '{}'
+    '%i': '{}'
+    '%I': '{}'
+    '%r': '{}'
+
+Style/SafeNavigation:
+  Enabled: true
+
+Style/SignalException:
+  EnforcedStyle: only_raise
+
+Style/SingleLineBlockParams:
+  Enabled: false
+
+Style/SymbolArray:
+  Enabled: false
+
+Style/CommentedKeyword:
+  Enabled: false

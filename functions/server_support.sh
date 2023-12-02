@@ -1,10 +1,3 @@
-# echo "required server_support"
-function port_offset() {
-  local base=${1:-3000}
-  local offset=${2:-0}
-  echo $(( $base + $offset ))
-}
-
 function local_host_name() {
   if [ ! -z "$1" ]; then
     echo "$1".lvh.me

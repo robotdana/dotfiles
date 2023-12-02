@@ -300,31 +300,12 @@ function git_bisect_branch() {
   fi
 }
 
-function git_bisect() {
-  if echodo "${@:2}"; then
-    echo ${COLOR_GREEN}HEAD passes$COLOR_RESET
-  else
-    echodo git bisect reset # TODO: don't do this if you're not bisecting so there's no error
-    echodo git bisect start
-    echodo git bisect bad
-    echodo git checkout "$1"
-    if echodo "${@:2}"; then
-      echodo git bisect good
-      git bisect run bash -cl "echodo ${@:2}"
-      echodo git bisect reset
-    else
-      echodo git bisect reset
-      echoerr 'This whole branch fails'
-    fi
-  fi
-}
-
-function gd {
-  git diff $*
-}
-function gdm {
-  gd "$(git_main_branch)"
-}
-function gdpf {
-  gd origin/$(git_branch_name)..HEAD
-}
+# function gd {
+#   git diff $*
+# }
+# function gdm {
+#   gd "$(git_main_branch)"
+# }
+# function gdpf {
+#   gd origin/$(git_branch_name)..HEAD
+# }

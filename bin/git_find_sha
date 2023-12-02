@@ -7,7 +7,7 @@
     if git_rebasing; then
         root=$(git_rebase_onto);
     else
-        root="$(git_main_branch)";
+        root="$(git_main_remote_branch)";
     fi;
     commits=();
     while IFS= read -r line; do

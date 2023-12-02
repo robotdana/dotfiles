@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+if ! git config remote.upstream.url >/dev/null; then
+  git remote rename origin upstream --no-progress
+  git remote add origin $(git remote get-url --push upstream | sed -E 's/[^\/:]*\/([^\/]*)$/robotdana\/\1/')
+  if [[ "$(curl -s -o /dev/null -I -w "%{http_code}" $(git_web_url origin))" == "404" ]]; then
+    open "$(git_web_url upstream)/fork"
+  fi
+else
+  echoerr "upstream already exists"
+  echodo git remote -v
+  false
+fi

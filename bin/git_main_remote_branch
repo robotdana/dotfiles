@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+remote="${1:-origin}"
+
+git rev-parse "$remote"/HEAD &>/dev/null || \
+  git remote set-head "$remote" -a >/dev/null && \
+  git rev-parse --symbolic-full-name --abbrev-ref=strict remotes/"$remote"/HEAD

@@ -57,6 +57,6 @@ track_functionify_q prompt_git git_branch_name
 track_functionify_q resource # as a function it won't reset history
 
 export PS2="\[$COLOR_PINK\]» \[$COLOR_RESET\]"
-export PS1="\[\$(prompt_last_command_style)\]\[$COLOR_PINK\]\w\[$COLOR_LIGHT_PINK\]\$(prompt_version)\[\$(prompt_git_color)\]\$(prompt_git)$PS2"
+export PS1="\[\$(prompt_last_command_style)$COLOR_PINK\]\w\[$COLOR_LIGHT_PINK\]\$(prompt_version)\[\$(prompt_git_color)\]\$(prompt_git)$PS2"
 
 track_and_resource

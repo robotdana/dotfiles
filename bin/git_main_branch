@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-    git_branch_list | grep -Fx -e master -e main -e trunk -e primary -e gh-pages -e develop
-
-g
+remote_branch=$(git_main_remote_branch 2>/dev/null || git_main_remote_branch upstream)
+local_branch=${remote_branch#*/}
+echo $local_branch

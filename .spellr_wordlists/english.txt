@@ -6,6 +6,8 @@ applescript
 argf
 asc
 autocorrect
+autocorrections
+autofixable
 autolint
 automain
 autosquash
@@ -75,6 +77,8 @@ exercism
 exitstatus
 fixups
 flushcache
+fnm
+functionify
 gbb
 gbc
 gbf
@@ -95,10 +99,12 @@ gdpf
 gemfile
 gemrc
 gemspec
+getopts
 gitattributes
 gitconfig
 github
 gitignore
+gitlab
 glf
 glm
 glp
@@ -129,6 +135,8 @@ gunwip
 gwip
 gwipp
 gzip
+histappend
+https
 i'm
 idk
 inconsolata
@@ -168,6 +176,7 @@ mkdir
 mktemp
 mycnf
 mysql
+namespace
 nevergreen
 newblank
 nginx
@@ -182,11 +191,15 @@ numstat
 nvm
 ocommand
 oneline
+optind
 osascript
 oscrypto
 osxkeychain
 param
+params
+pathspec
 pbcopy
+pcre
 pickaxe
 pids
 pinentry
@@ -240,6 +253,7 @@ sigint
 signingkey
 simplecov
 snginx
+speckly
 spotify
 sqlite
 stylelint
@@ -260,6 +274,7 @@ ttab
 tty
 txt
 uncommit
+unfork
 uniq
 universalaccess
 unmatch
@@ -268,6 +283,7 @@ unsetenv
 unstage
 unstaged
 untrack
+uoption
 urls
 usr
 utf
@@ -277,6 +293,7 @@ webpack
 wget
 wip
 worflow
+worktree
 xargs
 xcode
 xmllint

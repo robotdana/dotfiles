@@ -50,7 +50,7 @@ Layout/MultilineAssignmentLayout:
 
 Layout/MultilineOperationIndentation:
   EnforcedStyle: indented
-  # indentationWidtH: 2
+  # indentationWidth: 2
 
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented

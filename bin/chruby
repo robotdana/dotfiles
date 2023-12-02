@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-# have this as a script not just a functino
+# have this as a script not just a function
 source $(brew --prefix chruby)/share/chruby/chruby.sh
 chruby "$@"

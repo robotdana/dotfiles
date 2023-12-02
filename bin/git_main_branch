@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
     git_branch_list | grep -Fx -e master -e main -e trunk -e primary -e gh-pages -e develop
+
+g

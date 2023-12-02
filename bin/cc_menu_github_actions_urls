@@ -2,7 +2,7 @@
 
 if [[ -z "$GITHUB_ACTIONS_TOKEN" ]]; then
     echoerr "No \$GITHUB_ACTIONS_TOKEN";
-    return false;
+    false;
 else
     repo=$(git_current_repo_with_org);
     branch="${1:-"$(git_branch_name)"}";

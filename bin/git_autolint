@@ -10,4 +10,4 @@
     git_autolint_rails_annotate "$@" || exitstatus=$(( $exitstatus + $? ));
     git_autolint_rails_chusaku "$@" || exitstatus=$(( $exitstatus + $? ));
     echo $exitstatus;
-    return $exitstatus
+    (( $exitstatus == 0 ))

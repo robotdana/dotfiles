@@ -134,6 +134,8 @@ RSpec.describe 'git rubocop hooks' do
     run('git_autolint_head', expect_exit: be_nonzero)
     run('git_rebasing')
     file('bar.rb').write(good_rb)
+    require 'pry'
+    binding.pry
     run('yes | grc')
     run('git_rebasing', expect_exit: be_nonzero)
 

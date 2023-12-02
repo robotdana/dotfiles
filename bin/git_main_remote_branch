@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
-remote="${1:-origin}"
-
-git rev-parse "$remote"/HEAD &>/dev/null || \
-  git remote set-head "$remote" -a >/dev/null && \
-  git rev-parse --symbolic-full-name --abbrev-ref=strict remotes/"$remote"/HEAD
+remotes=( $(git remote) );
+if (( ${#remotes[@]} == 0 )); then
+  false
+else
+  for remote in ${remotes[@]}; do
+    git rev-parse --verify --quiet $remote/HEAD >/dev/null 2>&1 || git remote set-head "$remote" -a >/dev/null 2>&1
+    git rev-parse --verify --symbolic-full-name --abbrev-ref=strict remotes/"$remote"/HEAD 2>/dev/null && break
+    false
+  done
+fi

@@ -4,5 +4,5 @@
 # shows commits modifying <filename> since this branch forked from <base_branch> or main branch.
 
 filename=$1;
-base_branch=${2:-"$(git_main_branch)"};
+base_branch=${2:-"$(git_main_base_branch)"};
 echodo git log --oneline --follow --patch $(git_log_range "$base_branch") -- "$filename"

@@ -1,5 +1,20 @@
 #!/usr/bin/env bash
 
-remote_branch=$(git_main_remote_branch 2>/dev/null || git_main_remote_branch upstream)
-local_branch=${remote_branch#*/}
-echo $local_branch
+branch_if_exist()
+{
+    git branch --list --format="%(refname:short)" "$1"
+}
+branch_fallback()
+{
+    branch_if_exist "$(git config init.defaultBranch)" || \
+    branch_if_exist main || \
+    branch_if_exist master || \
+    branch_if_exist trunk || \
+    branch_if_exist primary || \
+    git_branch_name
+}
+
+remote_branch=$(git_main_remote_branch)
+branch=${remote_branch#*/}
+
+echo ${branch:-$(branch_fallback)}

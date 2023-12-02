@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# The most canonical branch
+
+git_main_remote_branch || git_main_branch

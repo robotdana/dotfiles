@@ -2,4 +2,4 @@
 
     git_track_untracked;
     files=$(git_modified_with_line_numbers _spec.rb);
-    [[ ! -z $files ]] && rt $* $files
+    [[ ! -z $files ]] && rt "$@" $files

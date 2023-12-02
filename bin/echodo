@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-str=$'\033[0;90m'
+str="$COLOR_GREY"
 space=''
 for string in "$@"; do
   str="$str$space"

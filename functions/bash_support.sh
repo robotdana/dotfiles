@@ -7,7 +7,7 @@ function resource_if_modified_since(){
 }
 
 function last_bash_profile_modification(){
-  stat -f %m ~/.dotfiles/{bash_profile,functions/*.sh,locals/*} | sort -rn | head -n 1 || 0
+  newest_modification_time ~/.bash_profile ~/.dotfiles/functions/*
 }
 
 function maybe_update_terminal_cwd {

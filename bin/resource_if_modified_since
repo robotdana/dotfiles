@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+
+if (( $1 < $(last_modification_time "${BASH_PROFILE_DEPENDENCIES[@]}") )); then
+  resource
+fi

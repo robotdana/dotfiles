@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+functionify()
+{
+  # process options
+  local OPTIND=1
+  while getopts ":q" opts; do
+    case "$opts" in
+      q) local q=-q; ;;
+    esac
+  done; shift $((OPTIND - 1))
+
+  for name in "$@"; do
+    # get bin path
+    local path="$name"
+
+    if [[ ! -e "$path" ]]; then
+      path="$(which "$path")"
+    fi
+
+    # is it a bash file?
+    local shebang="$(head -n 1 "$path" 2>/dev/null)"
+    if ! [[ "$shebang" =~ '#!'* ]] || \
+      [[ 'bash' != "${shebang##*/}" ]] && \
+      [[ '#!/usr/bin/env bash' != "$shebang" ]]; then
+
+      [[ "$q" != '-q' ]] && echoerr "can't functionify $1 ($path), it's not a bash script"
+    else
+      unset -f "$name"
+
+      local locals=()
+      while IFS= read -r line; do
+          locals+=( 'local '"${line%=}"$'\n' )
+      done < <(grep -o '[a-zA-Z_][a-zA-Z_0-9]*=' "$path" | sort -u)
+
+      eval "$name()
+      {
+        ${locals[@]}
+        $(cat "$path")
+      }"
+
+      [[ "$q" != '-q' ]] && declare -f "$name"
+    fi
+  done
+}

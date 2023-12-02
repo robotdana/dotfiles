@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-echo $COLOR_RED"$@"$COLOR_RESET >&2
+echo_color RED error: "$@" >&2
 false

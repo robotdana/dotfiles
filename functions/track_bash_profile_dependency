@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+export BASH_PROFILE_DEPENDENCIES=( ~/.dotfiles/bash_profile ~/.bashrc ~/.bash_profile $BASH_SOURCE )
+
+track_functionify_q()
+{
+  for dep in "$@"; do
+    BASH_PROFILE_DEPENDENCIES+=( "$(which $dep)" )
+  done
+
+  functionify -q "$@"
+}
+
+track_source()
+{
+  BASH_PROFILE_DEPENDENCIES+=( "$1" )
+  . "$@"
+}
+
+track_and_resource() {
+  track_functionify_q resource_if_modified_since
+  track_functionify_q last_modification_time
+
+  PROMPT_COMMAND="resource_if_modified_since $(last_modification_time "${BASH_PROFILE_DEPENDENCIES[@]}"); $PROMPT_COMMAND"
+}

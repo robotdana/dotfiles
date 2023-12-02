@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo_color AQUA run: "$@"
+false

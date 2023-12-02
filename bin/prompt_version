@@ -1,9 +1,3 @@
 #!/usr/bin/env bash
 
-unset -f "${BASH_SOURCE##*/}"
-
-function prompt_version {
-  [[ -e Gemfile ]] && echo -e {r${RUBY_VERSION%%.*}}
-}
-
-eval "$(cat ~/.dotfiles/function_boilerplate)"
+[[ -e Gemfile ]] && echo -e {r${RUBY_VERSION%.*}}

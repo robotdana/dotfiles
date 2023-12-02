@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo ${COLOR_GREY}$(git log --oneline $(git_log_range "$1"))$COLOR_RESET 1>&2;
+echo ${COLOR_GREY}git log --oneline $(git_log_range "$1")$COLOR_RESET 1>&2;
 commits_in_origin=$(echo $(git log --format="%h" $(git merge-base --fork-point $(git_main_base_branch)) 2>/dev/null));
 # local commits_in_origin=$(echo -e $(git log --format="%h" $(git_log_range "$1" HEAD) 2>/dev/null))
 commit_in_origin_condition='index("'$commits_in_origin'", $2) > 0';

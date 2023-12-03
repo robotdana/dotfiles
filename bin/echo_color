@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-COLOR_NAME=COLOR_${1:-RESET}
-if (( $# > 1 )); then
-  echo "${!COLOR_NAME:-$COLOR_RESET}""${@:2}""$COLOR_RESET"
-else
-  echo -n "${!COLOR_NAME:-$COLOR_RESET}"
-fi

@@ -6,10 +6,7 @@ export COLOR_YELLOW=$'\033[38;5;227m'
 export COLOR_BLUE=$'\033[1;34m'
 export COLOR_AQUA=$'\033[1;36m'
 export COLOR_GREY=$'\033[0;90m'
-export COLOR_PINK=$'\033[38;5;199m'
 export COLOR_RESET=$'\033[0m'
-export COLOR_LIGHT_PINK=$'\033[38;5;205m'
-
 # Have less display colours
 # from: https://wiki.archlinux.org/index.php/Color_output_in_console#man
 export LESS_TERMCAP_mb=$COLOR_BLUE     # begin bold

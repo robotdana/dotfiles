@@ -1,3 +1,6 @@
 [submodule "github-cctray"]
 	path = github-cctray
 	url = git@github.com:robotdana/github-cctray.git
+[submodule "monokai.terminal"]
+	path = monokai.terminal
+	url = git@github.com:robotdana/monokai.terminal.git

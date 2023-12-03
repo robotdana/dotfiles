@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# modified from https://askubuntu.com/a/279014
+for background in 49 40 41 42 43 44 45 46 47; do
+  echo -ne "\033[${background}m            \033[0m"
+done
+echo
+for style in 22 '1' '2'; do
+  for foreground in 39 30 31 32 33 34 35 36 37; do
+    for background in 49 40 41 42 43 44 45 46 47; do
+      echo -ne "\033[${style};${foreground};${background}m  $((( style < 10 )) && echo ' ')${style};${foreground};${background}  \033[0m"
+    done
+    echo
+  done
+  for background in 49 40 41 42 43 44 45 46 47; do
+    echo -ne "\033[${background}m            \033[0m"
+  done
+  echo
+done
+echo ""

@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-echo_color RED error: "$@" >&2
+echo $'\033[31m'error: "$@"$'\033[0m' >&2
 false

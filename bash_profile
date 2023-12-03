@@ -45,18 +45,18 @@ track_source ~/.dotfiles/functions/colors
 track_source ~/.dotfiles/functions/functionify
 
 # have functions for things i call _all the time_
-track_functionify_q echodo echoerr echo_color be
+track_functionify_q echodo echodont echoerr be
 
 # have functions for things called by prompt
-track_functionify_q prompt_last_command_style
+track_functionify_q prompt_base_style
 track_functionify_q prompt_version
-track_functionify_q prompt_git_color git_status_clean git_head_pushed
+track_functionify_q prompt_git_color git_status_clean
 track_functionify_q prompt_git git_branch_name
-
+#
 # some thing just work better as functions
 track_functionify_q resource # as a function it won't reset history
 
-export PS2="\[$COLOR_PINK\]» \[$COLOR_RESET\]"
-export PS1="\[\$(prompt_last_command_style)$COLOR_PINK\]\w\[$COLOR_LIGHT_PINK\]\$(prompt_version)\[\$(prompt_git_color)\]\$(prompt_git)$PS2"
+export PS2='\[\033[1K\r$(prompt_base_style)\]» \[\033]0m\]'
+export PS1='\[\033[1K\r$(prompt_base_style)\]\w\[\033[38;5;205m\]$(prompt_version)\[$(prompt_git_color)\]$(prompt_git)\[\033[38;5;199m\]» \[\033[0m\]'
 
 track_and_resource

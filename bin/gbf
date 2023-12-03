@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-# `gbf <filename> [<base branch>]` git branch file
-# shows commits modifying <filename> since this branch forked from <base_branch> or main branch.
+# `gbf <filename>` git branch file
 
 filename=$1;
-base_branch=${2:-"$(git_main_base_branch)"};
-echodo git log --oneline --follow --patch $(git_log_range "$base_branch") -- "$filename"
+git_log_oneline_new --follow --patch -- "$filename"

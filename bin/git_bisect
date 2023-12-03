@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if echodo "${@:2}"; then
-  echo ${COLOR_GREEN}HEAD passes$COLOR_RESET
+  echo HEAD passes
 else
   echodo git bisect reset # TODO: don't do this if you're not bisecting so there's no error
   echodo git bisect start

@@ -2,14 +2,18 @@
 
 if [[ -e .git ]]; then
   if git_status_clean; then
-    if git_head_pushed; then
-      echo -en $COLOR_AQUA
+    if [[ "$(git rev-parse --verify -q @{u} 2>/dev/null)" == "$(git rev-parse -q HEAD 2>/dev/null)" ]]; then
+      if [[ "$(git_branch_name)" == "$(git_main_branch)" ]]; then
+        echo -en $'\033[34m' # blue is main
+      else
+        echo -en $'\033[36m' # cyan is origin/branch
+      fi
+    elif [[ -z $(git remote) ]] && [[ "$(git_branch_name)" == "$(git_main_branch)" ]]; then
+      echo -en $'\033[34m' # blue is main
     else
-      echo -en $COLOR_GREEN
+      echo -en $'\033[32m' # green is branch unpushed
     fi
   else
-    echo -en $COLOR_YELLOW
+    echo -en '\033[33m' # yellow is dirty working branch
   fi
-else
-  echo -en $COLOR_RESET
 fi

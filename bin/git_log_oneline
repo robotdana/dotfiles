@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
+
+
+
+
 echo ${COLOR_GREY}git log --oneline $(git_log_range "$1")$COLOR_RESET 1>&2;
 commits_in_origin=$(echo $(git log --format="%h" $(git merge-base --fork-point $(git_main_base_branch)) 2>/dev/null));
 # local commits_in_origin=$(echo -e $(git log --format="%h" $(git_log_range "$1" HEAD) 2>/dev/null))
 commit_in_origin_condition='index("'$commits_in_origin'", $2) > 0';
-git log --format="%b%n§%h§%s§%cr" $(git_log_range "$1") | awk -F'§' '{
+git log --reverse --format="%b%n§%h§%s§%cr" | awk -F'§' '{
   if ($0 ~ "^$") {
     # do nothing
   } else if ($1 != "" ) {
@@ -15,15 +19,15 @@ git log --format="%b%n§%h§%s§%cr" $(git_log_range "$1") | awk -F'§' '{
     } else {
       printf "%s", "'$COLOR_GREEN'"
     }
-    printf "%s%s%s%s%s", $2, " '$COLOR_RESET'", $3, " \033[2m", $4
+    printf "%s%s%s%s%s", $2, " '$COLOR_RESET'", $3, " '$COLOR_LOWLIGHT", $4
 
     if (body != "") {
       gsub("\r", "", body)
-      printf "%s%s", "'$COLOR_GREY'\033[2m", body
+      printf "%s%s", "'$COLOR_GREY''$COLOR_LOWLIGHT'", body
     }
 
     body=""
 
-    print "\033[0m"
+    print "'$COLOR_RESET'"
   }
 }'

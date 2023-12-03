@@ -1,20 +1,6 @@
 #!/usr/bin/env bash
 
-branch_if_exist()
-{
-    git branch --list --format="%(refname:short)" "$1"
-}
-branch_fallback()
-{
-    branch_if_exist "$(git config init.defaultBranch)" || \
-    branch_if_exist main || \
-    branch_if_exist master || \
-    branch_if_exist trunk || \
-    branch_if_exist primary || \
-    git_branch_name
-}
-
-remote_branch=$(git_main_remote_branch)
-branch=${remote_branch#*/}
-
-echo ${branch:-$(branch_fallback)}
+# the local version of the most canonical branch
+remote_branch="$(git_main_remote_branch)"
+branch="${remote_branch#*/}"
+echo "${branch:-"$(git_main_branch_no_remote)"}"

@@ -1,12 +1,31 @@
 #!/usr/bin/env bash
 
-remotes=( $(git remote) );
-if (( ${#remotes[@]} == 0 )); then
+# remotes can't contain spaces:
+unsorted_remotes=( $(git remote) );
+
+if (( ${#unsorted_remotes[@]} == 0 )); then
   false
 else
-  for remote in ${remotes[@]}; do
-    git rev-parse --verify --quiet $remote/HEAD >/dev/null 2>&1 || git remote set-head "$remote" -a >/dev/null 2>&1
-    git rev-parse --verify --symbolic-full-name --abbrev-ref=strict remotes/"$remote"/HEAD 2>/dev/null && break
-    false
+  # sort origin and upstream first
+  origin=()
+  upstream=()
+  rest_remotes=()
+
+  for remote in "${unsorted_remotes[@]}"; do
+    case "$remote" in
+      origin) origin+=(origin) ;;
+      upstream) upstream+=(upstream) ;;
+      *) rest_remotes+=($remote) ;;
+    esac
   done
+
+  found=''
+
+  for remote in "${origin[@]}" "${upstream[@]}" "${rest_remotes[@]}"; do
+    git_branch_if_exist "$remote"/HEAD >/dev/null 2>&1 || \
+      git remote set-head "$remote" -a >/dev/null 2>&1 || \
+      ( git fetch "$remote" >/dev/null 2>&1 && \ git remote set-head "$remote" -a >/dev/null 2>&1 )
+    [[ -z "$found" ]] && found=$(git_branch_name "$remote"/HEAD 2>/dev/null)
+  done
+  [[ ! -z "$found" ]] && echo $found || false
 fi

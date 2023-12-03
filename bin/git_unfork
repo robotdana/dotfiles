@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 
-function git_unfork {
-  if git config remote.upstream.url >/dev/null; then
-    git remote remove origin
-    git remote rename upstream origin --no-progress
-  else
-    echoerr "No upstream remote"
-    echodo git remote -v
-    return false
-  fi
-}
+if git config remote.upstream.url >/dev/null; then
+  git remote remove origin
+  git remote rename upstream origin --no-progress
+else
+  echoerr "No upstream remote"
+  echodo git remote -v
+  false
+fi

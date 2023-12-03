@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
 
 # The most canonical branch
-
-git_main_remote_branch || git_main_branch
+git_main_remote_branch || git_main_branch_no_remote

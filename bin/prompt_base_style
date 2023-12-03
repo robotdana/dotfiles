@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if (( $? == 0 )); then
+  echo -n $'\033[0;1;38;5;199m'
+else
+  echo -n $'\033[0;2;38;5;199m'
+fi

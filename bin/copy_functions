@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
-output=~/.dotfiles/bin_new
+output=~/.dotfiles/bin
 rm -rf $output
 mkdir -p $output
 
 functions=( $(bash -lc 'declare -F' | cut -d' ' -f3 | sort | grep -v '^_') )
-# already_bin=( $(ls -1 ~/.dotfiles/bin | sort) )
 
 for fn in "${functions[@]}"; do
   if which -s "$fn"; then

@@ -7,7 +7,6 @@ xcode-select --install
 git clone git@github.com:robotdana/dotfiles.git ~/.dotfiles
 ~/.dotfiles/scripts/install.sh
 change the computer name
-set Terminal.app to bash
 sign in to 1pass
 copy istatmenus config from 1pass
 sign in to everything else

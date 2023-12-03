@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby --disable-all
+
+if ARGV.delete('--off')
+  while gets
+    puts $_
+  end
+  exit 0
+end
+
+def branch_exist?(branch)
+  (
+    @branch_exist ||= Hash.new do |hash, key|
+      hash[key] = key && !`git_branch_if_exist #{key}`.chomp.empty?
+    end
+  )[branch]
+end
+
+def main_branch
+  @main_branch ||= `git_main_branch`.chomp
+end
+
+def current_branch
+  @current_branch ||= `git_branch_name`.chomp
+end
+
+def current_branch_main?
+  main_branch == current_branch
+end
+
+$forks = {
+  magenta: 'upstream/HEAD',
+  blue: (branch_exist?('origin/HEAD') ? 'origin/HEAD' : main_branch),
+  cyan: ('@{u}' unless current_branch_main?)
+}
+
+$forks.select! { |k, v| branch_exist?(v) }
+
+gets
+exit 0 unless $_
+sha, rest = $_.split("\e", 2)
+first = `git rev-parse --short #{sha}^ 2>/dev/null`.chomp
+first = first.empty? ? '' : "#{first}.."
+$forks.transform_values! do |v|
+  `git log --format=%h #{first}#{v}`.chomp.split("\n").to_h { |k| [k, nil] }
+end
+def render(sha, rest)
+  color = if $forks[:magenta]&.key?(sha)
+    "\e[35m"
+  elsif $forks[:blue]&.key?(sha)
+    "\e[34m"
+  elsif $forks[:cyan]&.key?(sha)
+    "\e[36m"
+  else
+    "\e[32m"
+  end
+  "#{color}#{sha}\e#{rest.chomp}\e[0m"
+end
+print "\x1b[?7l"
+print render(sha, rest)
+while gets
+  puts
+  print render(*$_.split("\e", 2))
+end
+puts "\x1b[?7h"

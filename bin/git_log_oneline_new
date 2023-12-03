@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# git_main_remote_branch >/dev/null 2>&1 # ensure we have origin/HEAD and upstream/HEAD if we should
+git --no-pager log --color --reverse --format='%h%Creset%(decorate) %s %C(dim)%cr - %cn%Creset' "$@"

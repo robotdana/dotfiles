@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# origin/HEAD only works if we have an origin, otherwise, guess.
+git_branch_if_exist "$(git config init.defaultBranch)" || \
+  git_branch_if_exist main || \
+  git_branch_if_exist master || \
+  git_branch_if_exist trunk || \
+  git_branch_if_exist primary || \
+  git_branch_name

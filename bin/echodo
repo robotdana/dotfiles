@@ -1,24 +1,4 @@
 #!/usr/bin/env bash
 
-str="$COLOR_GREY"
-space=''
-for string in "$@"; do
-  str="$str$space"
-
-  if [[ -z "$string" ]]; then
-    str="$str''"
-  elif [[ "$string" =~ \'|\"|\ |\&|\{|\}|\(|\)|\[|\]|\$|\<|\>|\||\;|$'\n' ]]; then
-    if [[ "$string" =~ \' ]]; then
-      str="$str"\""${string//\"/\\\"}"\"
-    else
-      str="$str"\'"$string"\'
-    fi
-  else
-    str="$str$string"
-  fi
-
-  space=" "
-done
-
-echo -e "$str\033[0m" >&2
+echodont "$@"
 "$@"

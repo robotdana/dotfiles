@@ -6,7 +6,7 @@ functionify()
   local OPTIND=1
   while getopts ":q" opts; do
     case "$opts" in
-      q) local q=-q; ;;
+      q) local q=-q ;;
     esac
   done; shift $((OPTIND - 1))
 

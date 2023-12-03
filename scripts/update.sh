@@ -24,7 +24,6 @@ if [[ $(wc -l ~/.dotfiles/locals/git-completion.bash | awk -F' ' '{print $1}') =
   exit 1
 fi
 
-git submodule add git@github.com:robotdana/github-cctray.git
 git_update_submodules
 ( cd github-cctray && git remote add upstream git@github.com:joejag/github-cctray.git )
 
@@ -34,5 +33,3 @@ ruby-install 3.2
 ruby-install 3.3.0-preview3
 
 install_launchagents.sh
-
-resource

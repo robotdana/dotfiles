@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'pty'
 require 'timeout'
 
 module Speckly
   class Command
-    def initialize(command, *args, merge_output: false, chdir: ::Dir.pwd, env: {}, **kwargs)
+    def initialize(command, *, merge_output: false, chdir: ::Dir.pwd, env: {}, **) # rubocop:disable Metrics
       @command = [*Speckly.default_command_prefix, command, *args]
       @env = ::Speckly.default_env.merge(env.transform_keys(&:to_s)).freeze
       @merge_output = merge_output
@@ -14,18 +16,17 @@ module Speckly
         @env,
         *Speckly.default_command_prefix,
         command,
-        *args,
+        *,
         unsetenv_others: true,
         in: @stdin.reader.fileno,
         out: @stdout.writer.fileno,
         err: @stderr.writer.fileno,
-        chdir: chdir,
-        **kwargs)
+        chdir:,
+        **
+      )
     end
 
-    attr_reader :pid
-    attr_reader :env
-    attr_reader :command
+    attr_reader :pid, :env, :command
 
     def merged?
       @merge_output
@@ -47,7 +48,7 @@ module Speckly
       @stderr.reader
     end
 
-    def cleanup
+    def cleanup # rubocop:disable Metrics
       @stdin&.close
     ensure
       begin

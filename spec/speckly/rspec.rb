@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../speckly'
 require_relative 'rspec_matchers'
 

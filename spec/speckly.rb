@@ -1,10 +1,11 @@
+# frozen_string_literal: true
+
 require_relative 'speckly/api'
 require_relative 'speckly/command'
 require_relative 'speckly/concat_io'
 require_relative 'speckly/io'
 require_relative 'speckly/session'
 require_relative 'speckly/eventually'
-
 
 module Speckly
   @original_working_directory = Dir.pwd
@@ -14,10 +15,8 @@ module Speckly
   @default_command_prefix = []
 
   class << self
-    attr_writer :default_env
-    attr_writer :default_max_wait_time
-    attr_writer :default_command_prefix
-    attr_accessor :original_working_directory
+    attr_writer :default_env, :default_max_wait_time, :default_command_prefix
+    attr_accessor :original_working_directory, :current_session
 
     def default_env
       @default_env ||= defined?(Bundler) ? ::Bundler.original_env.dup : ENV.to_h.dup
@@ -30,22 +29,20 @@ module Speckly
     def default_command_prefix
       @default_command_prefix ||= []
     end
-
-    attr_accessor :current_session
   end
 
   module_function
 
-  def session
-    if !block_given?
-      Speckly.current_session = Speckly.current_session || Session.new
-    else
+  def session # rubocop:disable Metrics
+    if block_given?
       begin
         Speckly.current_session = Session.new(Speckly.current_session)
         yield
       ensure
         Speckly.current_session = Speckly.current_session.pop
       end
+    else
+      Speckly.current_session = Speckly.current_session || Session.new
     end
   end
 
@@ -54,9 +51,9 @@ module Speckly
     Speckly.current_session = nil
   end
 
-  def run_command(cmd, *args, expect_exit: 0, anywhere: false, chdir: Speckly.session.dir, **kwargs)
-    chdir = Speckly.path(chdir, anywhere: anywhere)
-    command = Command.new(cmd, *args, chdir: chdir, **kwargs)
+  def run_command(cmd, *, expect_exit: 0, anywhere: false, chdir: Speckly.session.dir, **) # rubocop:disable Metrics
+    chdir = Speckly.path(chdir, anywhere:)
+    command = Command.new(cmd, *, chdir:, **)
 
     Speckly.session.commands << command
     Speckly.session.chdir(chdir) { yield command } if block_given?
@@ -66,18 +63,16 @@ module Speckly
   end
   alias_method :run, :run_command
 
-  def create_file(*lines, path:, anywhere: false)
-    path = Speckly.path(path, anywhere: anywhere)
+  def create_file(*lines, path:, anywhere: false) # rubocop:disable Metrics
+    path = Speckly.path(path, anywhere:)
     path.parent.mkpath
 
     if lines.empty?
       path.write('') unless path.exist?
+    elsif path.exist?
+      raise Errno::EEXIST unless path.read == "#{lines.join("\n")}\n"
     else
-      if path.exist?
-        raise Errno::EEXIST unless path.read == lines.join("\n") + "\n"
-      else
-        path.write(lines.join("\n") + "\n")
-      end
+      path.write("#{lines.join("\n")}\n")
     end
 
     path
@@ -87,7 +82,8 @@ module Speckly
     path = ::File.expand_path(relative_path, session.dir)
 
     if anywhere && !Speckly.session.within_temp_dir?(path)
-      raise ArgumentError, "#{path} isn't within a temp directory created by Speckly"
+      raise ArgumentError,
+            "#{path} isn't within a temp directory created by Speckly"
     end
 
     ::Pathname.new(path)
@@ -102,9 +98,9 @@ module Speckly
     Speckly.session.stderr
   end
 
-  def copy_file(*relative_paths, anywhere: false)
+  def copy_file(*relative_paths, anywhere: false) # rubocop:disable Metrics
     relative_paths.each do |relative_path|
-      dest = Speckly.path(relative_path, anywhere: anywhere)
+      dest = Speckly.path(relative_path, anywhere:)
       dest.parent.mkpath
       ::FileUtils.cp_r(
         ::File.expand_path(relative_path, ::Speckly.original_working_directory),
@@ -113,9 +109,8 @@ module Speckly
     end
   end
 
-
   def create_dir(path, anywhere: false, &block)
-    Speckly.path(path, anywhere: anywhere).mkpath
+    Speckly.path(path, anywhere:).mkpath
     return path unless block_given?
 
     Dir.chdir(path, &block)
@@ -123,7 +118,7 @@ module Speckly
 
   def create_symlink(hash, anywhere: false)
     hash.each do |link, target|
-      link_path = Speckly.path(link, anywhere: anywhere)
+      link_path = Speckly.path(link, anywhere:)
       link_path.parent.mkpath
 
       FileUtils.ln_s(Speckly.path(target, anywhere: true), link_path.to_s)
@@ -132,7 +127,7 @@ module Speckly
 
   def create_file_list(*filenames, anywhere: false)
     filenames.each do |filename|
-      Speckly.create_file(filename, path: filename, anywhere: anywhere)
+      Speckly.create_file(filename, path: filename, anywhere:)
     end
   end
 end

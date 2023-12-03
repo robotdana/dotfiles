@@ -48,6 +48,7 @@ coreaudiod
 cppflags
 cruisecontrol
 cwd
+cyclomatic
 dest
 diffable
 diffr

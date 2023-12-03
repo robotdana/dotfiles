@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'shellwords'
 
 module Speckly
@@ -7,5 +9,3 @@ end
 
 require_relative 'rspec/have_exitstatus'
 require_relative 'rspec/have_output'
-
-

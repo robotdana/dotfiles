@@ -6,6 +6,7 @@ AllCops:
     - .bundle/**/*
     - tmp/**/*
     - vendor/**/*
+    - github-cctray/**/*
   DisplayCopNames: true
   DisplayStyleGuide: true
 
@@ -59,14 +60,14 @@ Metrics:
   CountComments: false
 
 Metrics/BlockLength:
-  ExcludedMethods:
+  AllowedMethods:
     - configure
     - describe
     - context
     - it
 
 Layout/LineLength:
-  Max: 80
+  Max: 120
   IgnoreCopDirectives: true
 
 Metrics/MethodLength:

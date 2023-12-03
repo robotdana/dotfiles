@@ -1,26 +1,31 @@
+# frozen_string_literal: true
+
 module CLIHelper
-  def git(args = nil, **kwargs)
-    run("git #{args}", **kwargs)
+  def git(args = nil, **)
+    run("git #{args}", **)
   end
 
-  def git_add(args, **kwargs)
-    git("add #{args}", **kwargs)
+  def git_add(args, **)
+    git("add #{args}", **)
   end
 
-  def git_checkout(args, **kwargs)
-    git("checkout #{args}", **kwargs)
+  def git_checkout(args, **)
+    git("checkout #{args}", **)
   end
 
-  def git_commit(args = nil, **kwargs)
-    git("commit --no-gpg-sign #{args}", **kwargs)
+  def git_commit(args = nil, **)
+    git("commit --no-gpg-sign #{args}", **)
   end
 
   def expect_clean_git_status
-    expect(git("status --long")).to have_output("On branch main\nnothing to commit, working tree clean\n")
+    expect(git('status --long')).to have_output(<<~MESSAGE)
+      On branch main
+      nothing to commit, working tree clean
+    MESSAGE
   end
 
   def expect_empty_stash
-    expect(git("stash list")).to_not have_output
+    expect(git('stash list')).not_to have_output
   end
 
   def git_log

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'delegate'
 
 module Speckly
@@ -28,7 +30,7 @@ module Speckly
       @io = io
     end
 
-    def to_s(wait: Speckly.default_max_wait_time)
+    def to_s
       buf << @io.read_nonblock(4096)
       buf
     rescue ::IO::WaitReadable
@@ -45,24 +47,24 @@ module Speckly
       to_s.inspect
     end
 
-    def print(string, wait: Speckly.default_max_wait_time)
+    def print(string)
       writable?
       @io.print(string.dup.force_encoding(Encoding::BINARY))
       @io.flush
     end
 
-    def puts(string, wait: Speckly.default_max_wait_time)
+    def puts(string)
       writable?
       @io.puts(string.dup.force_encoding(Encoding::BINARY))
       @io.flush
     end
 
     def writable?
-      ::IO.select(nil, [@io], nil, 0)
+      ::IO.select(nil, [@io], nil, 0) # rubocop:disable Lint/IncompatibleIoSelectWithFiberScheduler
     end
 
     def readable?
-      ::IO.select([@io], nil, nil, 0)
+      ::IO.select([@io], nil, nil, 0) # rubocop:disable Lint/IncompatibleIoSelectWithFiberScheduler
     end
 
     def fileno

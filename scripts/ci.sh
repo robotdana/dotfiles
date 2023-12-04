@@ -4,3 +4,4 @@
 ln -s $PWD ~/.dotfiles
 ~/.dotfiles/scripts/install.sh
 git config --global commit.gpgsign false
+bash -lc 'bundle exec rspec'

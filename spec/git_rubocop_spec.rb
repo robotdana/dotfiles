@@ -173,72 +173,101 @@ RSpec.describe 'git rubocop hooks' do
     run('git stash pop')
     expect(run('git_untracked')).to have_output("foo.rb\n")
   end
+
+  it 'partial add autocorrect rubocop hook' do
+    file('bar.rb').write(bad_autofixable_rb)
+    file('foo.rb').write(good_rb)
+    git_add('bar.rb')
+    run('gc Auto rubocop', exit_with: be_nonzero) do |cmd|
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage addition [y,n,q,a,d,e,?]? '), wait: 10)
+
+      cmd.stdin.puts('q')
+    end
+    # this doesn't run rubocop because there are untracked files
+    run('git_rebasing', exit_with: be_nonzero)
+    expect(run('git_untracked')).to have_output("foo.rb\n")
+
+    # manually lint
+    run('git_stash_only_untracked')
+    run('git_autolint_head') do |cmd|
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,?]? '), wait: 10)
+
+      cmd.stdin.puts('y')
+    end
+    run('git_rebasing', exit_with: be_nonzero)
+    git('stash pop')
+    expect(run('git_untracked')).to have_output("foo.rb\n")
+  end
+
+  it 'patch add pass rubocop hook' do
+    file('foo.rb').write(good_rb)
+    git_add('foo.rb')
+    file('foo.rb').open('a') do |f|
+      f << bad_rb
+    end
+    expect(run 'git diff --cached --name-only')
+      .to have_output("foo.rb\n")
+    expect(run 'git diff --name-only')
+      .to have_output("foo.rb\n")
+
+    run('gc Pass rubocop') do |cmd|
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,?]? '), wait: 10)
+
+      cmd.stdin.puts('n')
+    end
+    run('git_rebasing', exit_with: be_nonzero)
+    expect(file('foo.rb').read).to eq "#{good_rb}#{bad_rb}"
+  end
+
+  it 'patch add fail rubocop hook' do
+    file('foo.rb').write(bad_rb)
+    git_add('foo.rb')
+    file('foo.rb').open('a') do |f|
+      f << good_rb
+    end
+    expect(run 'git diff --cached --name-only')
+      .to have_output("foo.rb\n")
+    expect(run 'git diff --name-only')
+      .to have_output("foo.rb\n")
+    run('gc Fail rubocop', exit_with: be_nonzero) do |cmd|
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,?]? '), wait: 10)
+
+      cmd.stdin.puts('n')
+    end
+    run('git_rebasing')
+    file('foo.rb').write(good_rb)
+    run('grc') do |cmd|
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,?]? '), wait: 10)
+
+      cmd.stdin.puts('y')
+    end
+    run('git_rebasing', exit_with: be_nonzero)
+    expect(file('foo.rb').read).to eq "#{good_rb}#{good_rb}"
+  end
+
+  it 'patch add autocorrect rubocop hook' do
+    file('foo.rb').write(bad_autofixable_rb)
+    git_add('foo.rb')
+    file('foo.rb').open('a') do |f|
+      f << "# comment\n"
+    end
+    expect(run 'git diff --cached --name-only')
+      .to have_output("foo.rb\n")
+    expect(run 'git diff --name-only')
+      .to have_output("foo.rb\n")
+    run('gc Auto rubocop') do |cmd|
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,?]? '), wait: 10)
+
+      cmd.stdin.puts('n') # the comment
+
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,?]? '), wait: 10)
+
+      cmd.stdin.puts('y') # the correction
+    end
+    run('git_rebasing', exit_with: be_nonzero)
+    expect(file('foo.rb').read).to eq "#{good_rb}# comment\n"
+  end
 end
-
-# @test "partial add autocorrect rubocop hook" {
-#   auto_bad_rb > bar.rb
-#   good_rb > foo.rb
-#   git add bar.rb
-#   ( yes q | RBENV_VERSION=3.2.2 rbenv exec gc "Auto rubocop" ) || true
-#   # this doesn't run rubocop because there are untracked files
-#   refute git_rebasing
-#   run git_untracked
-#   assert_output "foo.rb"
-
-#   # manually lint
-#   git_stash_only_untracked
-#   yes y | RBENV_VERSION=3.2.2 rbenv exec git_autolint_head
-#   refute git_rebasing
-
-#   git stash pop
-#   run git_untracked
-#   assert_output "foo.rb"
-# }
-
-# @test "patch add pass rubocop hook" {
-#   good_rb > foo.rb
-#   git add foo.rb
-#   bad_rb >> foo.rb
-#   run git diff --cached --name-only
-#   assert_output "foo.rb"
-#   run git diff --name-only
-#   assert_output "foo.rb"
-#   yes n | RBENV_VERSION=3.2.2 rbenv exec gc "Pass rubocop"
-#   refute git_rebasing
-#   assert_equal "$(cat foo.rb)" "$(good_rb)
-# $(bad_rb)"
-# }
-
-# @test "patch add fail rubocop hook" {
-#   bad_rb > foo.rb
-#   git add foo.rb
-#   good_rb >> foo.rb
-#   run git diff --cached --name-only
-#   assert_output "foo.rb"
-#   run git diff --name-only
-#   assert_output "foo.rb"
-#   ( yes n | RBENV_VERSION=3.2.2 rbenv exec gc "Fail rubocop" ) || true
-#   assert git_rebasing
-#   good_rb > foo.rb
-#   yes | RBENV_VERSION=3.2.2 rbenv exec grc
-#   refute git_rebasing
-#   assert_equal "$(cat foo.rb)" "$(good_rb)
-# $(good_rb)"
-# }
-
-# @test "patch add autocorrect rubocop hook" {
-#   auto_bad_rb > foo.rb
-#   git add foo.rb
-#   echo "# comment" >> foo.rb
-#   run git diff --cached --name-only
-#   assert_output "foo.rb"
-#   run git diff --name-only
-#   assert_output "foo.rb"
-#   yes y | RBENV_VERSION=3.2.2 rbenv exec gc "Auto rubocop"
-#   refute git_rebasing
-#   assert_equal "$(cat foo.rb)" "$(good_rb)
-# # comment"
-# }
 
 # @test "patch add conflict fail rubocop hook" {
 #   bad_rb > foo.rb

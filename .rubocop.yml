@@ -136,3 +136,7 @@ Style/SymbolArray:
 
 Style/CommentedKeyword:
   Enabled: false
+
+Style/NestedParenthesizedCalls:
+  AllowedMethods:
+    - run

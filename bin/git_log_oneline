@@ -4,5 +4,5 @@ git --no-pager \
 log \
   --color \
   --reverse \
-  --format='%h%Creset%Cred%Cgreen%Cblue%Creset%(decorate) %s %C(dim)%cr - %cn%Creset' \
+  --format='%h%C(reset)%C(red)%C(green)%C(blue)%C(reset)%(decorate) %s %C(dim)%cr - %cn%C(reset)' \
   "$@" | git_log_oneline_process

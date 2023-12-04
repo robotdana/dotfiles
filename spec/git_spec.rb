@@ -59,7 +59,6 @@ RSpec.describe 'git' do
         end
       ).to have_output(stdout: end_with("Merge branch 'branch2'\n"))
 
-
       expect(git_log).to have_output(
         [
           "Merge branch 'branch2'", 'Commit 3', 'Commit 2', 'Commit 1',

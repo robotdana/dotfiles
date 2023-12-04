@@ -70,7 +70,7 @@ module Speckly # rubocop:disable Metrics
   end
   alias_method :run, :run_command
 
-  def debug(new_login_shell_command = Speckly.default_debug_login_shell) # rubocop:disable Metrics
+  def debug(new_login_shell_command = Speckly.default_debug_login_shell)
     ::Process.wait ::Process.spawn(
       ::Speckly.default_env,
       new_login_shell_command,

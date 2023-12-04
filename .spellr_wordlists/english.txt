@@ -62,6 +62,7 @@ dont
 dotfiles
 dscacheutil
 echodo
+echodont
 echoerr
 editmsg
 edot
@@ -147,6 +148,7 @@ irbrc
 istat
 istatmenus
 itemexit
+itermcolors
 jbuilder
 jeks
 joejag
@@ -175,6 +177,7 @@ mergeoptions
 mergetool
 mkdir
 mktemp
+monokai
 mycnf
 mysql
 namespace
@@ -208,6 +211,7 @@ pkgconfig
 plist
 pmset
 ppid
+prefs
 prettierrc
 printf
 pryrc
@@ -280,6 +284,7 @@ uniq
 universalaccess
 unmatch
 unmerged
+unpushed
 unsetenv
 unstage
 unstaged

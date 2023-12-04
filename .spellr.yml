@@ -1,7 +1,7 @@
 excludes:
   - vendor
-  - test/bats
-  - test/test_helper
+  - '*.terminal'
+  - '*.itermcolors'
 
 languages:
   ruby:

@@ -2,6 +2,8 @@
 
 RSpec.describe 'git rubocop hooks' do
   before do
+    puts run('env').output
+    puts run('ruby -v').output
     copy_file('.ruby-version')
     file('Gemfile').write(<<~RUBY)
       source 'https://rubygems.org'

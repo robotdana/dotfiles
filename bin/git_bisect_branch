@@ -3,7 +3,7 @@
 # TODO: test
 
 if echodo "$@"; then
-    echo ${COLOR_GREEN}HEAD passes${COLOR_RESET};
+    echo $'\033'"[32mHEAD passes"$'\033'[m;
 else
     echodo git bisect reset;
     echodo git bisect start;
@@ -11,7 +11,7 @@ else
     echodo git checkout "$(git_branch_fork_point)";
     if echodo "$@"; then
         echodo git bisect good;
-        git bisect run bash -cl "echodo $*";
+        git bisect run echodo "$@"
         echodo git bisect reset;
     else
         echodo git bisect reset;

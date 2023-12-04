@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+echodo git reset --quiet HEAD^

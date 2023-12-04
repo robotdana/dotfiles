@@ -9,7 +9,7 @@ else
   echodo git checkout "$1"
   if echodo "${@:2}"; then
     echodo git bisect good
-    git bisect run bash -cl "echodo ${@:2}"
+    git bisect run echodo "${@:2}"
     echodo git bisect reset
   else
     echodo git bisect reset

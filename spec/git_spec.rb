@@ -166,7 +166,7 @@ RSpec.describe 'git' do
     end
   end
 
-  describe 'git_reword' do
+  describe 'git reword' do
     it 'can reword the commit message' do
       git_checkout('-b branch')
       file('a').write('a')
@@ -180,7 +180,7 @@ RSpec.describe 'git' do
       sha_by_alias = run('git rev-parse --short HEAD^')
       expect(sha_by_alias).to have_output(/\A\h+\n\z/)
       expect(sha_by_name.output.to_s).to eq sha_by_alias.output.to_s
-      expect(run("git_reword 'to be changed'",
+      expect(run("git reword 'to be changed'",
                  env: { GIT_EDITOR: "sed -i.~ 's/to be changed/was changed/'" }))
         .not_to have_output
       expect(git_log).to have_output(

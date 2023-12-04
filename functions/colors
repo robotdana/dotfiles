@@ -1,19 +1,12 @@
 #!/usr/bin/env bash
 
-export COLOR_RED=$'\033[38;5;125m'
-export COLOR_GREEN=$'\033[38;5;48m'
-export COLOR_YELLOW=$'\033[38;5;227m'
-export COLOR_BLUE=$'\033[1;34m'
-export COLOR_AQUA=$'\033[1;36m'
-export COLOR_GREY=$'\033[0;90m'
-export COLOR_RESET=$'\033[0m'
 # Have less display colours
 # from: https://wiki.archlinux.org/index.php/Color_output_in_console#man
-export LESS_TERMCAP_mb=$COLOR_BLUE     # begin bold
-export LESS_TERMCAP_md=$COLOR_GREEN    # begin blink
+export LESS_TERMCAP_mb=$'\e[1;34m'     # begin bold
+export LESS_TERMCAP_md=$'\e[1;32m'     # begin blink
 export LESS_TERMCAP_so=$'\e[01;44;37m' # begin reverse video
-export LESS_TERMCAP_us=$COLOR_AQUA     # begin underline
-export LESS_TERMCAP_me=$COLOR_RESET    # reset bold/blink
-export LESS_TERMCAP_se=$COLOR_RESET    # reset reverse video
-export LESS_TERMCAP_ue=$COLOR_RESET    # reset underline
+export LESS_TERMCAP_us=$'\e[1;36m'     # begin underline
+export LESS_TERMCAP_me=$'\e[m'         # reset bold/blink
+export LESS_TERMCAP_se=$'\e[m'         # reset reverse video
+export LESS_TERMCAP_ue=$'\e[m'         # reset underline
 

@@ -27,9 +27,11 @@ fi
 git_update_submodules
 ( cd github-cctray && git remote add upstream git@github.com:joejag/github-cctray.git )
 
-ruby-install 3.0
-ruby-install 3.1
-ruby-install 3.2
-ruby-install 3.3.0-preview3
+if [[ -z "$CI" ]]; then
+  ruby-install 3.0
+  ruby-install 3.1
+  ruby-install 3.2
+  ruby-install 3.3.0-preview3
+fi
 
 install_launchagents.sh

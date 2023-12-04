@@ -4,7 +4,7 @@ RSpec.describe 'bash_support' do
   it 'returns current ruby version' do
     copy_file '.ruby-version'
     expect(run('ruby -v')).to have_output(
-      "ruby 3.2.2 (2023-03-30 revision e51014f9c0) [x86_64-darwin22]\n"
+      start_with('ruby 3.2.2 (2023-03-30 revision e51014f9c0)')
     )
   end
 

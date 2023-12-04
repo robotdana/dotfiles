@@ -11,7 +11,7 @@ RSpec.describe 'git rubocop hooks' do
       AllCops:
         NewCops: enable
     YML
-    run('bundle install --prefer-local', wait: 10)
+    run('bundle install --prefer-local', wait: 60)
     git('init')
     git_add('.')
     git_commit('--no-verify -m "Initial commit"')

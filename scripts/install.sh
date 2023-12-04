@@ -1,25 +1,26 @@
 #!/bin/bash
 
 set -e
+export PATH="~/.dotfiles/bin:$PATH"
 
-~/.dotfiles/bin/echodo ln -sf ~/.dotfiles/bash_profile ~/.bash_profile
-~/.dotfiles/bin/echodo ln -sf ~/.dotfiles/bashrc ~/.bashrc
-~/.dotfiles/bin/echodo ln -sf ~/.dotfiles/Brewfile ~/Brewfile
-~/.dotfiles/bin/echodo ln -sf ~/.dotfiles/gemrc ~/.gemrc
-~/.dotfiles/bin/echodo ln -sf ~/.dotfiles/gitconfig ~/.gitconfig
-~/.dotfiles/bin/echodo ln -sf ~/.dotfiles/gitignore ~/.gitignore
-~/.dotfiles/bin/echodo ln -sf ~/.dotfiles/gemrc ~/.gemrc
-~/.dotfiles/bin/echodo ln -sf ~/.dotfiles/irbrc ~/.irbrc
-~/.dotfiles/bin/echodo ln -sf ~/.dotfiles/finicky.js ~/.finicky.js
-~/.dotfiles/bin/echodo ln -sf ~/.dotfiles/vimrc ~/.vimrc
-~/.dotfiles/bin/echodo mkdir -p ~/.ssh
-~/.dotfiles/bin/echodo ln -sf ~/.dotfiles/ssh_config ~/.ssh/config
-~/.dotfiles/bin/echodo mkdir -p ~/.bundle
-~/.dotfiles/bin/echodo ln -sf ~/.dotfiles/bundle_config ~/.bundle/config
-~/.dotfiles/bin/echodo ln -sf ~/.dotfiles/mycnf ~/.my.cnf
-~/.dotfiles/bin/echodo ln -sf ~/.ruby-version ~/.ruby-version
-~/.dotfiles/bin/echodo mkdir -p ~/.dotfiles/locals
-~/.dotfiles/bin/echodo touch ~/.dotfiles/locals/secrets
+echodo ln -sf ~/.dotfiles/bash_profile ~/.bash_profile
+echodo ln -sf ~/.dotfiles/bashrc ~/.bashrc
+echodo ln -sf ~/.dotfiles/Brewfile ~/Brewfile
+echodo ln -sf ~/.dotfiles/gemrc ~/.gemrc
+echodo ln -sf ~/.dotfiles/gitconfig ~/.gitconfig
+echodo ln -sf ~/.dotfiles/gitignore ~/.gitignore
+echodo ln -sf ~/.dotfiles/gemrc ~/.gemrc
+echodo ln -sf ~/.dotfiles/irbrc ~/.irbrc
+echodo ln -sf ~/.dotfiles/finicky.js ~/.finicky.js
+echodo ln -sf ~/.dotfiles/vimrc ~/.vimrc
+echodo mkdir -p ~/.ssh
+echodo ln -sf ~/.dotfiles/ssh_config ~/.ssh/config
+echodo mkdir -p ~/.bundle
+echodo ln -sf ~/.dotfiles/bundle_config ~/.bundle/config
+echodo ln -sf ~/.dotfiles/mycnf ~/.my.cnf
+echodo ln -sf ~/.ruby-version ~/.ruby-version
+echodo mkdir -p ~/.dotfiles/locals
+echodo touch ~/.dotfiles/locals/secrets
 
 
 if [[ -z "$CI" ]]; then

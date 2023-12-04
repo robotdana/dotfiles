@@ -26,6 +26,7 @@ fi
 
 git_update_submodules
 ( cd github-cctray && git remote add upstream git@github.com:joejag/github-cctray.git )
+( cd monokai.terminal && git remote add upstream git@github.com:stephenway/monokai.terminal.git )
 
 if [[ -z "$CI" ]]; then
   ruby-install 3.0
@@ -34,4 +35,4 @@ if [[ -z "$CI" ]]; then
   ruby-install 3.3.0-preview3
 fi
 
-install_launchagents.sh
+. ~/.dotfiles/scripts/install_launchagents.sh

@@ -261,6 +261,7 @@ snginx
 speckly
 spotify
 sqlite
+stephenway
 stylelint
 stylelintrc
 submodule

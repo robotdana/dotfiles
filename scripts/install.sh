@@ -1,7 +1,8 @@
 #!/bin/bash
 
 set -e
-export PATH="~/.dotfiles/bin:$PATH"
+
+export PATH="$HOME/.dotfiles/bin:$PATH"
 
 echodo ln -sf ~/.dotfiles/bash_profile ~/.bash_profile
 echodo ln -sf ~/.dotfiles/bashrc ~/.bashrc
@@ -30,7 +31,7 @@ if [[ -z "$CI" ]]; then
   brew install mas
 fi
 
-~/.dotfiles/scripts/update.sh
+. ~/.dotfiles/scripts/update.sh
 
 open monokai.terminal/Monokai.terminal
 defaults write com.apple.Terminal Shell -string /bin/bash

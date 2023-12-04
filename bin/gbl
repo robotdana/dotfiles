@@ -3,5 +3,6 @@
 # `gbl [<base branch>]` git branch log
 # list commits added to this branch since forked from <base branch> or main branch.
 
-base_branch=${1:-"$(git_main_base_branch)"};
-git_log_oneline "$base_branch" | more -eRSF
+base_branch=${1:-"$(git_current_branch_range)"};
+shift
+git_log_oneline "$base_branch" "$@"

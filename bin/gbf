@@ -3,4 +3,6 @@
 # `gbf <filename>` git branch file
 
 filename=$1;
-git_log_oneline_new --follow --patch -- "$filename"
+range=${2:-git_current_branch_range}
+shift 2
+git_log_oneline --follow --patch "$range" "$@" -- "$filename"

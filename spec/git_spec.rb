@@ -9,7 +9,7 @@ RSpec.describe 'git' do
   describe 'git hooks' do
     it "doesn't stash when aborting commit" do
       create_file path: 'a-file-to-keep'
-      git_commit("-m 'Empty commit that will abort'", expect_exit: 1)
+      git_commit("-m 'Empty commit that will abort'", exit_with: 1)
       expect(git_log).to have_output("Initial commit\n")
       expect(file('a-file-to-keep')).to exist
     end
@@ -46,12 +46,19 @@ RSpec.describe 'git' do
       file('file1').write('amended text')
       git_add('file1')
       git_commit("-m 'Commit 3'")
-      expect(git('merge branch2', expect_exit: 1)).to have_output(<<~MESSAGE)
+      expect(git('merge branch2', exit_with: 1)).to have_output(<<~MESSAGE)
         CONFLICT (modify/delete): file1 deleted in branch2 and modified in HEAD.  Version HEAD of file1 left in tree.
         Automatic merge failed; fix conflicts and then commit the result.
       MESSAGE
 
-      expect(run('yes n | gmc')).to have_output(stdout: end_with("Merge branch 'branch2'\n"))
+      expect(
+        run('gmc', wait: 10) do |cmd|
+          expect(cmd).to have_output(stdout: end_with('(1/1) Stage deletion [y,n,q,a,d,?]? '), wait: 10)
+
+          cmd.stdin.puts('n')
+        end
+      ).to have_output(stdout: end_with("Merge branch 'branch2'\n"))
+
 
       expect(git_log).to have_output(
         [
@@ -75,11 +82,18 @@ RSpec.describe 'git' do
       git('checkout main')
       git('rm file1')
       git("commit -m 'Commit 3'")
-      expect(git('merge branch2', expect_exit: 1)).to have_output(<<~MESSAGE)
+      expect(git('merge branch2', exit_with: 1)).to have_output(<<~MESSAGE)
         CONFLICT (modify/delete): file1 deleted in HEAD and modified in branch2.  Version branch2 of file1 left in tree.
         Automatic merge failed; fix conflicts and then commit the result.
       MESSAGE
-      expect(run('yes n | gmc')).to have_output(stdout: end_with("Merge branch 'branch2'\n"))
+
+      expect(
+        run('gmc', wait: 10) do |cmd|
+          expect(cmd).to have_output(stdout: end_with('(1/1) Stage addition [y,n,q,a,d,e,?]? '), wait: 10)
+
+          cmd.stdin.puts('n')
+        end
+      ).to have_output(stdout: end_with("Merge branch 'branch2'\n"))
       expect(git_log).to have_output(
         [
           "Merge branch 'branch2'", 'Commit 3', 'Commit 2', 'Commit 1',
@@ -103,11 +117,15 @@ RSpec.describe 'git' do
       file('file2').write('something')
       git_add('file2')
       git_commit("-m 'Commit 3'")
-      expect(git('merge branch2', expect_exit: 1)).to have_output(<<~MESSAGE)
+      expect(git('merge branch2', exit_with: 1)).to have_output(<<~MESSAGE)
         CONFLICT (modify/delete): file1 deleted in HEAD and modified in branch2.  Version branch2 of file1 left in tree.
         Automatic merge failed; fix conflicts and then commit the result.
       MESSAGE
-      run('yes | gmc')
+      run('gmc', wait: 10) do |cmd|
+        expect(cmd).to have_output(stdout: end_with('(1/1) Stage addition [y,n,q,a,d,e,?]? '), wait: 10)
+
+        cmd.stdin.puts('y')
+      end
       expect(file('file1')).to exist
       expect(file('file2')).to exist
       expect(git_log).to have_output(
@@ -130,11 +148,15 @@ RSpec.describe 'git' do
       file('file1').write('amended text')
       git_add('file1')
       git_commit('-m "Commit 3"')
-      expect(git('merge branch2', expect_exit: 1)).to have_output(<<~MESSAGE)
+      expect(git('merge branch2', exit_with: 1)).to have_output(<<~MESSAGE)
         CONFLICT (modify/delete): file1 deleted in branch2 and modified in HEAD.  Version HEAD of file1 left in tree.
         Automatic merge failed; fix conflicts and then commit the result.
       MESSAGE
-      run('yes | gmc')
+      run('gmc') do |cmd|
+        expect(cmd).to have_output(stdout: end_with('(1/1) Stage deletion [y,n,q,a,d,?]? '), wait: 10)
+
+        cmd.stdin.puts('y')
+      end
       expect(file('file1')).not_to exist
       expect(git_log).to have_output(
         [

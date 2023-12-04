@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 echo git_commit_during_rebase;
-git_add_p && ( git_status_clean || git commit --no-edit --no-verify 2> /dev/null || ( git commit --amend --no-edit --no-verify ) ) && ( git_status_clean || git_stash )
+git_add_p && ( git_status_clean || git commit --no-edit --no-verify 2> /dev/null || ( ! git merge-base --is-ancestor HEAD "$(git_main_base_branch)" && git commit --amend --no-edit --no-verify || git commit -m "Auto lint" --no-verify ) ) && ( git_status_clean || git_stash )

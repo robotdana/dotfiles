@@ -6,7 +6,7 @@ require 'timeout'
 module Speckly
   class Command
     def initialize(command, *, merge_output: false, chdir: ::Dir.pwd, env: {}, **) # rubocop:disable Metrics
-      @command = [*Speckly.default_command_prefix, command, *args]
+      @command = [*Speckly.default_command_prefix, command, *]
       @env = ::Speckly.default_env.merge(env.transform_keys(&:to_s)).freeze
       @merge_output = merge_output
       @stdin = ::Speckly::IO.pipe
@@ -14,7 +14,7 @@ module Speckly
       @stderr = merge_output ? @stdout : ::Speckly::IO.pipe
       _, _, @pid = ::PTY.spawn(
         @env,
-        *Speckly.default_command_prefix,
+        *::Speckly.default_command_prefix,
         command,
         *,
         unsetenv_others: true,

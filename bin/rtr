@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-    rt --failure-exit-code 2 "$@";
-    [[ "$?" != "1" ]] && rtr "$@"
+rt --failure-exit-code 2 "$@";
+[[ "$?" != "1" ]] && rtr "$@"

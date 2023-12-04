@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [[ "$(git_branch_name)" == "$(git_main_branch)" ]]; then
+  echo HEAD
+else
+  echo "$(git_main_base_branch)"..HEAD
+fi

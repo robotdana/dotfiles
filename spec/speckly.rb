@@ -7,16 +7,16 @@ require_relative 'speckly/io'
 require_relative 'speckly/session'
 require_relative 'speckly/eventually'
 
-module Speckly
+module Speckly # rubocop:disable Metrics
   @original_working_directory = Dir.pwd
-
-  @default_env = (Bundler ? ::Bundler.original_env.dup : ENV.to_h)
+  @default_env = defined?(Bundler) ? Bundler.original_env.dup : ENV.to_h
+  @default_debug_login_shell = 'bash -l' # TODO: guess which shell they use; https://stackoverflow.com/questions/3327013/how-to-determine-the-current-interactive-shell-that-im-in-command-line
   @default_max_wait_time = 2
   @default_command_prefix = []
 
   class << self
     attr_writer :default_env, :default_max_wait_time, :default_command_prefix
-    attr_accessor :original_working_directory, :current_session
+    attr_accessor :original_working_directory, :current_session, :default_debug_login_shell
 
     def default_env
       @default_env ||= defined?(Bundler) ? ::Bundler.original_env.dup : ENV.to_h.dup
@@ -51,17 +51,33 @@ module Speckly
     Speckly.current_session = nil
   end
 
-  def run_command(cmd, *, expect_exit: 0, anywhere: false, chdir: Speckly.session.dir, **) # rubocop:disable Metrics
+  def run_command( # rubocop:disable Metrics
+    cmd,
+    *,
+    exit_with: 0,
+    wait: Speckly.default_max_wait_time,
+    anywhere: false,
+    chdir: Speckly.session.dir,
+    **
+  )
     chdir = Speckly.path(chdir, anywhere:)
     command = Command.new(cmd, *, chdir:, **)
-
     Speckly.session.commands << command
-    Speckly.session.chdir(chdir) { yield command } if block_given?
+    ::Dir.chdir(chdir) { yield command } if block_given?
 
-    expect(command).to have_exitstatus(expect_exit) if expect_exit
+    expect(command).to have_exitstatus(exit_with, wait:) if exit_with
     command
   end
   alias_method :run, :run_command
+
+  def debug(new_login_shell_command = Speckly.default_debug_login_shell) # rubocop:disable Metrics
+    ::Process.wait ::Process.spawn(
+      ::Speckly.default_env,
+      new_login_shell_command,
+      chdir: Speckly.session.dir,
+      unsetenv_others: true
+    )
+  end
 
   def create_file(*lines, path:, anywhere: false) # rubocop:disable Metrics
     path = Speckly.path(path, anywhere:)

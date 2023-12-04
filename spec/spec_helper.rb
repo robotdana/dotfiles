@@ -21,7 +21,7 @@ require 'bundler/setup'
 require 'simplecov' if ENV['COVERAGE']
 
 require_relative 'speckly/rspec'
-Speckly.default_max_wait_time = 10
+Speckly.default_max_wait_time = 5
 Speckly.default_command_prefix = []
 
 Dir.glob(File.expand_path('support/**/*.rb', __dir__)).each do |file|

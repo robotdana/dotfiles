@@ -21,16 +21,6 @@ module Speckly
 
     attr_reader :commands
 
-    def chdir(dir, return_if: :block_given?) # rubocop:disable Metrics/MethodLength
-      return_if = block_given? if return_if == :block_given?
-      return_to = ::Dir.pwd if return_if
-      dir = mktmpdir if dir == :temp
-      @dir = Pathname.new(dir)
-      yield if block_given?
-    ensure
-      chdir(return_to) if return_to
-    end
-
     def cleanup
       ::Dir.chdir(@original_dir)
       commands.each(&:cleanup)

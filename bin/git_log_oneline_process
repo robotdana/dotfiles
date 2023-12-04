@@ -1,11 +1,8 @@
 #!/usr/bin/env ruby --disable-all
 
-if ARGV.delete('--off')
-  while gets
-    puts $_
-  end
-  exit 0
-end
+# frozen_string_literal: true
+
+# rubocop:disable Style/SpecialGlobalVars
 
 def branch_exist?(branch)
   (
@@ -27,38 +24,52 @@ def current_branch_main?
   main_branch == current_branch
 end
 
-$forks = {
-  magenta: 'upstream/HEAD',
-  blue: (branch_exist?('origin/HEAD') ? 'origin/HEAD' : main_branch),
-  cyan: ('@{u}' unless current_branch_main?)
-}
+def forks
+  @forks ||= {
+    magenta: 'upstream/HEAD',
+    blue: (branch_exist?('origin/HEAD') ? 'origin/HEAD' : main_branch),
+    cyan: ('@{u}' unless current_branch_main?),
+    green: 'HEAD'
+  }.select { |_, v| branch_exist?(v) }
+end
 
-$forks.select! { |k, v| branch_exist?(v) }
+# this is split on the magic sigil in git_log_oneline
+def next_line_split(line)
+  line.split("\e[m\e[31m\e[32m\e[34m\e[m", 2)
+end
 
 gets
-exit 0 unless $_
-sha, rest = $_.split("\e", 2)
+line = $_
+exit 0 unless line
+sha, rest = next_line_split(line)
 first = `git rev-parse --short #{sha}^ 2>/dev/null`.chomp
 first = first.empty? ? '' : "#{first}.."
-$forks.transform_values! do |v|
+forks.transform_values! do |v|
   `git log --format=%h #{first}#{v}`.chomp.split("\n").to_h { |k| [k, nil] }
 end
-def render(sha, rest)
-  color = if $forks[:magenta]&.key?(sha)
+
+def render(sha, rest) # rubocop:disable Metrics
+  color = if forks[:magenta]&.key?(sha)
     "\e[35m"
-  elsif $forks[:blue]&.key?(sha)
+  elsif forks[:blue]&.key?(sha)
     "\e[34m"
-  elsif $forks[:cyan]&.key?(sha)
+  elsif forks[:cyan]&.key?(sha)
     "\e[36m"
-  else
+  elsif forks[:green]&.key?(sha)
     "\e[32m"
   end
-  "#{color}#{sha}\e#{rest.chomp}\e[0m"
+  "#{color}#{sha}\e[m#{rest.chomp}\e[0m"
 end
-print "\x1b[?7l"
-print render(sha, rest)
+
+print "\e[?7l" # disable line wrap
+print render(sha.chomp, rest)
+
 while gets
   puts
-  print render(*$_.split("\e", 2))
+  sha, rest = next_line_split($_)
+  print render(sha.chomp, rest.to_s)
 end
-puts "\x1b[?7h"
+
+puts "\e[?7h" # reenable line wrap
+
+# rubocop:enable Style/SpecialGlobalVars

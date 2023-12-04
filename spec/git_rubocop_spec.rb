@@ -11,9 +11,7 @@ RSpec.describe 'git rubocop hooks' do
       AllCops:
         NewCops: enable
     YML
-    run('bundle install')
-    run('bundle lock --add-platform universal-darwin-20')
-    run('bundle lock --add-platform x86_64-darwin-18')
+    run('bundle install --prefer-local', wait: 10)
     git('init')
     git_add('.')
     git_commit('--no-verify -m "Initial commit"')
@@ -74,22 +72,36 @@ RSpec.describe 'git rubocop hooks' do
     file('foo.rb').write(bad_rb)
     file('bar.rb').write(bad_rb)
     git_add('.')
-    run('gc Fail rubocop', expect_exit: be_nonzero)
+    run('gc Fail rubocop', exit_with: be_nonzero)
     run('git_rebasing') # paused rebase for fixing
     file('foo.rb').write(good_rb)
     file('bar.rb').write(good_rb)
-    run('yes | grc')
+    run('grc', wait: 5) do |cmd|
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,?]? '), wait: 10)
+
+      cmd.stdin.puts('y')
+
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,?]? '), wait: 10)
+
+      cmd.stdin.puts('y')
+    end
     expect_clean_git_status
     expect_empty_stash
-    run('git_rebasing', expect_exit: be_nonzero) # no longer rebasing
+    run('git_rebasing', exit_with: be_nonzero) # no longer rebasing
   end
 
   it 'asks to patch add autocorrections when failing the rubocop hook' do
     file('foo.rb').write(bad_autofixable_rb)
     file('bar.rb').write(bad_autofixable_rb)
     git_add('.')
-    run('yes | gc Auto rubocop')
-    run('git_rebasing', expect_exit: be_nonzero) # completed rebase
+    run('gc Auto rubocop') do |cmd|
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,?]? '), wait: 10)
+      cmd.stdin.puts('y')
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,?]? '), wait: 20)
+      cmd.stdin.puts('y')
+    end
+
+    run('git_rebasing', exit_with: be_nonzero) # completed rebase
     expect_clean_git_status
     expect_empty_stash
 
@@ -102,20 +114,24 @@ RSpec.describe 'git rubocop hooks' do
     file('foo.rb').write(good_rb)
     file('bar.rb').write(bad_rb)
     git_add('foo.rb')
-    run('yes q | gc Pass rubocop', expect_exit: be_nonzero)
+    run('gc Pass rubocop', exit_with: be_nonzero, wait: 10) do |cmd|
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage addition [y,n,q,a,d,e,?]? '), wait: 10)
+
+      cmd.stdin.puts('q')
+    end
     # it fails due to the rebase not attempting, but does make the commit:
     expect(git_log)
       .to have_output(['Pass rubocop', 'Initial commit'], split: true)
     expect(run('git show --pretty=format: --name-only'))
       .to have_output("foo.rb\n")
 
-    run('git_rebasing', expect_exit: be_nonzero)
+    run('git_rebasing', exit_with: be_nonzero)
     expect(run('git_untracked')).to have_output("bar.rb\n")
 
     # manually lint, TODO: remove this step
     run('git_stash_only_untracked')
     run('git_autolint_head')
-    run('git_rebasing', expect_exit: be_nonzero)
+    run('git_rebasing', exit_with: be_nonzero)
     run('git stash pop')
 
     expect(run('git_untracked')).to have_output("bar.rb\n")
@@ -126,7 +142,11 @@ RSpec.describe 'git rubocop hooks' do
     file('foo.rb').write(good_rb)
     file('bar.rb').write(bad_rb)
     git_add('bar.rb')
-    run('yes q | gc Pass rubocop', expect_exit: be_nonzero)
+    run('gc Pass rubocop', exit_with: be_nonzero, wait: 10) do |cmd|
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage addition [y,n,q,a,d,e,?]? '), wait: 10)
+
+      cmd.stdin.puts('q')
+    end
     # it fails due to the rebase not attempting, but does make the commit:
     expect(git_log)
       .to have_output(
@@ -135,16 +155,20 @@ RSpec.describe 'git rubocop hooks' do
     expect(run('git show --pretty=format: --name-only'))
       .to have_output("bar.rb\n")
 
-    run('git_rebasing', expect_exit: be_nonzero)
+    run('git_rebasing', exit_with: be_nonzero)
     expect(run('git_untracked')).to have_output("foo.rb\n")
 
     # manually lint, TODO: remove this step
     run('git_stash_only_untracked')
-    run('git_autolint_head', expect_exit: be_nonzero)
+    run('git_autolint_head', exit_with: be_nonzero)
     run('git_rebasing')
     file('bar.rb').write(good_rb)
-    run('yes | grc')
-    run('git_rebasing', expect_exit: be_nonzero)
+    run('grc') do |cmd|
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,?]? '), wait: 10)
+
+      cmd.stdin.puts('y')
+    end
+    run('git_rebasing', exit_with: be_nonzero)
 
     run('git stash pop')
     expect(run('git_untracked')).to have_output("foo.rb\n")

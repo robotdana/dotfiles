@@ -47,20 +47,20 @@ module Speckly
       to_s.inspect
     end
 
-    def print(string)
-      writable?
+    def print(string, wait: Speckly.default_max_wait_time)
+      writable?(wait)
       @io.print(string.dup.force_encoding(Encoding::BINARY))
       @io.flush
     end
 
-    def puts(string)
-      writable?
+    def puts(string, wait: Speckly.default_max_wait_time)
+      writable?(wait)
       @io.puts(string.dup.force_encoding(Encoding::BINARY))
       @io.flush
     end
 
-    def writable?
-      ::IO.select(nil, [@io], nil, 0) # rubocop:disable Lint/IncompatibleIoSelectWithFiberScheduler
+    def writable?(wait)
+      @io.wait_writable(wait)
     end
 
     def readable?
@@ -78,7 +78,7 @@ module Speckly
     private
 
     def buf
-      @buf ||= +''.force_encoding(Encoding::BINARY)
+      @buf ||= (+'').force_encoding(Encoding::BINARY)
     end
 
     def buf_to_s

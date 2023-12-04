@@ -7,7 +7,7 @@ env
 ~/.dotfiles/scripts/install.sh
 echo 'ci.sh after install.sh env:'
 env
-. ~/.bash_profile
+. ~/.bashrc
 echo 'ci.sh after source bash_profile env:'
 env
 git config --global commit.gpgsign false

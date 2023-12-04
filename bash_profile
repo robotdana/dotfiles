@@ -6,6 +6,7 @@ bind '"\e[B":history-search-forward'
 set +H
 shopt -s histappend
 
+echo $PATH
 export PATH="$HOME/.dotfiles/bin:$HOME/.cargo/bin:/usr/local/opt:/usr/local/bin:/usr/local/sbin:/usr/local/lib/node:$PATH"
 export EDITOR='code --wait'
 export GUI_EDITOR=$EDITOR

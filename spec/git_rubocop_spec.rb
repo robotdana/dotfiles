@@ -72,7 +72,7 @@ RSpec.describe 'git rubocop hooks' do
     file('foo.rb').write(bad_rb)
     file('bar.rb').write(bad_rb)
     git_add('.')
-    run('gc Fail rubocop', exit_with: be_nonzero)
+    run('gc Fail rubocop', exit_with: be_nonzero, wait: 5)
     run('git_rebasing') # paused rebase for fixing
     file('foo.rb').write(good_rb)
     file('bar.rb').write(good_rb)
@@ -130,7 +130,7 @@ RSpec.describe 'git rubocop hooks' do
 
     # manually lint, TODO: remove this step
     run('git_stash_only_untracked')
-    run('git_autolint_head')
+    run('git_autolint_head', wait: 5)
     run('git_rebasing', exit_with: be_nonzero)
     run('git stash pop')
 
@@ -267,31 +267,40 @@ RSpec.describe 'git rubocop hooks' do
     run('git_rebasing', exit_with: be_nonzero)
     expect(file('foo.rb').read).to eq "#{good_rb}# comment\n"
   end
+
+  it 'patch add conflict fail rubocop hook' do
+    file('foo.rb').write(bad_rb)
+    git_add('foo.rb')
+    file('foo.rb').write(good_rb)
+    file('foo.rb').open('a') do |f|
+      f << "CONFLICT = false\n"
+    end
+    run('gc Fail rubocop', exit_with: be_nonzero, wait: 10) do |cmd|
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,?]? '), wait: 10)
+
+      cmd.stdin.puts('q')
+    end
+    run('git_rebasing')
+    file('foo.rb').write("#{good_rb}CONFLICTED = true\n")
+    run('grc') do |cmd|
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,?]? '), wait: 10)
+
+      cmd.stdin.puts('y')
+    end
+    run('git_rebasing', exit_with: be_nonzero)
+    expect(git_log).to have_output(['Auto lint', 'Fail rubocop', 'Initial commit'], split: true)
+    expect(file('foo.rb').read).to eq <<~RUBY
+      # frozen_string_literal: true
+
+      def foo
+        puts true
+      end
+      <<<<<<< Updated upstream
+      CONFLICTED = true
+      ||||||| Stash base
+      =======
+      CONFLICT = false
+      >>>>>>> Stashed changes
+    RUBY
+  end
 end
-
-# @test "patch add conflict fail rubocop hook" {
-#   bad_rb > foo.rb
-#   git add foo.rb
-#   good_rb > foo.rb
-#   echo "CONFLICT = false" >> foo.rb
-#   ( yes q | RBENV_VERSION=3.2.2 rbenv exec gc "Fail rubocop" ) || true
-#   assert git_rebasing
-#   good_rb > foo.rb
-#   echo "CONFLICTED = true" >> foo.rb
-#   yes | RBENV_VERSION=3.2.2 rbenv exec grc
-#   refute git_rebasing
-
-#   run git log --format="%s"
-#   assert_output "Fail rubocop
-# Initial commit"
-#   # assert_git_stash_empty
-#   assert_equal "$(cat foo.rb)" "$(good_rb)
-# <<<<<<< Updated upstream
-# CONFLICTED = true
-# ||||||| Stash base
-# =======
-# CONFLICT = false
-# >>>>>>> Stashed changes"
-# }
-
-# end

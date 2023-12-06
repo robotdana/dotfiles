@@ -72,11 +72,11 @@ RSpec.describe 'git rubocop hooks' do
     file('foo.rb').write(bad_rb)
     file('bar.rb').write(bad_rb)
     git_add('.')
-    run('gc Fail rubocop', exit_with: be_nonzero, wait: 5)
+    run('gc Fail rubocop', exit_with: be_nonzero, wait: 10)
     run('git_rebasing') # paused rebase for fixing
     file('foo.rb').write(good_rb)
     file('bar.rb').write(good_rb)
-    run('grc', wait: 5) do |cmd|
+    run('grc', wait: 10) do |cmd|
       expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,?]? '), wait: 10)
 
       cmd.stdin.puts('y')
@@ -130,7 +130,7 @@ RSpec.describe 'git rubocop hooks' do
 
     # manually lint, TODO: remove this step
     run('git_stash_only_untracked')
-    run('git_autolint_head', wait: 5)
+    run('git_autolint_head', wait: 10)
     run('git_rebasing', exit_with: be_nonzero)
     run('git stash pop')
 

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
-    if [[ -f .spellr.yml ]]; then
-        echodo be spellr -i $(git_modified_head) && on_dirty "$@";
-    fi
+if [[ -f .spellr.yml ]]; then
+  if [[ -f Gemfile ]]; then
+    echodo be spellr -i $(git_modified_head) && on_dirty "$@";
+  else
+    echodo docker run -it -v $PWD:/app robotdana/spellr -i $(git_modified_head) && on_dirty "$@";
+  fi
+fi

@@ -204,6 +204,7 @@ params
 pathspec
 pbcopy
 pcre
+phpbrew
 pickaxe
 pids
 pinentry

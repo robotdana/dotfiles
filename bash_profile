@@ -46,6 +46,10 @@ if [[ -e /usr/local/bin/direnv ]]; then
   fi
 fi
 
+if [[ -f ~/.phpbrew/bashrc ]]; then
+  source ~/.phpbrew/bashrc
+fi
+
 . ~/.dotfiles/functions/track_bash_profile_dependency
 track_source ~/.dotfiles/functions/colors
 track_source ~/.dotfiles/functions/functionify

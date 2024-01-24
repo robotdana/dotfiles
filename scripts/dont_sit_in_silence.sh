@@ -12,9 +12,7 @@ fi
 
 function alert_if_no_audio {
   # from https://apple.stackexchange.com/questions/363416/how-to-check-if-any-audio-is-currently-playing-via-terminal
-  if [[ "$(pmset -g | grep -F ' sleep')" == *"coreaudiod"* ]]; then
-    # alerter -remove ALL -sender com.spotify.client
-  else
+  if ! [[ "$(pmset -g | grep -F ' sleep')" == *"coreaudiod"* ]]; then
     # from: https://github.com/vjeantet/alerter
     case "$(alerter -title "Silence Detector" \
         -message "You are sitting in silence" \

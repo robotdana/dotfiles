@@ -6,8 +6,8 @@ bind '"\e[B":history-search-forward'
 set +H
 shopt -s histappend
 
-echo $PATH
-export PATH="$HOME/.dotfiles/bin:$HOME/.cargo/bin:/usr/local/opt:/usr/local/bin:/usr/local/sbin:/usr/local/lib/node:$PATH"
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$HOME/.dotfiles/bin:$PYENV_ROOT/bin:$HOME/.cargo/bin:/usr/local/opt:/usr/local/bin:/usr/local/sbin:/usr/local/lib/node:$PATH"
 export EDITOR='code --wait'
 export GUI_EDITOR=$EDITOR
 export THOR_MERGE=$EDITOR' -d $1 $2'
@@ -22,10 +22,15 @@ if [[ -f ~/.cargo/env ]]; then
   source /Users/dana/.cargo/env
 fi
 
+if [[ ! -z "$(which pyenv)" ]]; then
+  eval "$(pyenv init -)"
+fi
+
 source $(brew --prefix chruby)/share/chruby/chruby.sh
 source $(brew --prefix chruby)/share/chruby/auto.sh
 
-source ~/.dotfiles/locals/secrets.sh
+# needs to be after these other things which mess with path
+export PATH="$HOME/.dotfiles/bin:$PATH"
 
 if [[ -e /usr/local/bin/direnv ]]; then
   # direnv hook bash. idk what it's doing but i'm sure it's fine

@@ -295,6 +295,7 @@ urls
 usr
 utf
 vimrc
+virtualenv
 vscode
 webpack
 wget

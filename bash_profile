@@ -24,6 +24,10 @@ fi
 
 if [[ ! -z "$(which pyenv)" ]]; then
   eval "$(pyenv init -)"
+
+  if [[ ! -z "$(which pyenv-virtualenv-init)" ]]; then
+    eval "$(pyenv virtualenv-init -)";
+  fi
 fi
 
 source $(brew --prefix chruby)/share/chruby/chruby.sh

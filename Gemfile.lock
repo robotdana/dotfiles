@@ -19,7 +19,8 @@ GEM
     racc (1.7.3)
     rainbow (3.1.1)
     regexp_parser (2.8.2)
-    rexml (3.2.6)
+    rexml (3.3.3)
+      strscan
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
       rspec-expectations (~> 3.12.0)
@@ -59,6 +60,7 @@ GEM
       fast_ignore (>= 0.11.0)
       jaro_winkler
       parallel (~> 1.0)
+    strscan (3.1.0)
     tty_string (1.1.1)
     unicode-display_width (2.5.0)
 

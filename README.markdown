@@ -4,15 +4,11 @@
 
 ```
 xcode-select --install
+ssh-keygen -t ed25519 -f ~/.ssh/github
+open https://github.com/settings/keys
 git clone git@github.com:robotdana/dotfiles.git ~/.dotfiles
 ~/.dotfiles/scripts/install.sh
-change the computer name
 sign in to 1pass
-copy istatmenus config from 1pass
-sign in to everything else
-generate an ssh key
-add to github
-set up gpg
+~/.dotfiles/scripts/gpg-setup.sh
 find a cool background
-
 ```

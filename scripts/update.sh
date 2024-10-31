@@ -9,21 +9,17 @@ function git_version_number {
 }
 
 # get git-completion
-echodo curl "https://raw.githubusercontent.com/git/git/v$(git_version_number)/contrib/completion/git-completion.bash" > ~/.dotfiles/locals/git-completion.bash
+echodo curl "https://raw.githubusercontent.com/git/git/refs/tags/v$(git_version_number)/contrib/completion/git-completion.bash" > ~/.dotfiles/locals/git-completion.bash
 if [[ $(wc -l ~/.dotfiles/locals/git-completion.bash | awk -F' ' '{print $1}') = "1" ]]; then
   echoerr "git-completion didn't download correctly"
   exit 1
 fi
 
 git_update_submodules
-( cd github-cctray && git remote add upstream git@github.com:joejag/github-cctray.git )
 ( cd monokai.terminal && git remote add upstream git@github.com:stephenway/monokai.terminal.git )
 
 if [[ -z "$CI" ]]; then
-  ruby-install 3.0
-  ruby-install 3.1
-  ruby-install 3.2
-  ruby-install 3.3.0-preview3
+  ruby-install 3
 fi
 
-. ~/.dotfiles/scripts/install_launchagents.sh
+# . ~/.dotfiles/scripts/install_launchagents.sh

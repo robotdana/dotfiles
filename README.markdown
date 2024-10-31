@@ -5,10 +5,11 @@
 ```
 xcode-select --install
 ssh-keygen -t ed25519 -f ~/.ssh/github
+ssh-add ~/.ssh/github
 open https://github.com/settings/keys
 git clone git@github.com:robotdana/dotfiles.git ~/.dotfiles
 ~/.dotfiles/scripts/install.sh
 sign in to 1pass
-~/.dotfiles/scripts/gpg-setup.sh
+add gpg
 find a cool background
 ```

@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 
-    version=${1:-$(cat .ruby-version)};
+if (( $# < 1 )); then
+    version=$(cat .ruby-version);
     if [[ -z "$version" ]]; then
         echoerr "No version given";
     else
-        mkdir -p ~/.rubies;
-        echodo ruby-build $1 "$HOME/.rubies/$1" && resource;
+        ruby-install $version
     fi
+else
+    mkdir -p ~/.rubies;
+    for version in "$@"; do
+        echodo ruby-build $version "$HOME/.rubies/$version";
+    done
+    resource
+fi

@@ -16,10 +16,10 @@ if [[ $(wc -l ~/.dotfiles/locals/git-completion.bash | awk -F' ' '{print $1}') =
 fi
 
 git_update_submodules
-( cd monokai.terminal && git remote add upstream git@github.com:stephenway/monokai.terminal.git )
-
-if [[ -z "$CI" ]]; then
-  ruby-install 3
-fi
+# ( cd monokai.terminal && git remote add upstream git@github.com:stephenway/monokai.terminal.git )
 
 # . ~/.dotfiles/scripts/install_launchagents.sh
+
+if [[ -z "$CI" ]]; then
+  ruby-install $(cat .ruby-version) $(ruby-build --list | grep '^\d')
+fi

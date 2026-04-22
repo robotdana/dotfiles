@@ -10,5 +10,5 @@
             fi;
         fi;
     else
-        false
+        exit 1
     fi

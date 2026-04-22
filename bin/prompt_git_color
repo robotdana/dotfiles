@@ -1,19 +1,17 @@
 #!/usr/bin/env bash
 
-if [[ -e .git ]]; then
+if git rev-parse 2>/dev/null; then
   if git_status_clean; then
     if [[ "$(git rev-parse --verify -q @{u} 2>/dev/null)" == "$(git rev-parse -q HEAD 2>/dev/null)" ]]; then
       if [[ "$(git_branch_name)" == "$(git_main_branch)" ]]; then
-        echo -en $'\033[34m' # blue is main
+        echo -en $'\033[34m' # blue is merged
       else
-        echo -en $'\033[36m' # cyan is origin/branch
+        echo -en $'\033[36m' # cyan is pushed
       fi
-    elif [[ -z $(git remote) ]] && [[ "$(git_branch_name)" == "$(git_main_branch)" ]]; then
-      echo -en $'\033[34m' # blue is main
     else
-      echo -en $'\033[32m' # green is branch unpushed
+      echo -en $'\033[32m' # green is committed
     fi
   else
-    echo -en '\033[33m' # yellow is dirty working branch
+    echo -en '\033[33m' # yellow is uncommitted
   fi
 fi

@@ -15,11 +15,14 @@
         # interactive add
         git_track_untracked;
         git add -p;
-
-        # clean up unadded
         git_untrack_new_unstaged;
-        git stash save --keep-index --include-untracked --quiet;
-        comm -12 <(git_status_filtered ?? | sort) <(git_status_filtered 'D ' | sort) | xargs rm;
+
+        # this should be how --keep-index works, but it isn't
+        staged=$(git stash create --staged);
+        git stash --include-untracked --quiet;
+        if [[ ! -z "$staged" ]]; then
+          git stash apply $staged --quiet
+        fi
 
         # restore merge flags
         cp /tmp/conflict_MERGE_MSG .git/MERGE_MSG;

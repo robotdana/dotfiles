@@ -5,7 +5,7 @@ RSpec.describe 'git rubocop hooks' do
     copy_file('.ruby-version')
     file('Gemfile').write(<<~RUBY)
       source 'https://rubygems.org'
-      gem 'rubocop', '1.55.1'
+      gem 'rubocop', '1.68.0'
     RUBY
     file('.rubocop.yml').write(<<~YML)
       AllCops:
@@ -77,11 +77,11 @@ RSpec.describe 'git rubocop hooks' do
     file('foo.rb').write(good_rb)
     file('bar.rb').write(good_rb)
     run('grc', wait: 10) do |cmd|
-      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,?]? '), wait: 10)
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,p,?]? '), wait: 10)
 
       cmd.stdin.puts('y')
 
-      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,?]? '), wait: 10)
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,p,?]? '), wait: 10)
 
       cmd.stdin.puts('y')
     end
@@ -95,9 +95,9 @@ RSpec.describe 'git rubocop hooks' do
     file('bar.rb').write(bad_autofixable_rb)
     git_add('.')
     run('gc Auto rubocop') do |cmd|
-      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,?]? '), wait: 10)
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,p,?]? '), wait: 10)
       cmd.stdin.puts('y')
-      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,?]? '), wait: 20)
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,p,?]? '), wait: 20)
       cmd.stdin.puts('y')
     end
 
@@ -115,7 +115,7 @@ RSpec.describe 'git rubocop hooks' do
     file('bar.rb').write(bad_rb)
     git_add('foo.rb')
     run('gc Pass rubocop', exit_with: be_nonzero, wait: 10) do |cmd|
-      expect(cmd).to have_output(stdout: end_with('(1/1) Stage addition [y,n,q,a,d,e,?]? '), wait: 10)
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage addition [y,n,q,a,d,e,p,?]? '), wait: 10)
 
       cmd.stdin.puts('q')
     end
@@ -143,7 +143,7 @@ RSpec.describe 'git rubocop hooks' do
     file('bar.rb').write(bad_rb)
     git_add('bar.rb')
     run('gc Pass rubocop', exit_with: be_nonzero, wait: 10) do |cmd|
-      expect(cmd).to have_output(stdout: end_with('(1/1) Stage addition [y,n,q,a,d,e,?]? '), wait: 10)
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage addition [y,n,q,a,d,e,p,?]? '), wait: 10)
 
       cmd.stdin.puts('q')
     end
@@ -164,7 +164,7 @@ RSpec.describe 'git rubocop hooks' do
     run('git_rebasing')
     file('bar.rb').write(good_rb)
     run('grc') do |cmd|
-      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,?]? '), wait: 10)
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,p,?]? '), wait: 10)
 
       cmd.stdin.puts('y')
     end
@@ -179,7 +179,7 @@ RSpec.describe 'git rubocop hooks' do
     file('foo.rb').write(good_rb)
     git_add('bar.rb')
     run('gc Auto rubocop', exit_with: be_nonzero) do |cmd|
-      expect(cmd).to have_output(stdout: end_with('(1/1) Stage addition [y,n,q,a,d,e,?]? '), wait: 10)
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage addition [y,n,q,a,d,e,p,?]? '), wait: 10)
 
       cmd.stdin.puts('q')
     end
@@ -190,7 +190,7 @@ RSpec.describe 'git rubocop hooks' do
     # manually lint
     run('git_stash_only_untracked')
     run('git_autolint_head') do |cmd|
-      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,?]? '), wait: 10)
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,p,?]? '), wait: 10)
 
       cmd.stdin.puts('y')
     end
@@ -211,7 +211,7 @@ RSpec.describe 'git rubocop hooks' do
       .to have_output("foo.rb\n")
 
     run('gc Pass rubocop') do |cmd|
-      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,?]? '), wait: 10)
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,p,?]? '), wait: 10)
 
       cmd.stdin.puts('n')
     end
@@ -230,14 +230,14 @@ RSpec.describe 'git rubocop hooks' do
     expect(run 'git diff --name-only')
       .to have_output("foo.rb\n")
     run('gc Fail rubocop', exit_with: be_nonzero) do |cmd|
-      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,?]? '), wait: 10)
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,p,?]? '), wait: 10)
 
       cmd.stdin.puts('n')
     end
     run('git_rebasing')
     file('foo.rb').write(good_rb)
     run('grc') do |cmd|
-      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,?]? '), wait: 10)
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,p,?]? '), wait: 10)
 
       cmd.stdin.puts('y')
     end
@@ -256,11 +256,11 @@ RSpec.describe 'git rubocop hooks' do
     expect(run 'git diff --name-only')
       .to have_output("foo.rb\n")
     run('gc Auto rubocop') do |cmd|
-      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,?]? '), wait: 10)
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,e,p,?]? '), wait: 10)
 
       cmd.stdin.puts('n') # the comment
 
-      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,?]? '), wait: 10)
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,p,?]? '), wait: 10)
 
       cmd.stdin.puts('y') # the correction
     end
@@ -276,14 +276,14 @@ RSpec.describe 'git rubocop hooks' do
       f << "CONFLICT = false\n"
     end
     run('gc Fail rubocop', exit_with: be_nonzero, wait: 10) do |cmd|
-      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,?]? '), wait: 10)
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,p,?]? '), wait: 10)
 
       cmd.stdin.puts('q')
     end
     run('git_rebasing')
     file('foo.rb').write("#{good_rb}CONFLICTED = true\n")
     run('grc') do |cmd|
-      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,?]? '), wait: 10)
+      expect(cmd).to have_output(stdout: end_with('(1/1) Stage this hunk [y,n,q,a,d,s,e,p,?]? '), wait: 10)
 
       cmd.stdin.puts('y')
     end

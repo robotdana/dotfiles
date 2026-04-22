@@ -4,7 +4,7 @@
 unsorted_remotes=( $(git remote) );
 
 if (( ${#unsorted_remotes[@]} == 0 )); then
-  false
+  exit 1
 else
   # sort origin and upstream first
   origin=()
@@ -27,5 +27,5 @@ else
       ( git fetch "$remote" >/dev/null 2>&1 && \ git remote set-head "$remote" -a >/dev/null 2>&1 )
     [[ -z "$found" ]] && found=$(git_branch_name "$remote"/HEAD 2>/dev/null)
   done
-  [[ ! -z "$found" ]] && echo $found || false
+  [[ ! -z "$found" ]] && echo $found || exit 1
 fi

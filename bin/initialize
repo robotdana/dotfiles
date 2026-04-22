@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+track_source ~/.dotfiles/functions/initialize/"$1"

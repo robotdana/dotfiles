@@ -3,3 +3,4 @@
 .git-fake-stash
 .buildkite-failures
 .local_notes
+.dana-ignored

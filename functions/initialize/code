@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if [[ ! -z "$(which code)" ]]; then
+  export EDITOR='code --wait'
+  export GUI_EDITOR=$EDITOR
+  export THOR_MERGE=$EDITOR' -d $1 $2'
+fi
+
+[[ "$TERM_PROGRAM" == "vscode" ]] && . /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh

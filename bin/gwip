@@ -3,4 +3,4 @@
 # `gwip` git wip
 # commit everything carelessly with the message `wip`
 
-git_non_release_branch && echodo git add . && echodo git commit --no-verify -m "WIP"
+git_non_release_branch && echodo git add "$(git rev-parse --show-cdup)./" && echodo git commit --no-verify -m "WIP"

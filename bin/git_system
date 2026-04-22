@@ -2,7 +2,7 @@
 
     path=$(git rev-parse --show-toplevel);
     if [[ "$path" == $HOME/.gem ]] || [[ "$path" == $HOME/Library ]] || [[ "$path" != $HOME/* ]]; then
-        true;
+        exit 0;
     else
-        false;
+        exit 1;
     fi

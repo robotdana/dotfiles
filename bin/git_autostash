@@ -9,6 +9,6 @@
             git stash apply $stash_sha;
         else
             git stash apply $stash_sha;
-            false;
+            exit 1;
         fi;
     fi

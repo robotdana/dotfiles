@@ -8,5 +8,5 @@ if (( $? < 1 )); then
         echodo git commit --fixup "$commit" && ( ! git_rebasing && git_autolint_head && git_rebase_i "$commit^" );
     fi;
 else
-    false;
+    exit 1;
 fi

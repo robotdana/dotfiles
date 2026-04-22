@@ -6,5 +6,5 @@ if git config remote.upstream.url >/dev/null; then
 else
   echoerr "No upstream remote"
   echodo git remote -v
-  false
+  exit 1
 fi

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# git_cherry_pick_force - Force apply a commit with original author and message
+# Usage: git_cherry_pick_force <commit-hash>
+
+set -e
+
+COMMIT="$1"
+
+if echodo git show "$COMMIT" | echodo git apply --3way; then
+    echo "Patch applied successfully"
+    echodo git add -A
+
+    # Commit with original metadata
+    echodo git commit --reuse-message="$COMMIT"
+else
+    echoerr "Patch failed to apply cleanly. Resolve conflicts manually, then run:"
+    echoerr "  git add -A"
+    echoerr "  git commit --reuse-message=\"$COMMIT\""
+    exit 1
+fi

@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 echo $'\033[36m'run: "$@"$'\033[0m'
-false
+exit 1

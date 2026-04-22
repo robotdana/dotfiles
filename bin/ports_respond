@@ -7,4 +7,4 @@
             respond=false;
         fi;
     done;
-    $respond
+    [[ $respond == true ]] && exit 0 || exit 1;

@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-if [[ -e .git ]]; then
   ref=$(git_branch_name 2>/dev/null)
 
   if [[ $ref == 'HEAD' ]]; then
@@ -12,5 +11,6 @@ if [[ -e .git ]]; then
     fi
   fi
 
-  echo -ne ":$ref"
-fi
+  if [[ ! -z "$ref" ]]; then
+    echo -ne ":$ref"
+  fi

@@ -8,7 +8,7 @@ if git_unstaged_binary_files; then
     echodo git add -p;
     echoerr "There are binary files that require adding manually";
     git status;
-    false;
+    exit 1;
 else
     git_track_untracked;
     git_status_clean || echodo git add -p;

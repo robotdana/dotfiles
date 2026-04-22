@@ -51,9 +51,11 @@ RSpec.describe 'git' do
         Automatic merge failed; fix conflicts and then commit the result.
       MESSAGE
 
+      debug
+
       expect(
         run('gmc', wait: 10) do |cmd|
-          expect(cmd).to have_output(stdout: end_with('(1/1) Stage deletion [y,n,q,a,d,?]? '), wait: 10)
+          expect(cmd).to have_output(stdout: end_with('(1/1) Stage deletion [y,n,q,a,d,p,?]? '), wait: 10)
 
           cmd.stdin.puts('n')
         end
@@ -88,7 +90,7 @@ RSpec.describe 'git' do
 
       expect(
         run('gmc', wait: 10) do |cmd|
-          expect(cmd).to have_output(stdout: end_with('(1/1) Stage addition [y,n,q,a,d,e,?]? '), wait: 10)
+          expect(cmd).to have_output(stdout: end_with('(1/1) Stage addition [y,n,q,a,d,e,p,?]? '), wait: 10)
 
           cmd.stdin.puts('n')
         end
@@ -121,7 +123,7 @@ RSpec.describe 'git' do
         Automatic merge failed; fix conflicts and then commit the result.
       MESSAGE
       run('gmc', wait: 10) do |cmd|
-        expect(cmd).to have_output(stdout: end_with('(1/1) Stage addition [y,n,q,a,d,e,?]? '), wait: 10)
+        expect(cmd).to have_output(stdout: end_with('(1/1) Stage addition [y,n,q,a,d,e,p,?]? '), wait: 10)
 
         cmd.stdin.puts('y')
       end
@@ -152,7 +154,7 @@ RSpec.describe 'git' do
         Automatic merge failed; fix conflicts and then commit the result.
       MESSAGE
       run('gmc') do |cmd|
-        expect(cmd).to have_output(stdout: end_with('(1/1) Stage deletion [y,n,q,a,d,?]? '), wait: 10)
+        expect(cmd).to have_output(stdout: end_with('(1/1) Stage deletion [y,n,q,a,d,p,?]? '), wait: 10)
 
         cmd.stdin.puts('y')
       end

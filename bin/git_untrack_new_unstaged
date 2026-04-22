@@ -2,5 +2,5 @@
 
     newblank=$(git diff --numstat --no-renames --diff-filter=A | awk -F'\t' '/^[0-9]+\t0\t/ { print $3 }' | escape_spaces);
     if [[ ! -z "$newblank" ]]; then
-        echodo git reset -- $newblank;
+        echodo git reset -- "$(git rev-parse --show-cdup)$newblank";
     fi
